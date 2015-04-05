@@ -1,0 +1,44 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module name="bihi-accordion">
+  <template>
+  	<content></content>
+  </template>
+
+  <script>
+  	Polymer({
+      is: "bihi-accordion",
+      listeners: {
+        "step-title-click": "onStepTitleClick"
+      },
+      onStepTitleClick: function(e) {
+        var clickedStep = e.detail.step;
+        if (clickedStep == this.currentStep) {
+          return;
+        }
+
+        // From here on, we need to notify all steps that they might need to change.
+        for (var i = 0; i < this.steps.length; i++) {
+           var step = this.steps[i];
+           // Careful, we're storing readable step ids, not indices.
+           if (i + 1 == clickedStep) {
+              // Need to select this.
+              this.fire('step-select', {}, step, true);
+          } else {
+              // Need to unselect this.
+              this.fire('step-unselect', {}, step, true);
+          }          
+        }
+        this.currentStep = clickedStep;
+      },
+      properties: {
+        currentStep: {type: Number},
+        stepChildren: {type: Object} // Actually a nodeList
+      },
+      ready: function() {
+        this.currentStep = 1;
+        this.steps = Polymer.dom(this).querySelectorAll('bihi-design-step')
+      }
+    });
+  </script>
+</dom-module>

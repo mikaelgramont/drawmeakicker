@@ -3,12 +3,19 @@
 <dom-module name="bihi-design-step">
   <style>
     .step-title {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 0;
       padding: 5px 15px;
       margin: 0;
       font-family: helvetica, arial;
       font-size: 24px;
       color: #d7d7d7;
       background: #808080;
+    }
+    .step-title:hover {
+      cursor: pointer;
     }
     .content {
       margin: 0 15px;
@@ -19,7 +26,9 @@
   </style>
 
   <template>
-    <h2 class="step-title">{{caption}}</h2>
+    <button class="step-title" on-click="onTitleClick">
+      <span>{{step}}</span> - <span>{{caption}}</span>
+    </button>
     <div class="content">
       <content></content>
     </div>
@@ -28,9 +37,26 @@
   <script>
     Polymer({
       is: "bihi-design-step",
+      listeners: {
+        "step-select": "onSelect",
+        "step-unselect": "onUnselect",
+      },
+      onSelect: function() {
+        this.active = true;
+      },
+      onTitleClick: function() {
+        // Dispatch an event to the parent to tell it this step
+        // should get focus.
+        this.fire('step-title-click', {step: this.step});
+      },
+      onUnselect: function() {
+        this.active = false;
+      },
       properties: {
-        caption: {type: "String"}
-      }
+        active: {type: Boolean, reflectToAttribute: true},
+        caption: {type: String},
+        step: {type: Number}
+      },
     });
   </script>
 </dom-module>
