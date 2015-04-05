@@ -1,0 +1,25 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module name="bihi-design-fieldset">
+  <style>
+    fieldset {
+      padding: 0 15px;
+    }
+  </style>
+
+  <template>
+    <fieldset>
+      <legend>{{legend}}</legend>
+      <content></content>
+    </fieldset>
+  </template>
+
+  <script>
+    Polymer({
+      is: "bihi-design-fieldset",
+      properties: {
+        legend: {type: "String"}
+      }
+    });
+  </script>
+</dom-module>

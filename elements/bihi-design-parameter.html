@@ -1,0 +1,49 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module name="bihi-design-parameter">
+  <style>
+      :host {
+        /* This should work, but it doesn't. Why?*/
+        display: block;
+        color: red;
+      }
+      label,
+      .caption {
+        display: block;
+      }
+      input {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+      }
+  </style>
+
+  <template>
+    <label>
+      <span class="caption">
+        <span>{{caption}}</span>:
+        <span class="value">{{value}}</span><span class="unit">{{unit}}</span>
+      </span>
+      <input id="width" type="range" min="{{min}}" max="{{max}}"
+        step="{{step}}" value="{{value}}" on-change="onInputChange">
+    </label>
+  </template>
+
+  <script>
+    Polymer({
+      is: "bihi-design-parameter",
+      properties: {
+        caption: {type: String},
+        max: {type: Number},
+        min: {type: Number},
+        step: {type: Number},
+        unit: {type: String},
+        value: {type: Number, reflectToAttribute: true}
+      },
+      onInputChange: function(e) {
+        // Update the actual property.
+        this.value = e.target.value;
+      }
+    });
+  </script>
+</dom-module>

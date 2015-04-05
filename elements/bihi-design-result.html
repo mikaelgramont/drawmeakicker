@@ -1,0 +1,32 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module name="bihi-design-result">
+  <style>
+      :host {
+        /* This should work, but it doesn't. Why?*/
+        display: block;
+        color: red;
+      }
+      .caption {
+        display: block;
+      }
+  </style>
+
+  <template>
+    <span class="caption">
+      <span>{{caption}}</span>:
+      <span class="value">{{value}}</span><span class="unit">{{unit}}</span>
+    </span>
+  </template>
+
+  <script>
+    Polymer({
+      is: "bihi-design-result",
+      properties: {
+        caption: {type: String},
+        unit: {type: String},
+        value: {type: Number, value: 0}
+      },
+    });
+  </script>
+</dom-module>

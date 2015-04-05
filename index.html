@@ -1,0 +1,59 @@
+<!-- 
+	Polymer 0.8 WTFs:
+	- can't use :host to style the host element
+	- can't put anything else next to a variable inside a given container
+-->
+<html>
+	<head>
+		<title>Build it. Huck it.</title>
+	    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+	    <link rel="import" href="elements/bihi-design-fieldset.html">
+	    <link rel="import" href="elements/bihi-design-parameter.html">   
+	    <link rel="import" href="elements/bihi-design-result.html">
+	    <link rel="import" href="elements/bihi-design-step.html">
+	    <link rel="import" href="elements/bihi-logo.html">
+		<style>
+			/* Shouldn't have to do this here. */
+			bihi-design-step {
+				display: block;
+				border: 1px solid #d7d7d7;
+			}
+			bihi-design-parameter,
+	    	bihi-design-result,
+	    	bihi-design-fieldset {
+	        	display: block;
+	    		margin: 15px 0;
+	      	}
+			</style>
+	</head>
+
+	<body>
+		<bihi-logo></bihi-logo>
+		<div style="width:280px;">
+			<bihi-design-step caption="1 - Design">
+				<bihi-design-fieldset legend="Parameters">
+					<bihi-design-parameter id="height" caption="Height" value="1.2" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>
+					<bihi-design-parameter id="width" caption="Width" value="1.0" min=".5" max="4" step="0.1" unit="m"></bihi-design-parameter>
+					<bihi-design-parameter id="angle" caption="Exit angle" value="45" min="30" max="89.9" step="0.1" unit="&deg;"></bihi-design-parameter>
+				</bihi-design-fieldset>
+
+				<bihi-design-fieldset legend="Results">
+					<bihi-design-result id="radius" caption="Radius" unit="m"></bihi-design-result>
+					<bihi-design-result id="length" caption="Base length" unit="m"></bihi-design-result>
+					<bihi-design-result id="surface" caption="Surface length" unit="m"></bihi-design-result>
+				</bihi-design-fieldset>
+			</bihi-design-step>
+			<bihi-design-step caption="2 - Visualize">
+			</bihi-design-step>
+			<bihi-design-step caption="3 - Save">
+			</bihi-design-step>
+			<bihi-design-step caption="4 - Share">
+			</bihi-design-step>
+		</div>
+		<script>
+			window.addEventListener('polymer-ready', function() {
+				console.log('polymer-ready');
+			});
+		</script>
+	</body>
+</html>

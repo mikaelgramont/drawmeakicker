@@ -1,0 +1,36 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module name="bihi-design-step">
+  <style>
+    .step-title {
+      padding: 5px 15px;
+      margin: 0;
+      font-family: helvetica, arial;
+      font-size: 24px;
+      color: #d7d7d7;
+      background: #808080;
+    }
+    .content {
+      margin: 0 15px;
+    };
+    .content.collapsed {
+      display: none;
+    }
+  </style>
+
+  <template>
+    <h2 class="step-title">{{caption}}</h2>
+    <div class="content">
+      <content></content>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: "bihi-design-step",
+      properties: {
+        caption: {type: "String"}
+      }
+    });
+  </script>
+</dom-module>
