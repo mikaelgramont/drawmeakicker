@@ -3,3 +3,7 @@ var Kicker = function(model) {
 
 	console.log('Kicker - constructor');
 };
+
+Kicker.prototype.refresh = function() {
+	this.model.processViewParameters();
+};

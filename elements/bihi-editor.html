@@ -1,0 +1,23 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module name="bihi-editor">
+  <style>
+  </style>
+
+  <template>
+    <content></content>
+  </template>
+
+  <script>
+  	Polymer({
+      is: "bihi-editor",
+      listeners: {
+        "parameter-change": "rendererRefresh"
+      },
+      rendererRefresh: function() {
+        var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
+        this.fire("renderer-refresh", {}, rendererEl, false);
+      }
+    });
+  </script>
+</dom-module>

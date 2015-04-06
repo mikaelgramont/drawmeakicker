@@ -6,12 +6,14 @@
 	Questions:
 	- how to style this from inside the element itself? bihi-design-step[active] .content
 	- how to make a custom element inherit from a builtin element (fieldset)?
+	- is firing and catching events through the dom the way to go to communicate? Seems to work for elements that are related to each other. Should we use some kind of pubsub sitting at the top of the page for elements that are not in the same branch of the tree?
 -->
 <html>
 	<head>
 		<title>Build it. Huck it.</title>
 	    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 	    <link rel="import" href="elements/bihi-accordion.html">
+	    <link rel="import" href="elements/bihi-editor.html">
 	    <link rel="import" href="elements/bihi-design-fieldset.html">
 	    <link rel="import" href="elements/bihi-design-parameter.html">   
 	    <link rel="import" href="elements/bihi-design-result.html">
@@ -72,7 +74,7 @@
 	<body>
 		<bihi-logo></bihi-logo>
 		<div role="main">
-			<div class="editor-container">
+			<bihi-editor class="editor-container">
 				<bihi-renderer3d editor-id="design-tab"></bihi-renderer3d>
 				<bihi-accordion role="tablist">
 					<bihi-design-step id="design-tab" caption="Design" step="1" active first>
@@ -92,7 +94,7 @@
 					<bihi-design-step caption="Save" step="3"></bihi-design-step>
 					<bihi-design-step caption="Share" step="4" last></bihi-design-step>
 				</bihi-accordion>
-			</div>
+			</bihi-editor>
 		</main>
 		<script>
 			window.addEventListener('polymer-ready', function(e) {

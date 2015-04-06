@@ -19,11 +19,19 @@
   <script>
   	Polymer({
       is: "bihi-renderer3d",
+      listeners: {
+        "renderer-refresh": "refresh"
+      },
       properties: {
         renderers: {type: Array},
         editorId: {type: String}
       },
-      ready: init
+      ready: init,
+      refresh: function() {
+        for (var i = 0; i < this.renderers.length; i++) {
+          this.renderers[i].refresh();
+        }
+      }
     });
 
     function init() {
@@ -34,11 +42,6 @@
           kicker = new Kicker(model),
           renderer = new Renderer3d(kicker, canvasEl);
       this.renderers = [renderer];
-
-
-      // setup a delegated event listener on the change event of all inputs in editorEl.
-      // the callback will update the model which should then update the kicker, which will trigger a redraw on the renderer.
-
     }
   </script>
 </dom-module>
