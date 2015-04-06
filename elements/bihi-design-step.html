@@ -2,7 +2,7 @@
 
 <dom-module name="bihi-design-step">
   <style>
-    .step-title {
+    .title {
       display: block;
       width: 100%;
       text-align: left;
@@ -14,23 +14,38 @@
       color: #d7d7d7;
       background: #808080;
     }
-    .step-title:hover {
+    .title:hover {
       cursor: pointer;
     }
-    .content {
+    .body {
       margin: 0 15px;
-    };
-    .content.collapsed {
       display: none;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .body-content {
+      flex-grow: 1;
+    }
+    .button-section {
+      display: flex;
+      margin: 15px 0;
+      justify-content: space-between;
     }
   </style>
 
   <template>
-    <button class="step-title" on-click="onTitleClick">
+    <button role="tab" class="title" on-click="onTitleClick">
       <span>{{step}}</span> - <span>{{caption}}</span>
     </button>
-    <div class="content">
-      <content></content>
+    <div class="body">
+      <div role="tabpanel" class="body-content">
+        <content></content>
+      </div>
+      <div class="button-section">
+          <button on-click="onBackClick">Back</button>
+          <button on-click="onNextClick">Next</button>
+      </div>
+      </div>
     </div>
   </template>
 
@@ -39,7 +54,19 @@
       is: "bihi-design-step",
       listeners: {
         "step-select": "onSelect",
-        "step-unselect": "onUnselect",
+        "step-unselect": "onUnselect"
+      },
+      onBackClick: function() {
+        if (this.first) {
+          return;
+        }        
+        this.fire('step-back-click', {step: this.step});
+      },
+      onNextClick: function() {
+        if (this.last) {
+          return;
+        }        
+        this.fire('step-next-click', {step: this.step});
       },
       onSelect: function() {
         this.active = true;
@@ -54,7 +81,9 @@
       },
       properties: {
         active: {type: Boolean, reflectToAttribute: true},
+        first: {type: Boolean},
         caption: {type: String},
+        last: {type: Boolean},
         step: {type: Number}
       },
     });

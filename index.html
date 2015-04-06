@@ -2,6 +2,10 @@
 	Polymer 0.8 WTFs:
 	- can't use :host to style the host element
 	- can't put anything else next to a variable inside a given container
+
+	Questions:
+	- how to style this from inside the element itself? bihi-design-step[active] .content
+	- how to make a custom element inherit from a builtin element (fieldset)?
 -->
 <html>
 	<head>
@@ -12,11 +16,25 @@
 	    <link rel="import" href="elements/bihi-design-parameter.html">   
 	    <link rel="import" href="elements/bihi-design-result.html">
 	    <link rel="import" href="elements/bihi-design-step.html">
+	    <link rel="import" href="elements/bihi-renderer3d.html">
 	    <link rel="import" href="elements/bihi-logo.html">
 		<style>
-			/* Shouldn't have to do this here. */
+	      	body {
+	      		margin: 0 auto;
+	      		max-width: 1280px;
+	      		padding: 0 50px;
+	      	}
+	      	.editor-container {
+	      		display: flex;
+	      		width: 100%;
+	      		height: 700px;
+	      	}
+
+			/* Shouldn't have to do all this here, it should be
+			   done inside each component file. */
 			bihi-design-step {
-				display: block;
+				display: flex;
+				flex-direction: column;
 				border: 1px solid #d7d7d7;
 				border-top: 0;
 			}
@@ -27,18 +45,6 @@
 	    		margin: 15px 0;
 	      	}
 
-	      	body {
-	      		max-width: 1280px;
-	      		margin: 0 auto;
-	      	}
-	      	main {
-	      		margin: 0 50px;
-	      	}
-	      	.editor-container {
-	      		display: flex;
-	      		width: 100%;
-	      		height: 700px;
-	      	}
 	      	bihi-accordion {
 				display: flex;
 				flex-direction: column;    		
@@ -46,51 +52,46 @@
 			    align-content: stretch;
 			    align-items: stretch;	      		
 	      	}
-	      	.editor-canvas {
+	      	bihi-renderer3d {
 	      		margin-right: 20px;
 	      		flex-grow: 1;
 	      		border: 1px solid #d7d7d7;
 	      	}
-	      	.editor-panel {
+	      	bihi-accordion {
 	      		width: 280px;
-	      	}
-	      	bihi-design-step .content{
-	      		display: none;
 	      	}
 	      	bihi-design-step[active] {
 	      		flex-grow: 1;
 	      	}
-	      	bihi-design-step[active] .content{
-	      		display: block;
+	      	bihi-design-step[active] .body {
+	      		display: flex;
 	      	}
 			</style>
 	</head>
 
 	<body>
-		<main>
-			<bihi-logo></bihi-logo>
+		<bihi-logo></bihi-logo>
+		<div role="main">
 			<div class="editor-container">
-				<div class="editor-canvas"></div>
-				<div class="editor-panel">
-					<bihi-accordion>
-						<bihi-design-step caption="Design" step="1" active>
-							<bihi-design-fieldset legend="Parameters">
-								<bihi-design-parameter id="height" caption="Height" value="1.2" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>
-								<bihi-design-parameter id="width" caption="Width" value="1.0" min=".5" max="4" step="0.1" unit="m"></bihi-design-parameter>
-								<bihi-design-parameter id="angle" caption="Exit angle" value="45" min="30" max="89.9" step="0.1" unit="&deg;"></bihi-design-parameter>
-							</bihi-design-fieldset>
+				<bihi-renderer3d editor-id="design-tab"></bihi-renderer3d>
+				<bihi-accordion role="tablist">
+					<bihi-design-step id="design-tab" caption="Design" step="1" active first>
+						<bihi-design-fieldset legend="Parameters">
+							<bihi-design-parameter id="height" caption="Height" value="1.2" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>
+							<bihi-design-parameter id="width" caption="Width" value="1.0" min=".5" max="4" step="0.1" unit="m"></bihi-design-parameter>
+							<bihi-design-parameter id="angle" caption="Exit angle" value="45" min="30" max="89.9" step="1" unit="&deg;"></bihi-design-parameter>
+						</bihi-design-fieldset>
 
-							<bihi-design-fieldset legend="Results">
-								<bihi-design-result id="radius" caption="Radius" unit="m"></bihi-design-result>
-								<bihi-design-result id="length" caption="Base length" unit="m"></bihi-design-result>
-								<bihi-design-result id="surface" caption="Surface length" unit="m"></bihi-design-result>
-							</bihi-design-fieldset>
-						</bihi-design-step>
-						<bihi-design-step caption="Visualize" step="2"></bihi-design-step>
-						<bihi-design-step caption="Save" step="3"></bihi-design-step>
-						<bihi-design-step caption="Share" step="4"></bihi-design-step>
-					</bihi-accordion>
-				</div>
+						<bihi-design-fieldset legend="Results">
+							<bihi-design-result id="radius" caption="Radius" unit="m"></bihi-design-result>
+							<bihi-design-result id="length" caption="Base length" unit="m"></bihi-design-result>
+							<bihi-design-result id="arc" caption="Surface length" unit="m"></bihi-design-result>
+						</bihi-design-fieldset>
+					</bihi-design-step>
+					<bihi-design-step caption="Visualize" step="2"></bihi-design-step>
+					<bihi-design-step caption="Save" step="3"></bihi-design-step>
+					<bihi-design-step caption="Share" step="4" last></bihi-design-step>
+				</bihi-accordion>
 			</div>
 		</main>
 		<script>

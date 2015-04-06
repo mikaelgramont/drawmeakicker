@@ -1,0 +1,44 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../scripts/kickereditorview.js"></script>
+<script src="../scripts/kickermodel.js"></script>
+<script src="../scripts/kicker.js"></script>
+<script src="../scripts/renderer3d.js"></script>
+
+<dom-module name="bihi-renderer3d">
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <template>
+    <canvas width="640" height="480"></canvas>
+  </template>
+
+  <script>
+  	Polymer({
+      is: "bihi-renderer3d",
+      properties: {
+        renderers: {type: Array},
+        editorId: {type: String}
+      },
+      ready: init
+    });
+
+    function init() {
+      var editorEl = document.getElementById(this.editorId),
+          canvasEl = Polymer.dom(this).node.querySelector('canvas'),
+          view = new KickerEditorView(editorEl),
+          model = new KickerModel(view),
+          kicker = new Kicker(model),
+          renderer = new Renderer3d(kicker, canvasEl);
+      this.renderers = [renderer];
+
+
+      // setup a delegated event listener on the change event of all inputs in editorEl.
+      // the callback will update the model which should then update the kicker, which will trigger a redraw on the renderer.
+
+    }
+  </script>
+</dom-module>

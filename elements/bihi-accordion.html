@@ -9,19 +9,33 @@
   	Polymer({
       is: "bihi-accordion",
       listeners: {
+        "step-back-click": "onStepBackClick",
+        "step-next-click": "onStepNextClick",
         "step-title-click": "onStepTitleClick"
+      },
+      onStepBackClick: function(e) {
+        if (this.currentStep > 1) {
+          this.goToStep(this.currentStep - 1);
+        }
+      },
+      onStepNextClick: function(e) {
+        if (this.currentStep < this.steps.length) {
+          this.goToStep(this.currentStep + 1);
+        }
       },
       onStepTitleClick: function(e) {
         var clickedStep = e.detail.step;
         if (clickedStep == this.currentStep) {
           return;
         }
-
+        this.goToStep(clickedStep);
+      },
+      goToStep: function(destinationStep) {
         // From here on, we need to notify all steps that they might need to change.
         for (var i = 0; i < this.steps.length; i++) {
            var step = this.steps[i];
            // Careful, we're storing readable step ids, not indices.
-           if (i + 1 == clickedStep) {
+           if (i + 1 == destinationStep) {
               // Need to select this.
               this.fire('step-select', {}, step, true);
           } else {
@@ -29,7 +43,7 @@
               this.fire('step-unselect', {}, step, true);
           }          
         }
-        this.currentStep = clickedStep;
+        this.currentStep = destinationStep;
       },
       properties: {
         currentStep: {type: Number},
@@ -37,7 +51,7 @@
       },
       ready: function() {
         this.currentStep = 1;
-        this.steps = Polymer.dom(this).querySelectorAll('bihi-design-step')
+        this.steps = Polymer.dom(this).querySelectorAll('bihi-design-step');
       }
     });
   </script>
