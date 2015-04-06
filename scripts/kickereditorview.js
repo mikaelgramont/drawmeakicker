@@ -12,8 +12,6 @@ var KickerEditorView = function(rootEl) {
 		var id = els[i].getAttribute('id');
 		this.results[id] = els[i];
 	};
-
-	console.log('parameters & results', this.parameters, this.results);
 };
 
 KickerEditorView.prototype.refresh = function(radius, length, arc) {
