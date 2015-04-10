@@ -1,47 +1,27 @@
-var Renderer3d = function(kicker, canvasEl) {
+var Renderer3d = function(kicker, canvasEl, imageList, config) {
 	this.kicker = kicker;
 	this.canvasEl = canvasEl;
+	this.imageList = imageList;
+	this.config = config;
 	this.parts = null;
 	this.rafId = null;
-
-	this.init();
+	var init = this.init.bind(this);
+	setTimeout(function(){
+		// Some kind of race condition is causing the canvas element to not
+		// be sized correctly unless we push this to the next tick. Sigh.
+		init();
+	}, 0);
+	
 };
 
 Renderer3d.prototype.init = function() {
-	/**
-      TODO:
-      - create a threejs renderer object
-      - create parts
-      - create light, camera, scene
-      - add everything.
-	 */
-	var aspectRatio = this.canvasEl.clientWidth / this.canvasEl.clientHeight;
-	this.camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
-	this.camera.position.x = 4.2;
-	this.camera.position.y = 1.2;
-	this.camera.position.z = 1.2;
+	//debugger;
+	this.camera = EditorScene.getCamera(this.canvasEl);
+	this.scene = EditorScene.getScene();
+	EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
 
-	this.scene = new THREE.Scene();
-
-	var light = new THREE.DirectionalLight(0xffffff);
-	light.position.set(300, 10, 300);
-	this.scene.add(light);
-
-	var light2 = new THREE.DirectionalLight(0xffffff);
-	light2.position.set(-100, 200, -120);
-	this.scene.add(light2);
-
-	this.threeRenderer = new THREE.WebGLRenderer({
-		antialias: true,
-		canvas: this.canvasEl
-	});
-	this.threeRenderer.setClearColor(0xf0f0f0);
-	this.threeRenderer.setSize(
-	this.canvasEl.clientWidth, this.canvasEl.clientHeight);
-
-	this.scene.add(new THREE.AxisHelper(1));
-	this.scene.add(new THREE.GridHelper(100,2));
-
+	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
+	this.orbitControls = new THREE.OrbitControls(this.camera, this.canvasEl);
 	this.render();
 };
 
@@ -59,6 +39,7 @@ Renderer3d.prototype.animate = function() {
 
 Renderer3d.prototype.step = function() {
 	// TODO: perform physics updates here.
+	 // this.camera.rotation.y += 0.005;
 	this.draw();
 };
 

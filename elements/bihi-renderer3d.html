@@ -1,8 +1,25 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+
 <script src="../bower_components/threejs/build/three.min.js"></script>
+<script src="../scripts/config.js"></script>
+<script src="../scripts/imagelist.js"></script>
+<script src="../scripts/utils.js"></script>
 <script src="../scripts/kickereditorview.js"></script>
 <script src="../scripts/kickermodel.js"></script>
 <script src="../scripts/kicker.js"></script>
+<script src="../scripts/ColladaLoader.js"></script> 
+<script src="../scripts/THREEx.GeometryUtils.js"></script> 
+<script src="../scripts/representation3d.js"></script>
+<script src="../scripts/scene.js"></script>
+<script src="../scripts/scene.js"></script>
+<script src="../scripts/orbitcontrols.js"></script>
+
+<script src="../models/parts/part.js"></script>
+<script src="../models/parts/side.js"></script>
+<script src="../models/parts/slat.js"></script>
+<script src="../models/parts/strut.js"></script>
+<script src="../models/parts/surface.js"></script>
+
 <script src="../scripts/renderer3d.js"></script>
 
 <dom-module name="bihi-renderer3d">
@@ -41,7 +58,8 @@
           view = new KickerEditorView(editorEl),
           model = new KickerModel(view),
           kicker = new Kicker(model),
-          renderer = new Renderer3d(kicker, canvasEl);
+          imageList = new ImageList(),
+          renderer = new Renderer3d(kicker, canvasEl, imageList, config);
       this.renderers = [renderer];
     }
   </script>

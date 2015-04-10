@@ -42,3 +42,50 @@ KickerModel.prototype.calculateArc = function(radius, alphaDeg) {
   return arc;
 }
 
+KickerModel.prototype.calculateSidePoints = function(angle, radius, config) {
+	var points = [];
+
+	var angleRad = angle * Math.PI / 180;
+	var steps = config.model3d.sides.steps;
+	var currentAngleRad, x, y;
+
+	// The first point is calculated outside of the loop because it must
+	// account for a minimum height of the sides, otherwise it looks too
+	// 'perfect': you can't build something that thin.
+	var minY = config.model3d.sides.minHeight;
+	var minX = Math.acos(1 - minY / radius);
+	points.push([minX, minY]); 
+
+	for (var i = 0; i <= steps; i++) {
+		currentAngleRad = i / steps * angleRad;
+		x = radius * Math.sin(currentAngleRad);
+		y = radius * (1 - Math.cos(currentAngleRad));
+		if (x < minX) {
+			x = minX;
+		}
+		if (y < minY) {
+			y = minY;
+		}
+		points.push([x,y]);
+	}
+	var lastPointX = x + config.model3d.sides.extraLength;
+	points.push([lastPointX, y]); 
+	points.push([lastPointX, 0]); 
+
+	return points;
+};
+
+// KickerModel.prototype.createCanvasRepresentation = function() {
+// 	var points = this.calculateSidePoints(this.angle, this.radius, config);
+
+// 	// Need to close the shape for canvas.
+// 	points.push([0,0]);
+// 	// Returns a representation that is not scaled and needs to be flipped vertically.
+// 	return new Representation2D(points);
+// };
+
+KickerModel.prototype.create3dObject = function(config, imageList) {
+	console.log('creating a 3d representation');
+	var points = this.calculateSidePoints(this.angle, this.radius, config);
+	return new Representation3D(points, this.length, this.angle, this.arc, this.radius, this.width, imageList, config);
+};
