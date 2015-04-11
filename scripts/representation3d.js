@@ -9,6 +9,11 @@ var Representation3D = function(points, length, angle, arc, radius, width, image
 	this.parts.struts = this.buildStruts(length, width, angle, arc, radius, true);
 	this.parts.surface = this.buildSurface(this.points, width, true);
 	Utils.makeAvailableForDebug('parts', this.parts);
+
+	// Move all unused struts here when discarded.
+	// TODO: creation of struts should look for struts in this list before
+	// instantiating new ones.
+	this.strutPool = [];
 };
 
 Representation3D.prototype.getParts = function() {
@@ -50,6 +55,29 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 		struts.push(strut);
 		i--;
 	}
+
+	// Add two at the base.
+	// One at the lip.
+	thickness = config.model3d.struts.side;
+	offset = new THREE.Vector3(
+		(length + config.model3d.sides.extraLength - thickness / 2),
+		thickness,
+		0
+	);
+	var strut = new Strut(
+		strutWidth, thickness, 0, offset, visibility, this.imageList
+	);
+	strut.mesh.position.copy(offset);
+	struts.push(strut);
+
+	// One strut 2/3 of the length from entry to lip.
+	offset = new THREE.Vector3(length * 2 / 3, thickness, 0);
+	strut = new Strut(
+		strutWidth, thickness, 0, offset, visibility, this.imageList
+	);
+	strut.mesh.position.copy(offset);
+	struts.push(strut);
+
 	return struts;
 };
 

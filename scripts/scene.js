@@ -42,15 +42,17 @@ EditorScene.setupContent = function(scene, kicker, config, imageList) {
 		boardGroup.rotateY(10 * Math.PI/64);
 		scene.add(boardGroup);
 	});
+}
 
+EditorScene.createKicker = function(kicker, config, imageList) {
 	var kickerObj = new THREE.Object3D();
-	window.kicker = kickerObj;
-
 	var rep = kicker.model.create3dObject(config, imageList);
-	Utils.iterateOverParts(rep.parts, function(part) {kickerObj.add(part.mesh);});
+	Utils.iterateOverParts(rep.parts, function(part) {
+		kickerObj.add(part.mesh);
+	});
 
 	kickerObj.position.x = -1;
-	scene.add(kickerObj);
+	return kickerObj;
 };
 
 EditorScene.getRenderer = function(canvasEl) {

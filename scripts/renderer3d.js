@@ -15,10 +15,11 @@ var Renderer3d = function(kicker, canvasEl, imageList, config) {
 };
 
 Renderer3d.prototype.init = function() {
-	//debugger;
 	this.camera = EditorScene.getCamera(this.canvasEl);
 	this.scene = EditorScene.getScene();
 	EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
+	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList);
+	this.scene.add(this.kickerObj);
 
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
 	this.orbitControls = new THREE.OrbitControls(this.camera, this.canvasEl);
@@ -56,5 +57,8 @@ Renderer3d.prototype.refresh = function() {
 	this.kicker.refresh();
 	// TODO: clear parts, rebuild all objects
 	// and bind them to the threejs renderer.
+	this.scene.remove(this.kickerObj);
+	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList);
+	this.scene.add(this.kickerObj);
 };
 

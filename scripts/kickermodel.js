@@ -85,7 +85,6 @@ KickerModel.prototype.calculateSidePoints = function(angle, radius, config) {
 // };
 
 KickerModel.prototype.create3dObject = function(config, imageList) {
-	console.log('creating a 3d representation');
 	var points = this.calculateSidePoints(this.angle, this.radius, config);
 	return new Representation3D(points, this.length, this.angle, this.arc, this.radius, this.width, imageList, config);
 };

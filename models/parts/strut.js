@@ -1,5 +1,4 @@
 var Strut = function(width, thickness, currentAngle, offset, visibility, imageList) {
-	this.length = length;
 	this.thickness = thickness;
 	this.imageList = imageList;
 	this.mesh = this.createMesh(width, thickness);
