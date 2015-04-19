@@ -1,82 +1,34 @@
 <!-- 
 	Polymer 0.8 WTFs:
-	- can't use :host to style the host element
-	- can't put anything else next to a variable inside a given container
+	- when outputting properties to html, can't put anything else next to a variable inside a given container
 
 	Questions:
-	- how to style this from inside the element itself? bihi-design-step[active] .content
 	- how to make a custom element inherit from a builtin element (fieldset)?
 	- is firing and catching events through the dom the way to go to communicate? Seems to work for elements that are related to each other. Should we use some kind of pubsub sitting at the top of the page for elements that are not in the same branch of the tree?
 -->
 <html>
 	<head>
 		<title>Build it. Huck it.</title>
-	    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-	    <link rel="import" href="elements/bihi-accordion.html">
-	    <link rel="import" href="elements/bihi-editor.html">
-	    <link rel="import" href="elements/bihi-design-fieldset.html">
-	    <link rel="import" href="elements/bihi-design-parameter.html">   
-	    <link rel="import" href="elements/bihi-design-result.html">
-	    <link rel="import" href="elements/bihi-design-step.html">
-	    <link rel="import" href="elements/bihi-renderer3d.html">
-	    <link rel="import" href="elements/bihi-logo.html">
-		<style>
-	      	body {
-	      		margin: 0 auto;
-	      		max-width: 1280px;
-	      		padding: 0 50px;
-	      	}
-	      	.editor-container {
-	      		display: flex;
-	      		width: 100%;
-	      		height: 700px;
-	      	}
-
-			/* Shouldn't have to do all this here, it should be
-			   done inside each component file. */
-			bihi-design-step {
-				display: flex;
-				flex-direction: column;
-				border: 1px solid #d7d7d7;
-				border-top: 0;
-			}
-			bihi-design-parameter,
-	    	bihi-design-result,
-	    	bihi-design-fieldset {
-	        	display: block;
-	    		margin: 15px 0;
-	      	}
-
-	      	bihi-accordion {
-				display: flex;
-				flex-direction: column;    		
-	      		height: 100%;
-			    align-content: stretch;
-			    align-items: stretch;	      		
-	      	}
-	      	bihi-renderer3d {
-	      		margin-right: 20px;
-	      		flex-grow: 1;
-	      		border: 1px solid #d7d7d7;
-	      	}
-	      	bihi-accordion {
-	      		width: 280px;
-	      	}
-	      	bihi-design-step[active] {
-	      		flex-grow: 1;
-	      	}
-	      	bihi-design-step[active] .body {
-	      		display: flex;
-	      	}
-			</style>
+		<link rel="stylesheet" href="style.css">
+		<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+		<link rel="import" href="elements/bihi-accordion.html">
+		<link rel="import" href="elements/bihi-editor.html">
+		<link rel="import" href="elements/bihi-design-fieldset.html">
+		<link rel="import" href="elements/bihi-design-parameter.html">   
+		<link rel="import" href="elements/bihi-design-result.html">
+		<link rel="import" href="elements/bihi-design-step.html">
+		<link rel="import" href="elements/bihi-renderer3d.html">
+		<link rel="import" href="elements/bihi-logo.html">
 	</head>
 
 	<body>
 		<bihi-logo></bihi-logo>
 		<div role="main">
+			<div class="blueprint" style="height:300px; margin-bottom: 15px;">
+			</div>
 			<bihi-editor class="editor-container">
-				<bihi-renderer3d editor-id="design-tab"></bihi-renderer3d>
-				<bihi-accordion role="tablist">
+				<bihi-renderer3d editor-id="design-tab" class="thick-borders blueprint"></bihi-renderer3d>
+				<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 					<bihi-design-step id="design-tab" caption="Design" step="1" active first>
 						<bihi-design-fieldset legend="Parameters">
 							<bihi-design-parameter id="height" caption="Height" value="1.2" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>

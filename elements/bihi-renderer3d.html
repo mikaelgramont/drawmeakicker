@@ -22,8 +22,13 @@
 
 <script src="../scripts/renderer3d.js"></script>
 
-<dom-module name="bihi-renderer3d">
+<dom-module id="bihi-renderer3d">
   <style>
+    :host {
+      margin-right: 20px;
+      flex-grow: 1;
+      box-sizing: border-box;
+    }
     canvas {
       width: 100%;
       height: 100%;
@@ -31,36 +36,49 @@
   </style>
 
   <template>
-    <canvas width="640" height="480"></canvas>
+    <canvas></canvas>
   </template>
 
-  <script>
-  	Polymer({
-      is: "bihi-renderer3d",
-      listeners: {
-        "renderer-refresh": "refresh"
-      },
-      properties: {
-        renderers: {type: Array},
-        editorId: {type: String}
-      },
-      ready: init,
-      refresh: function() {
-        for (var i = 0; i < this.renderers.length; i++) {
-          this.renderers[i].refresh();
-        }
-      }
-    });
-
-    function init() {
-      var editorEl = document.getElementById(this.editorId),
-          canvasEl = Polymer.dom(this).node.querySelector('canvas'),
-          view = new KickerEditorView(editorEl),
-          model = new KickerModel(view),
-          kicker = new Kicker(model),
-          imageList = new ImageList(),
-          renderer = new Renderer3d(kicker, canvasEl, imageList, config);
-      this.renderers = [renderer];
-    }
-  </script>
 </dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-renderer3d",
+    listeners: {
+      "renderer-refresh": "refresh"
+    },
+    properties: {
+      renderer: {type: Object},
+      editorId: {type: String}
+    },
+    ready: init,
+    refresh: function() {
+      this.renderer.refresh();
+    },
+    resize: function() {
+      this.renderer.resize();
+    }
+  });
+
+  function init() {
+    var editorEl = document.getElementById(this.editorId),
+        canvasEl = Polymer.dom(this).node.querySelector('canvas'),
+        view = new KickerEditorView(editorEl),
+        model = new KickerModel(view),
+        kicker = new Kicker(model),
+        imageList = new ImageList();
+    this.renderer = new Renderer3d(kicker, canvasEl, imageList, config);
+
+    var resizeTimeoutHandle = null;
+
+    var onResize = (function() {
+      if (resizeTimeoutHandle) {
+        clearTimeout(resizeTimeoutHandle);
+      }
+      resizeTimeoutHandle = setTimeout((function() {
+        this.renderer.resize();    
+      }).bind(this), 200);
+    }).bind(this);
+    window.addEventListener('resize', onResize);
+  }
+</script>

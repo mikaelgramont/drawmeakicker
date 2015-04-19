@@ -1,11 +1,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<dom-module name="bihi-design-result">
+<dom-module id="bihi-design-result">
   <style>
       :host {
-        /* This should work, but it doesn't. Why?*/
         display: block;
-        color: red;
+        margin: 15px 0;
       }
       .caption {
         display: block;
@@ -19,14 +18,15 @@
     </span>
   </template>
 
-  <script>
-    Polymer({
-      is: "bihi-design-result",
-      properties: {
-        caption: {type: String},
-        unit: {type: String},
-        value: {type: Number}
-      }
-    });
-  </script>
 </dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-design-result",
+    properties: {
+      caption: {type: String},
+      unit: {type: String},
+      value: {type: Number}
+    }
+  });
+</script>

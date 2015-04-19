@@ -22,8 +22,13 @@ Renderer3d.prototype.init = function() {
 	this.scene.add(this.kickerObj);
 
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
+	this.resize();
 	this.orbitControls = new THREE.OrbitControls(this.camera, this.canvasEl);
 	this.render();
+};
+
+Renderer3d.prototype.resize = function() {
+	EditorScene.setSize(this.threeRenderer, this.canvasEl);
 };
 
 Renderer3d.prototype.render = function() {

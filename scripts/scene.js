@@ -1,7 +1,9 @@
 var EditorScene = function() {};
 
 EditorScene.getCamera = function(canvasEl) {
-	var aspectRatio = canvasEl.clientWidth / canvasEl.clientHeight;
+	var parent = canvasEl.parentElement;
+	console.log('parent.clientWidth', parent.clientWidth, 'parent.clientHeight', parent.clientHeight)
+	var aspectRatio = parent.clientWidth / parent.clientHeight;
 	var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
 	camera.position.x = 4.2;
 	camera.position.y = 1.2;
@@ -23,7 +25,9 @@ EditorScene.getScene = function() {
 	scene.add(light2);	
 
 	scene.add(new THREE.AxisHelper(1));
-	scene.add(new THREE.GridHelper(100,2));
+	var gridHelper = new THREE.GridHelper(100,2);
+	gridHelper.setColors(0x010845, 0xf8faff);
+	scene.add(gridHelper);
 
 	return scene;
 };
@@ -60,7 +64,16 @@ EditorScene.getRenderer = function(canvasEl) {
 		antialias: true,
 		canvas: canvasEl
 	});
-	threeRenderer.setClearColor(0xf0f0f0);
-	threeRenderer.setSize(canvasEl.clientWidth, canvasEl.clientHeight);
+	threeRenderer.setClearColor(0x3874ff);
 	return threeRenderer;
 };
+
+EditorScene.setSize = function(threeRenderer, canvasEl) {
+	// TODO: maintain the desired aspect ratio at all times.
+	// That means adjusting the height of the canvas element based
+	// on the available width, and centering it vertically.
+	// The aspect ratio should be a constant, not calculated in the
+	// camera instantiation code in getCamera.
+	var parent = canvasEl.parentElement;
+	threeRenderer.setSize(parent.clientWidth, parent.clientHeight);
+}
