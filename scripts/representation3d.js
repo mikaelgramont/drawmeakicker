@@ -67,7 +67,7 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 	var strut = new Strut(
 		strutWidth, thickness, 0, offset, visibility, this.imageList
 	);
-	strut.mesh.position.copy(offset);
+	strut.applyOffset(offset);
 	struts.push(strut);
 
 	// One strut 2/3 of the length from entry to lip.
@@ -75,9 +75,8 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 	strut = new Strut(
 		strutWidth, thickness, 0, offset, visibility, this.imageList
 	);
-	strut.mesh.position.copy(offset);
+	strut.applyOffset(offset);
 	struts.push(strut);
-
 	return struts;
 };
 

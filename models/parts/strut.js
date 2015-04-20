@@ -23,6 +23,7 @@ Strut.prototype.buildGeometry = function(width, thickness) {
 
 Strut.prototype.positionByAngle = function(radius, angle) {
 	var offset = new THREE.Vector3(0, -radius - this.thickness/2, 0);
+	var radiusYOffset = new THREE.Vector3(0, radius, 0);
 	this.mesh.geometry.vertices.forEach(function(vertex) {
 		// 1. Move all the points down by radius.
  		vertex.add(offset);
@@ -35,7 +36,13 @@ Strut.prototype.positionByAngle = function(radius, angle) {
  			0, 0, 0, 1
  		);
  		vertex.applyMatrix4(m4);
+		// 3. Move the position up by radius
+ 		vertex.add(radiusYOffset);
 	});	
-	// 3. Move the object's position up by radius
-	this.mesh.translateY(radius);
+};
+
+Strut.prototype.applyOffset = function(offset) {
+	this.mesh.geometry.vertices.forEach(function(vertex) {
+ 		vertex.add(offset);
+	});	
 };

@@ -1,8 +1,10 @@
-$color-main: #3874ff
+$color-main: #3B69D5
 $color-dark: #010845
 $color-background: #b5b9c4
 $color-text: #f8faff
 $color-highlight: #e9b900
+
+$text-default-size: 16px
 
 @font-face
 	font-family: Archer
@@ -10,7 +12,6 @@ $color-highlight: #e9b900
 
 *
 	font-family: Archer
-	font-size: 16px
 
 h1,h2
 	margin: 0
@@ -21,6 +22,13 @@ body
 	padding: 0 50px
 	background: $color-background
 	color: $color-text
+	font-size: $text-default-size
+
+input,
+select,
+button,
+textarea
+	font-size: $text-default-size
 
 .blueprint
 	background: $color-main
@@ -39,11 +47,17 @@ body
 .dashed-borders
 	border: 1px dashed $color-text
 
+.size-1
+	font-size: $text-default-size
+
 .size-2
 	font-size: 20px
 
 .size-3
 	font-size: 24px
+
+.size-4
+	font-size: 36px
 
 .editor-container
 	height: 700px
@@ -73,3 +87,19 @@ input[type=submit]
 	color: $color-text
 	border: 2px solid #bb9504
 
+header
+	margin-bottom: 15px
+
+footer
+	ul
+		margin: 0
+		list-style: none
+		display: flex
+		justify-content: center
+		li
+			flex-grow: 1
+			max-width: 100px
+			padding: 15px
+
+bihi-editor
+	margin: 15px 0

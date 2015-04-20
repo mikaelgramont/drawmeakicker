@@ -2,8 +2,7 @@
   font-family: Archer;
   src: local("archer-medium.otf"); }
 * {
-  font-family: Archer;
-  font-size: 16px; }
+  font-family: Archer; }
 
 h1, h2 {
   margin: 0; }
@@ -13,10 +12,17 @@ body {
   max-width: 1280px;
   padding: 0 50px;
   background: #b5b9c4;
-  color: #f8faff; }
+  color: #f8faff;
+  font-size: 16px; }
+
+input,
+select,
+button,
+textarea {
+  font-size: 16px; }
 
 .blueprint {
-  background: #3874ff;
+  background: #3B69D5;
   box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.25); }
 
 .inverted {
@@ -32,11 +38,17 @@ body {
 .dashed-borders {
   border: 1px dashed #f8faff; }
 
+.size-1 {
+  font-size: 16px; }
+
 .size-2 {
   font-size: 20px; }
 
 .size-3 {
   font-size: 24px; }
+
+.size-4 {
+  font-size: 36px; }
 
 .editor-container {
   height: 700px; }
@@ -71,5 +83,21 @@ input[type=submit] {
   background: #e9b900;
   color: #f8faff;
   border: 2px solid #bb9504; }
+
+header {
+  margin-bottom: 15px; }
+
+footer ul {
+  margin: 0;
+  list-style: none;
+  display: flex;
+  justify-content: center; }
+  footer ul li {
+    flex-grow: 1;
+    max-width: 100px;
+    padding: 15px; }
+
+bihi-editor {
+  margin: 15px 0; }
 
 /*# sourceMappingURL=style.css.map */

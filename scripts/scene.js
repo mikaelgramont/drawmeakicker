@@ -24,7 +24,7 @@ EditorScene.getScene = function() {
 	light2.position.set(-100, 200, -120);
 	scene.add(light2);	
 
-	scene.add(new THREE.AxisHelper(1));
+	//scene.add(new THREE.AxisHelper(1));
 	var gridHelper = new THREE.GridHelper(100,2);
 	gridHelper.setColors(0x010845, 0xf8faff);
 	scene.add(gridHelper);
@@ -55,16 +55,43 @@ EditorScene.createKicker = function(kicker, config, imageList) {
 		kickerObj.add(part.mesh);
 	});
 
-	kickerObj.position.x = -1;
+	kickerObj.position.sub(new THREE.Vector3(1, 0, 0));
 	return kickerObj;
 };
+
+EditorScene.createGhost = function(kicker, scene) {
+	var threshold = Math.PI,
+		ghostObj = new THREE.Object3D();
+
+	for(var i = 0, l = kicker.children.length; i < l; i++) {
+		var part = kicker.children[i];
+		var edges = new THREE.EdgesHelper(part, 0xf8faff, threshold);
+		ghostObj.add(edges);
+	}
+	return ghostObj;
+};
+
+	// 	p.push(part.mesh);
+
+	// 	var edges = new THREE.EdgesHelper(part.mesh, 0xf8faff, Math.PI);
+	// 	// edges.position.copy(part.mesh.position);
+	// 	e.push(edges);
+	// 	kickerObj.add(edges);
+	// 	kickerObj.add(part.mesh);
+	// });
+
+	// window.log = {parts: p, edges: e};
+
+	// kickerObj.position.sub(new THREE.Vector3(1, 0, 0));
+	// return kickerObj;
+
 
 EditorScene.getRenderer = function(canvasEl) {
 	var threeRenderer = new THREE.WebGLRenderer({
 		antialias: true,
 		canvas: canvasEl
 	});
-	threeRenderer.setClearColor(0x3874ff);
+	threeRenderer.setClearColor(0x3B69D5);
 	return threeRenderer;
 };
 
