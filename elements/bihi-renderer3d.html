@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<script src="../bower_components/threejs/build/three.min.js"></script>
+<script src="../bower_components/threejs/build/three.js"></script>
 <script src="../scripts/config.js"></script>
 <script src="../scripts/imagelist.js"></script>
 <script src="../scripts/utils.js"></script>
@@ -21,22 +21,43 @@
 <script src="../models/parts/surface.js"></script>
 
 <script src="../scripts/renderer3d.js"></script>
+<script src="../scripts/blueprintborderrenderer.js"></script>
 
 <dom-module id="bihi-renderer3d">
   <style>
     :host {
-      margin-right: 20px;
+      margin-left: 20px;
       flex-grow: 1;
+      position: relative;   
+    }
+    .canvas-container {
+      position: absolute;
       box-sizing: border-box;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
     }
     canvas {
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      /* Dimensions are set in JS. */
+    }
+    #canvas3d {
+      z-index: 1;
+    }
+    #canvas3d-container {
+      /* To account for the 1px border inside the 2d canvas. */
+      margin: 1px; 
     }
   </style>
 
   <template>
-    <canvas></canvas>
+    <div class="canvas-container" id="canvas3d-container">
+      <canvas id="canvas3d"></canvas>
+    </div>
+    <div class="canvas-container">
+      <canvas id="canvas2d"></canvas>
+    </div>
   </template>
 
 </dom-module>
@@ -45,10 +66,12 @@
   Polymer({
     is: "bihi-renderer3d",
     listeners: {
-      "renderer-refresh": "refresh"
+      "renderer-refresh": "refresh",
+      "renderer-set-camera-type": "setCameraType"
     },
     properties: {
       renderer: {type: Object},
+      blueprintBorderRenderer: {type: Object},
       editorId: {type: String}
     },
     ready: init,
@@ -57,17 +80,21 @@
     },
     resize: function() {
       this.renderer.resize();
+    },
+    setCameraType: function(e) {
+      this.renderer.setCameraType(e.detail.type);
     }
   });
 
   function init() {
     var editorEl = document.getElementById(this.editorId),
-        canvasEl = Polymer.dom(this).node.querySelector('canvas'),
+        canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
+        canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
         view = new KickerEditorView(editorEl),
         model = new KickerModel(view),
         kicker = new Kicker(model),
         imageList = new ImageList();
-    this.renderer = new Renderer3d(kicker, canvasEl, imageList, config);
+    this.renderer = new Renderer3d(kicker, canvas3dEl, imageList, config, canvas2dEl);
 
     var resizeTimeoutHandle = null;
 
@@ -76,7 +103,7 @@
         clearTimeout(resizeTimeoutHandle);
       }
       resizeTimeoutHandle = setTimeout((function() {
-        this.renderer.resize();    
+        this.renderer.resize();
       }).bind(this), 200);
     }).bind(this);
     window.addEventListener('resize', onResize);

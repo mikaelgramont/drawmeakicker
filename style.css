@@ -21,41 +21,6 @@ button,
 textarea {
   font-size: 16px; }
 
-.blueprint {
-  background: #3B69D5;
-  box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.25); }
-
-.inverted {
-  background: #f8faff;
-  color: #010845; }
-
-.lowlight-text {
-  color: #010845; }
-
-.thick-borders {
-  border: 15px solid #f8faff; }
-
-.dashed-borders {
-  border: 1px dashed #f8faff; }
-
-.size-1 {
-  font-size: 16px; }
-
-.size-2 {
-  font-size: 20px; }
-
-.size-3 {
-  font-size: 24px; }
-
-.size-4 {
-  font-size: 36px; }
-
-.editor-container {
-  height: 700px; }
-
-.renderer-accordion {
-  width: 280px; }
-
 button,
 input[type=button],
 input[type=submit] {
@@ -99,5 +64,43 @@ footer ul {
 
 bihi-editor {
   margin: 15px 0; }
+
+.blueprint {
+  background: #3B69D5;
+  box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.25); }
+
+.inverted {
+  background: #f8faff;
+  color: #010845; }
+
+.lowlight-text {
+  color: #010845; }
+
+.thick-borders {
+  border: 15px solid #f8faff; }
+
+.dashed-borders {
+  border: 1px dashed #f8faff; }
+
+.size-1 {
+  font-size: 16px; }
+
+.size-2 {
+  font-size: 20px; }
+
+.size-3 {
+  font-size: 24px; }
+
+.size-4 {
+  font-size: 36px; }
+
+.editor-container {
+  height: 700px; }
+
+.renderer-accordion {
+  width: 280px; }
+
+.representation-container {
+  margin: 10px 0; }
 
 /*# sourceMappingURL=style.css.map */

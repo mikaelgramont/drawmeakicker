@@ -1,16 +1,58 @@
 var EditorScene = function() {};
 
-EditorScene.getCamera = function(canvasEl) {
+EditorScene.getCameras = function(canvasEl, targetObj) {
 	var parent = canvasEl.parentElement;
-	console.log('parent.clientWidth', parent.clientWidth, 'parent.clientHeight', parent.clientHeight)
-	var aspectRatio = parent.clientWidth / parent.clientHeight;
+	var persp = EditorScene.getPerspectiveCamera_(parent, targetObj);
+	var ortho = EditorScene.getOrthoCamera_(parent);
+
+	return {
+		perspective: persp,
+		ortho: ortho
+	};	
+};
+
+EditorScene.getPerspectiveCamera_ = function(el, targetObj) {
+	var aspectRatio = el.clientWidth / el.clientHeight;
 	var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
-	camera.position.x = 4.2;
-	camera.position.y = 1.2;
-	camera.position.z = 1.2;
-	camera.rotation.y = 1.0600000000000007;
-	window.camera = camera;
-	return camera;	
+
+	camera.position.copy(new THREE.Vector3(
+		-2.953021168199046,
+		2.9067382584295327,
+		2.3965944941147135
+	));
+
+	// camera.up = new THREE.Vector3(0,1,0);
+	// camera.lookAt(targetObj.position);
+	return camera;
+};
+
+EditorScene.getOrthoCamera_ = function(el) {
+	var w = 5
+	var h = w * el.clientHeight / el.clientWidth;
+	var viewSize = h;
+	var aspectRatio = w / h;
+
+	var viewport = {
+	    viewSize: viewSize,
+	    aspectRatio: aspectRatio,
+	    left: (-aspectRatio * viewSize) / 2,
+	    right: (aspectRatio * viewSize) / 2,
+	    top: viewSize / 2,
+	    bottom: -viewSize / 2,
+	    near: -10,
+	    far: 10
+	}
+
+	var camera = new THREE.OrthographicCamera ( 
+	    viewport.left, 
+	    viewport.right, 
+	    viewport.top, 
+	    viewport.bottom, 
+	    viewport.near, 
+	    viewport.far 
+	);
+
+	return camera;
 };
 
 EditorScene.getScene = function() {
@@ -26,7 +68,7 @@ EditorScene.getScene = function() {
 
 	//scene.add(new THREE.AxisHelper(1));
 	var gridHelper = new THREE.GridHelper(100,2);
-	gridHelper.setColors(0x010845, 0xf8faff);
+	gridHelper.setColors(0xf8faff, 0x010845);
 	scene.add(gridHelper);
 
 	return scene;
@@ -71,27 +113,12 @@ EditorScene.createGhost = function(kicker, scene) {
 	return ghostObj;
 };
 
-	// 	p.push(part.mesh);
-
-	// 	var edges = new THREE.EdgesHelper(part.mesh, 0xf8faff, Math.PI);
-	// 	// edges.position.copy(part.mesh.position);
-	// 	e.push(edges);
-	// 	kickerObj.add(edges);
-	// 	kickerObj.add(part.mesh);
-	// });
-
-	// window.log = {parts: p, edges: e};
-
-	// kickerObj.position.sub(new THREE.Vector3(1, 0, 0));
-	// return kickerObj;
-
-
 EditorScene.getRenderer = function(canvasEl) {
 	var threeRenderer = new THREE.WebGLRenderer({
 		antialias: true,
-		canvas: canvasEl
+		canvas: canvasEl,
+		alpha: true
 	});
-	threeRenderer.setClearColor(0x3B69D5);
 	return threeRenderer;
 };
 
@@ -102,5 +129,5 @@ EditorScene.setSize = function(threeRenderer, canvasEl) {
 	// The aspect ratio should be a constant, not calculated in the
 	// camera instantiation code in getCamera.
 	var parent = canvasEl.parentElement;
-	threeRenderer.setSize(parent.clientWidth, parent.clientHeight);
+	threeRenderer.setSize(parent.clientWidth, parent.clientHeight, false);
 }

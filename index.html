@@ -17,6 +17,7 @@
 		<link rel="import" href="elements/bihi-design-parameter.html">   
 		<link rel="import" href="elements/bihi-design-result.html">
 		<link rel="import" href="elements/bihi-design-step.html">
+		<link rel="import" href="elements/bihi-representation.html">
 		<link rel="import" href="elements/bihi-renderer3d.html">
 		<link rel="import" href="elements/bihi-logo.html">
 	</head>
@@ -29,7 +30,6 @@
 			<div class="blueprint" style="height:300px; margin-bottom: 15px;">
 			</div>
 			<bihi-editor class="editor-container">
-				<bihi-renderer3d editor-id="design-tab" class="thick-borders blueprint"></bihi-renderer3d>
 				<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 					<bihi-design-step id="design-tab" caption="Design" step="1" active first>
 						<bihi-design-fieldset legend="Parameters">
@@ -43,11 +43,15 @@
 							<bihi-design-result id="length" caption="Base length" unit="m"></bihi-design-result>
 							<bihi-design-result id="arc" caption="Surface length" unit="m"></bihi-design-result>
 						</bihi-design-fieldset>
+						<bihi-design-fieldset legend="Representation">
+							<bihi-representation></bihi-representation>
+						</bihi-design-fieldset>						
 					</bihi-design-step>
 					<bihi-design-step caption="Visualize" step="2"></bihi-design-step>
 					<bihi-design-step caption="Save" step="3"></bihi-design-step>
 					<bihi-design-step caption="Share" step="4" last></bihi-design-step>
 				</bihi-accordion>
+				<bihi-renderer3d editor-id="design-tab" class="blueprint"></bihi-renderer3d>
 			</bihi-editor>
 		</div>
 		<footer class="blueprint">

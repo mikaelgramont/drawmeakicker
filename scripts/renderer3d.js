@@ -1,6 +1,8 @@
-var Renderer3d = function(kicker, canvasEl, imageList, config) {
+var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 	this.kicker = kicker;
-	this.canvasEl = canvasEl;
+	this.canvasEl = canvas3dEl;
+	this.canvas2dEl = canvas2dEl;
+	this.blueprintBorderRenderer = new BlueprintBorderRenderer(canvas2dEl);
 	this.imageList = imageList;
 	this.config = config;
 	this.parts = null;
@@ -15,20 +17,42 @@ var Renderer3d = function(kicker, canvasEl, imageList, config) {
 };
 
 Renderer3d.prototype.init = function() {
-	this.camera = EditorScene.getCamera(this.canvasEl);
 	this.scene = EditorScene.getScene();
 	EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
 	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList);
 	this.setupKickerRendering();
 
+	this.cameras = EditorScene.getCameras(this.canvasEl, this.kickerObj);
+	this.orbits = {
+		ortho: new THREE.OrbitControls(this.cameras.ortho, this.canvasEl),
+		prespective: new THREE.OrbitControls(this.cameras.perspective, this.canvasEl)
+	}
+
+	this.camera = this.cameras.ortho;
+	this.orbitControls = this.orbits.ortho;
+
+	
+	// window.camera = this.camera;
+
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
 	this.resize();
-	this.orbitControls = new THREE.OrbitControls(this.camera, this.canvasEl);
 	this.render();
 };
 
+Renderer3d.prototype.setCameraType = function(type) {
+	if (type == '2d') {
+		this.camera = this.cameras.ortho;
+		this.orbitControls = this.orbits.ortho;
+	} else {
+		this.camera = this.cameras.perspective;
+		this.orbitControls = this.orbits.perspective;
+		
+	}
+}
+
 Renderer3d.prototype.resize = function() {
 	EditorScene.setSize(this.threeRenderer, this.canvasEl);
+	this.blueprintBorderRenderer.resize();
 };
 
 Renderer3d.prototype.render = function() {
@@ -56,6 +80,7 @@ Renderer3d.prototype.stop = function() {
 
 Renderer3d.prototype.draw = function() {
 	this.threeRenderer.render(this.scene, this.camera);
+	this.blueprintBorderRenderer.render();
 };
 
 Renderer3d.prototype.refresh = function() {
