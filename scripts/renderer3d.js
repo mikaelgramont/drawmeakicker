@@ -28,11 +28,7 @@ Renderer3d.prototype.init = function() {
 		prespective: new THREE.OrbitControls(this.cameras.perspective, this.canvasEl)
 	}
 
-	this.camera = this.cameras.ortho;
-	this.orbitControls = this.orbits.ortho;
-
-	
-	// window.camera = this.camera;
+	this.setCameraType('2d');
 
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
 	this.resize();
@@ -41,13 +37,15 @@ Renderer3d.prototype.init = function() {
 
 Renderer3d.prototype.setCameraType = function(type) {
 	if (type == '2d') {
+		// TODO: disable the orbitControls
 		this.camera = this.cameras.ortho;
 		this.orbitControls = this.orbits.ortho;
 	} else {
+		// TODO: enable the orbitControls
 		this.camera = this.cameras.perspective;
-		this.orbitControls = this.orbits.perspective;
-		
+		this.orbitControls = this.orbits.perspective;		
 	}
+	// window.camera = this.camera;
 }
 
 Renderer3d.prototype.resize = function() {

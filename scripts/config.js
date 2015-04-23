@@ -12,9 +12,9 @@ var config = {
 			'space': .01
 		},
 		'struts': {
-			'side': .06,
+			'side': .08,
 			'smallSide': .02,
-			'maximumDistance': .4
+			'maximumDistance': .3
 		},
 		'surface': {
 			'thickness': .006

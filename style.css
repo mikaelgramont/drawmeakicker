@@ -1,16 +1,25 @@
 @font-face {
   font-family: Archer;
-  src: local("archer-medium.otf"); }
-* {
+  src: url("archer-medium.otf"); }
+@font-face {
+  font-family: Bebas;
+  src: url("bebas.otf"); }
+body,
+input,
+textarea,
+button,
+select {
   font-family: Archer; }
 
-h1, h2 {
-  margin: 0; }
+h1, h2, h3 {
+  margin: 0;
+  font-family: Bebas; }
+
+p {
+  margin: 0 0 1.2em; }
 
 body {
-  margin: 0 auto;
-  max-width: 1280px;
-  padding: 0 50px;
+  margin: 0;
   background: #b5b9c4;
   color: #f8faff;
   font-size: 16px; }
@@ -26,8 +35,7 @@ input[type=button],
 input[type=submit] {
   background: #f8faff;
   color: #010845;
-  border: 2px solid #c0c0c0;
-  border-radius: 3px;
+  border: 0;
   padding: 15px 20px;
   opacity: 0.95; }
   button:hover,
@@ -44,10 +52,10 @@ input[type=submit] {
     input[type=submit]:disabled:hover {
       cursor: auto; }
 
-input[type=submit] {
+input[type=submit],
+button.action {
   background: #e9b900;
-  color: #f8faff;
-  border: 2px solid #bb9504; }
+  color: #f8faff; }
 
 header {
   margin-bottom: 15px; }
@@ -61,6 +69,11 @@ footer ul {
     flex-grow: 1;
     max-width: 100px;
     padding: 15px; }
+
+.main {
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 0 50px; }
 
 bihi-editor {
   margin: 15px 0; }
@@ -88,9 +101,11 @@ bihi-editor {
 .size-2 {
   font-size: 20px; }
 
+h3,
 .size-3 {
   font-size: 24px; }
 
+h2,
 .size-4 {
   font-size: 36px; }
 
@@ -100,7 +115,32 @@ bihi-editor {
 .renderer-accordion {
   width: 280px; }
 
-.representation-container {
-  margin: 10px 0; }
+.top-section {
+  position: relative;
+  margin-bottom: 15px;
+  line-height: 1.2;
+  background: url("images/woodworking-tools1.jpg");
+  background-size: cover;
+  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.25); }
+
+.top-section-content {
+  padding: 15px 150px;
+  background: rgba(0, 0, 0, 0.4); }
+
+.top-section-header {
+  margin: 5px 0 15px; }
+
+.top-section-body {
+  display: flex; }
+
+.introduction {
+  width: 50%;
+  margin: 0; }
+
+.carousel {
+  width: 50%; }
+
+.grid-element {
+  padding-right: 20px; }
 
 /*# sourceMappingURL=style.css.map */

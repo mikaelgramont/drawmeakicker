@@ -1,0 +1,33 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-representation">
+  <style>
+    .container {
+      padding: 10px 0;
+    }
+  </style>
+
+  <template>
+    <div class="container size-2">
+      <label>
+        <input type="radio" on-click="onClick" name="representation" value="2d" checked>
+        <span>2d</span>
+      </label>
+      <label>
+        <input type="radio" on-click="onClick" name="representation" value="3d">
+        <span>3d</span>
+      </label>
+    </div>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-representation",
+    onClick: function(e) {
+      this.fire('representation-change', {type: e.currentTarget.value});
+    }
+  });
+
+</script>

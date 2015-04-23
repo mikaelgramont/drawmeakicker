@@ -5,6 +5,9 @@
 	Questions:
 	- how to make a custom element inherit from a builtin element (fieldset)?
 	- is firing and catching events through the dom the way to go to communicate? Seems to work for elements that are related to each other. Should we use some kind of pubsub sitting at the top of the page for elements that are not in the same branch of the tree?
+
+	TODO:
+		
 -->
 <html>
 	<head>
@@ -23,12 +26,25 @@
 	</head>
 
 	<body>
-		<header class="blueprint">
+		<header class="">
 			<bihi-logo></bihi-logo>
 		</header>
-		<div role="main">
-			<div class="blueprint" style="height:300px; margin-bottom: 15px;">
+		<div class="top-section">
+			<div class="top-section-content">
+				<h2 class="top-section-header">Design your next ramp. No math involved.</h2>
+				<div class="top-section-body">
+					<div class="introduction grid-element">
+						<p>Thinking of building a new kicker but lacking the math skills to design it precisely? We got you covered.</p>
+						<p>The nerds here have done the math for you, so you can focus on the fun part: deciding how big you want to go!</p>
+						<button class="action">Get Started</button>
+					</div>
+					<div class="carousel">
+						My carousel
+					</div>
+				</div>
 			</div>
+		</div>
+		<div class="main" role="main">
 			<bihi-editor class="editor-container">
 				<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 					<bihi-design-step id="design-tab" caption="Design" step="1" active first>
