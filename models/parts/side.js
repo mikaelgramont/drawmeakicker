@@ -1,8 +1,9 @@
-var Side = function(points, offset, visibility, imageList) {
+var Side = function(points, offset, visibility, imageList, rendering) {
 	this.points = points;
 	this.imageList = imageList;
 	this.mesh = this.createMesh(points, offset);
 	this.setVisible(visibility);
+	this.rendering = rendering;
 };
 Side.prototype = new Part();
 

@@ -75,16 +75,7 @@ KickerModel.prototype.calculateSidePoints = function(angle, radius, config) {
 	return points;
 };
 
-// KickerModel.prototype.createCanvasRepresentation = function() {
-// 	var points = this.calculateSidePoints(this.angle, this.radius, config);
-
-// 	// Need to close the shape for canvas.
-// 	points.push([0,0]);
-// 	// Returns a representation that is not scaled and needs to be flipped vertically.
-// 	return new Representation2D(points);
-// };
-
 KickerModel.prototype.create3dObject = function(config, imageList) {
 	var points = this.calculateSidePoints(this.angle, this.radius, config);
-	return new Representation3D(points, this.length, this.angle, this.arc, this.radius, this.width, imageList, config);
+	return new Representation3D(points, this.length, this.angle, this.arc, this.radius, this.width, this.height, imageList, config);
 };

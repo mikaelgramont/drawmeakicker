@@ -18,7 +18,8 @@ var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 
 Renderer3d.prototype.init = function() {
 	this.scene = EditorScene.getScene();
-	EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
+	// EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
+	Utils.makeAvailableForDebug('scene', this.scene);
 	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList);
 	this.setupKickerRendering();
 
@@ -89,10 +90,10 @@ Renderer3d.prototype.refresh = function() {
 Renderer3d.prototype.setupKickerRendering = function() {	
 	// this.scene.remove(this.kickerObj);
 	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList);
-	// this.scene.add(this.kickerObj);
+	this.scene.add(this.kickerObj);
 
 	this.scene.remove(this.ghostObj);
 	this.ghostObj = EditorScene.createGhost(this.kickerObj, this.scene);
-	this.scene.add(this.ghostObj);
+	//this.scene.add(this.ghostObj);
 };
 

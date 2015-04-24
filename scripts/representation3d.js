@@ -1,13 +1,13 @@
-var Representation3D = function(points, length, angle, arc, radius, width, imageList, config) {
+var Representation3D = function(points, length, angle, arc, radius, width, height, imageList, config) {
 	this.parts = {};
 	this.imageList = imageList;
 	this.points = points;
 	var offset = new THREE.Vector3(0, 0, width / 2);
-	this.parts.sideR = new Side(this.points, offset, true, imageList);
-	this.parts.sideL = new Side(this.points, offset.negate(), true, imageList);
-	// this.parts.slats = this.buildSlats(width, angle, arc, radius);
-	this.parts.struts = this.buildStruts(length, width, angle, arc, radius, true);
-	this.parts.surface = this.buildSurface(this.points, width, true);
+	this.parts.sideR = new Side(this.points, offset, true, imageList, 'flat');
+	this.parts.sideL = new Side(this.points, offset.negate(), true, imageList, 'flat');
+	this.parts.struts = this.buildStruts(length, width, angle, arc, radius, true, 'flat');
+	this.parts.surface = this.buildSurface(this.points, width, true, 'flat');
+	this.parts.measurements = this.buildMeasurements(length, width, radius, height, 'flat');
 	Utils.makeAvailableForDebug('parts', this.parts);
 
 	// Move all unused struts here when discarded.
@@ -120,4 +120,29 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 		i--;
 	}
 	return slats;
+};
+
+Representation3D.prototype.buildMeasurements = function(length, width, radius, height, rendering) {
+	/*
+	 TODO: write a function that can generate a text representation.
+	 That will then need to be moved/rotated to be on a certain plane
+	*/
+	return [
+		// this.buildTextObject('length', new THREE.Vector3(2, 2, 2), rendering),
+		// this.buildTextObject('width',  new THREE.Vector3(3, 3, 3), rendering),
+		// this.buildTextObject('radius', new THREE.Vector3(4, 4, 4), rendering),
+		this.buildTextObject('height', new THREE.Vector3(length + .3, height / 4, 0), rendering)
+	];
+};
+
+Representation3D.prototype.buildTextObject = function(text, position, rendering) {
+	var geometry = new THREE.TextGeometry(text, {
+		size: .15,
+		height: 0
+	});
+	var material = new THREE.MeshLambertMaterial();
+	mesh = new THREE.Mesh(geometry, material);
+	mesh.position.copy(position);
+	mesh.rotation.z = Math.PI / 2;	
+	return {mesh: mesh, rendering: rendering};
 };
