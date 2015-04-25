@@ -1,8 +1,8 @@
 var EditorScene = function() {};
 
-EditorScene.getCameras = function(canvasEl, targetObj) {
+EditorScene.getCameras = function(canvasEl) {
 	var parent = canvasEl.parentElement;
-	var persp = EditorScene.getPerspectiveCamera_(parent, targetObj);
+	var persp = EditorScene.getPerspectiveCamera_(parent);
 	var ortho = EditorScene.getOrthoCamera_(parent);
 
 	return {
@@ -11,7 +11,7 @@ EditorScene.getCameras = function(canvasEl, targetObj) {
 	};	
 };
 
-EditorScene.getPerspectiveCamera_ = function(el, targetObj) {
+EditorScene.getPerspectiveCamera_ = function(el) {
 	var aspectRatio = el.clientWidth / el.clientHeight;
 	var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
 
@@ -20,9 +20,6 @@ EditorScene.getPerspectiveCamera_ = function(el, targetObj) {
 		2.9067382584295327,
 		2.3965944941147135
 	));
-
-	// camera.up = new THREE.Vector3(0,1,0);
-	// camera.lookAt(targetObj.position);
 	return camera;
 };
 
@@ -90,27 +87,15 @@ EditorScene.setupContent = function(scene, kicker, config, imageList) {
 	});
 }
 
-EditorScene.createKicker = function(kicker, config, imageList) {
+EditorScene.createKicker = function(kicker, config, imageList, representation) {
 	var kickerObj = new THREE.Object3D();
 	var rep = kicker.model.create3dObject(config, imageList);
 	Utils.iterateOverParts(rep.parts, function(part) {
-		kickerObj.add(part.mesh);
+		kickerObj.add(part.getMeshForDisplay(representation));
 	});
 
 	kickerObj.position.sub(new THREE.Vector3(1, 0, 0));
 	return kickerObj;
-};
-
-EditorScene.createGhost = function(kicker, scene) {
-	var threshold = Math.PI,
-		ghostObj = new THREE.Object3D();
-
-	for(var i = 0, l = kicker.children.length; i < l; i++) {
-		var part = kicker.children[i];
-		var edges = new THREE.EdgesHelper(part, 0xf8faff, threshold);
-		ghostObj.add(edges);
-	}
-	return ghostObj;
 };
 
 EditorScene.getRenderer = function(canvasEl) {

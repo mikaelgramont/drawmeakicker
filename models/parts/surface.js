@@ -1,9 +1,12 @@
-var Surface = function(points, width, visibility, imageList) {
+var Surface = function(points, width, imageList) {
+	Part.call(this);
+	
 	this.points = points;
 	this.width = width;
 	this.imageList = imageList;
-	this.mesh = this.createMesh(points, width + config.model3d.sides.thickness * 2);
-	this.setVisible(visibility);
+	var mainMesh = this.createMesh(points, width + config.model3d.sides.thickness * 2);
+	this.meshes['3d'] = mainMesh;
+	this.meshes['2d'] = this.createGhostFor(mainMesh);
 };
 Surface.prototype = new Part();
 

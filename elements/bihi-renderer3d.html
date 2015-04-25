@@ -12,7 +12,6 @@
 <script src="../scripts/THREEx.GeometryUtils.js"></script> 
 <script src="../scripts/representation3d.js"></script>
 <script src="../scripts/scene.js"></script>
-<script src="../scripts/scene.js"></script>
 <script src="../scripts/orbitcontrols.js"></script>
 
 <script src="../models/parts/part.js"></script>
@@ -68,7 +67,7 @@
     is: "bihi-renderer3d",
     listeners: {
       "renderer-refresh": "refresh",
-      "renderer-set-camera-type": "setCameraType"
+      "renderer-set-representation-type": "setRepresentationType"
     },
     properties: {
       renderer: {type: Object},
@@ -82,8 +81,8 @@
     resize: function() {
       this.renderer.resize();
     },
-    setCameraType: function(e) {
-      this.renderer.setCameraType(e.detail.type);
+    setRepresentationType: function(e) {
+      this.renderer.setRepresentationType(e.detail.type);
     }
   });
 

@@ -1,22 +1,23 @@
-var Side = function(points, offset, visibility, imageList, rendering) {
+var Side = function(points, offset, imageList) {
+	Part.call(this);
+
 	this.points = points;
 	this.imageList = imageList;
-	this.mesh = this.createMesh(points, offset);
-	this.setVisible(visibility);
-	this.rendering = rendering;
+	var mainMesh = this.createMesh(points, offset);
+	this.meshes['3d'] = mainMesh;
+	this.meshes['2d'] = this.createGhostFor(mainMesh);
 };
 Side.prototype = new Part();
 
 Side.prototype.createMesh = function(points, offset) {
 	var geometry = this.buildGeometry(points, offset);
-	
-	var woodMap = THREE.ImageUtils.loadTexture(this.imageList.getImageUrl('side'));
-
+	var woodMap = THREE.ImageUtils.loadTexture(
+		this.imageList.getImageUrl('side'));
 	var material = new THREE.MeshLambertMaterial({
         map: woodMap
     });	
 	var mesh = new THREE.Mesh(geometry, material);
-
+	mesh.randomId = Math.random() * 100;
 	return mesh;
 };
 

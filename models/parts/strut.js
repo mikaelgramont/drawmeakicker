@@ -1,18 +1,29 @@
-var Strut = function(width, thickness, currentAngle, offset, visibility, imageList) {
+var Strut = function(width, thickness, radius, currentAngleRad, offset, imageList) {
+	Part.call(this);
+
 	this.thickness = thickness;
 	this.imageList = imageList;
-	this.mesh = this.createMesh(width, thickness);
-	this.setVisible(visibility);
+	var mainMesh = this.createMesh(width, thickness, radius, currentAngleRad, offset);
+	this.meshes['3d'] = mainMesh;
+	this.meshes['2d'] = this.createGhostFor(mainMesh);
+	console.log('Strut 2d position', this.meshes['2d'].position);
 };
 Strut.prototype = new Part();
 
-Strut.prototype.createMesh = function(width, thickness) {
+Strut.prototype.createMesh = function(width, thickness, radius, currentAngleRad, offset) {
 	var geometry = this.buildGeometry(width, thickness);
 	var material = new THREE.MeshLambertMaterial({
         map: THREE.ImageUtils.loadTexture(this.imageList.getImageUrl('strut'))
     });
 	var mesh = new THREE.Mesh(geometry, material);
-	this.mesh = mesh;
+	if (radius) {
+		// Rotate the vertices to follow the kicker profile.
+		this.positionByAngle(mesh, radius, currentAngleRad);
+	}
+	if (offset) {
+		this.applyOffset(mesh, offset);
+	}
+
 	return mesh;
 };
 
@@ -21,10 +32,10 @@ Strut.prototype.buildGeometry = function(width, thickness) {
 	return geometry;
 };
 
-Strut.prototype.positionByAngle = function(radius, angle) {
+Strut.prototype.positionByAngle = function(mesh, radius, angle) {
 	var offset = new THREE.Vector3(0, -radius - this.thickness/2, 0);
 	var radiusYOffset = new THREE.Vector3(0, radius, 0);
-	this.mesh.geometry.vertices.forEach(function(vertex) {
+	mesh.geometry.vertices.forEach(function(vertex) {
 		// 1. Move all the points down by radius.
  		vertex.add(offset);
 		// 2. Rotate them by angle.
@@ -38,11 +49,11 @@ Strut.prototype.positionByAngle = function(radius, angle) {
  		vertex.applyMatrix4(m4);
 		// 3. Move the position up by radius
  		vertex.add(radiusYOffset);
-	});	
+	});
 };
 
-Strut.prototype.applyOffset = function(offset) {
-	this.mesh.geometry.vertices.forEach(function(vertex) {
+Strut.prototype.applyOffset = function(mesh, offset) {
+	mesh.geometry.vertices.forEach(function(vertex) {
  		vertex.add(offset);
 	});	
 };

@@ -17,26 +17,34 @@ var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 };
 
 Renderer3d.prototype.init = function() {
-	this.scene = EditorScene.getScene();
-	// EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
-	Utils.makeAvailableForDebug('scene', this.scene);
-	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList);
-	this.setupKickerRendering();
-
+	// Cameras - needs to happen before calling setRepresentationType.
 	this.cameras = EditorScene.getCameras(this.canvasEl, this.kickerObj);
 	this.orbits = {
 		ortho: new THREE.OrbitControls(this.cameras.ortho, this.canvasEl),
 		prespective: new THREE.OrbitControls(this.cameras.perspective, this.canvasEl)
 	}
 
-	this.setCameraType('2d');
+	this.setRepresentationType('2d');
+
+	// Scene
+	this.scene = EditorScene.getScene();
+	Utils.makeAvailableForDebug('scene', this.scene);
+
+	// Kicker
+	this.createKicker();
+	this.scene.add(this.kickerObj);
+
+	// Additional content
+	// EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
 
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
+
 	this.resize();
 	this.render();
 };
 
-Renderer3d.prototype.setCameraType = function(type) {
+Renderer3d.prototype.setRepresentationType = function(type) {
+	this.representationType = type;
 	if (type == '2d') {
 		// TODO: disable the orbitControls
 		this.camera = this.cameras.ortho;
@@ -46,7 +54,7 @@ Renderer3d.prototype.setCameraType = function(type) {
 		this.camera = this.cameras.perspective;
 		this.orbitControls = this.orbits.perspective;		
 	}
-	// window.camera = this.camera;
+	Utils.makeAvailableForDebug('camera', this.camera);
 }
 
 Renderer3d.prototype.resize = function() {
@@ -84,16 +92,14 @@ Renderer3d.prototype.draw = function() {
 
 Renderer3d.prototype.refresh = function() {
 	this.kicker.refresh();
-	this.setupKickerRendering();
+	this.createKicker();
 }
 
-Renderer3d.prototype.setupKickerRendering = function() {	
-	// this.scene.remove(this.kickerObj);
-	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList);
+Renderer3d.prototype.createKicker = function() {
+	if (this.kickerObj) {
+		this.scene.remove(this.kickerObj);
+	}
+	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList, this.representationType);
 	this.scene.add(this.kickerObj);
-
-	this.scene.remove(this.ghostObj);
-	this.ghostObj = EditorScene.createGhost(this.kickerObj, this.scene);
-	//this.scene.add(this.ghostObj);
 };
 

@@ -3,24 +3,26 @@ var Representation3D = function(points, length, angle, arc, radius, width, heigh
 	this.imageList = imageList;
 	this.points = points;
 	var offset = new THREE.Vector3(0, 0, width / 2);
-	this.parts.sideR = new Side(this.points, offset, true, imageList, 'flat');
-	this.parts.sideL = new Side(this.points, offset.negate(), true, imageList, 'flat');
-	this.parts.struts = this.buildStruts(length, width, angle, arc, radius, true, 'flat');
-	this.parts.surface = this.buildSurface(this.points, width, true, 'flat');
-	this.parts.measurements = this.buildMeasurements(length, width, radius, height, 'flat');
+	this.parts.sideR = this.buildSide(this.points, offset, imageList);
+	this.parts.sideL = this.buildSide(this.points, offset.negate(), imageList);
+	this.parts.struts = this.buildStruts(length, width, angle, arc, radius);
+	this.parts.surface = this.buildSurface(this.points, width);
+	// this.parts.measurements = this.buildMeasurements(length, width, radius, height);
+	
 	Utils.makeAvailableForDebug('parts', this.parts);
-
-	// Move all unused struts here when discarded.
-	// TODO: creation of struts should look for struts in this list before
-	// instantiating new ones.
-	this.strutPool = [];
 };
 
 Representation3D.prototype.getParts = function() {
 	return this.parts;
 };
 
-Representation3D.prototype.buildStruts = function(length, width, angle, arc, radius, visibility) {
+Representation3D.prototype.buildSide = function(points, offset, imageList) {
+	var side = new Side(points, offset, imageList);
+	console.log('Representation3D.buildSide', 'side.meshes[\'3d\'].randomId', side.meshes['3d'].randomId);
+	return side;
+};
+
+Representation3D.prototype.buildStruts = function(length, width, angle, arc, radius) {
 	var struts = [];
 	var strutWidth = width;
 	var strutsCount = Math.ceil(arc / config.model3d.struts.maximumDistance);
@@ -47,11 +49,9 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 			break;
 		} 
 
-		var offset = new THREE.Vector3(0, 0, 0);
 		var strut = new Strut(
-			strutWidth, thickness, currentAngle, offset, visibility, this.imageList
+			strutWidth, thickness, radius, currentAngleRad, null, this.imageList
 		);
-		strut.positionByAngle(radius, currentAngleRad);
 		struts.push(strut);
 		i--;
 	}
@@ -65,24 +65,22 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 		0
 	);
 	var strut = new Strut(
-		strutWidth, thickness, 0, offset, visibility, this.imageList
+		strutWidth, thickness, null, null, offset, this.imageList
 	);
-	strut.applyOffset(offset);
 	struts.push(strut);
 
 	// One strut 2/3 of the length from entry to lip.
 	offset = new THREE.Vector3(length * 2 / 3, thickness, 0);
 	strut = new Strut(
-		strutWidth, thickness, 0, offset, visibility, this.imageList
+		strutWidth, thickness, null, null, offset, this.imageList
 	);
-	strut.applyOffset(offset);
 	struts.push(strut);
 	return struts;
 };
 
-Representation3D.prototype.buildSurface = function(points, width, visibility) {
+Representation3D.prototype.buildSurface = function(points, width) {
 	var surfaceWidth = width + 2 * config.model3d.sides.thickness / 60;
-	var surface = new Surface(points, surfaceWidth, visibility, this.imageList);
+	var surface = new Surface(points, surfaceWidth, this.imageList);
 	return surface;	
 };
 
