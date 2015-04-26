@@ -1,12 +1,19 @@
-$color-main: #3B69D5
-$color-dark: #010845
+$color-light-blue: #3B69D5
+$color-dark-blue: #010845
+
 $color-background: #b5b9c4
+
 $color-text: #f8faff
-$color-highlight: #e9b900
+
+$color-light-brown: #e9b900
+$color-dark-brown: #151100
 
 $text-default-size: 16px
+$margin-default: 15px
 
 $gutter-width: 20px
+$main-vertical-offset: -50px
+$footer-height: 30px
 
 @font-face
 	font-family: Archer
@@ -33,6 +40,7 @@ p
 body
 	margin: 0
 	background: $color-background
+	background: url('images/seamlessbg.jpg')
 	color: $color-text
 	font-size: $text-default-size
 
@@ -44,9 +52,11 @@ textarea
 
 button,
 input[type=button],
-input[type=submit]
+input[type=submit],
+button.deemphasized:hover,
+button.deemphasized:focus,
 	background: $color-text
-	color: $color-dark
+	color: $color-dark-blue
 	border: 0
 	padding: 15px 20px
 	opacity: .95
@@ -60,41 +70,36 @@ input[type=submit]
 
 input[type=submit],
 button.action
-	background: $color-highlight
+	background: $color-light-brown
 	color: $color-text
 
+button.deemphasized
+	background: transparent
+	color: $color-text
+	border: none
+
 header
-	margin-bottom: 15px
+	margin-bottom: $margin-default
 
-footer
-	ul
-		margin: 0
-		list-style: none
-		display: flex
-		justify-content: center
-		li
-			flex-grow: 1
-			max-width: 100px
-			padding: 15px
+.invisible
+	visibility: hidden
 
-.main
-	margin: 0 auto
-	max-width: 1280px
-	padding: 0 50px
-
-bihi-editor
-	margin: 15px 0
+.hidden
+	display: none
 
 .blueprint
-	background: $color-main
+	background: $color-light-blue
 	box-shadow: 2px 2px 1px rgba(0,0,0,.25)
+
+.grid-element
+	padding-right: $gutter-width
 
 .inverted
 	background: $color-text
-	color: $color-dark
+	color: $color-dark-blue
 
 .lowlight-text
-	color: $color-dark
+	color: $color-dark-blue
 
 .thick-borders
 	border: 15px solid $color-text
@@ -116,26 +121,55 @@ h2,
 .size-4
 	font-size: 36px
 
-.editor-container
+.content
+	height: 100%
+	display: flex
+	flex-direction: column
+
+.main
+	width: 100%
+	margin: 0 auto
+	max-width: 1280px
+	padding: 0 50px
+
+.expanded-editor .main
+	margin-bottom: -$margin-default
+	flex: 1 0 700px
+
+.editor
+	height: 0
+	padding-top: $margin-default
+	position: relative
+	top: $main-vertical-offset
+	overflow: hidden
+
+.expanded-editor .editor
 	height: 700px
 
 .renderer-accordion
 	width: 280px
 
-.top-section
-	position: relative
-	margin-bottom: 15px
+.top-section-bg
+	flex: 1 0 500px
+	display: flex
 	line-height: 1.2
-	background: url('images/woodworking-tools1.jpg')
+	background: url('images/header.jpg')
 	background-size: cover
+	background-position: center
 	box-shadow: 0px 2px 1px rgba(0,0,0,.25)
 
+.top-section-container
+	padding: $margin-default 150px 80px
+	background: rgba(60, 60, 60, .3)
+	flex-grow: 1
+
 .top-section-content
-	padding: 15px 150px
-	background: rgba(0, 0, 0, .4)
+	margin: 0 auto
+	max-width: 1200px
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, .5)
 
 .top-section-header
-	margin: 5px 0 15px
+	margin: 5px 0 $margin-default
 
 .top-section-body
 	display: flex
@@ -147,5 +181,16 @@ h2,
 .carousel
 	width: 50%
 
-.grid-element
-	padding-right: $gutter-width
+footer	
+	flex: 0 0 50px
+	background: $color-dark-brown
+	ul
+		margin: 0
+		list-style: none
+		display: flex
+		justify-content: center
+		li
+			flex-grow: 1
+			max-width: 100px
+			padding: $margin-default
+

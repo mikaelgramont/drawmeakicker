@@ -21,6 +21,7 @@ p {
 body {
   margin: 0;
   background: #b5b9c4;
+  background: url("images/seamlessbg.jpg");
   color: #f8faff;
   font-size: 16px; }
 
@@ -32,7 +33,9 @@ textarea {
 
 button,
 input[type=button],
-input[type=submit] {
+input[type=submit],
+button.deemphasized:hover,
+button.deemphasized:focus {
   background: #f8faff;
   color: #010845;
   border: 0;
@@ -40,16 +43,22 @@ input[type=submit] {
   opacity: 0.95; }
   button:hover,
   input[type=button]:hover,
-  input[type=submit]:hover {
+  input[type=submit]:hover,
+  button.deemphasized:hover:hover,
+  button.deemphasized:focus:hover {
     opacity: 1;
     cursor: pointer; }
   button:disabled,
   input[type=button]:disabled,
-  input[type=submit]:disabled {
+  input[type=submit]:disabled,
+  button.deemphasized:hover:disabled,
+  button.deemphasized:focus:disabled {
     opacity: 0.6; }
     button:disabled:hover,
     input[type=button]:disabled:hover,
-    input[type=submit]:disabled:hover {
+    input[type=submit]:disabled:hover,
+    button.deemphasized:hover:disabled:hover,
+    button.deemphasized:focus:disabled:hover {
       cursor: auto; }
 
 input[type=submit],
@@ -57,30 +66,26 @@ button.action {
   background: #e9b900;
   color: #f8faff; }
 
+button.deemphasized {
+  background: transparent;
+  color: #f8faff;
+  border: none; }
+
 header {
   margin-bottom: 15px; }
 
-footer ul {
-  margin: 0;
-  list-style: none;
-  display: flex;
-  justify-content: center; }
-  footer ul li {
-    flex-grow: 1;
-    max-width: 100px;
-    padding: 15px; }
+.invisible {
+  visibility: hidden; }
 
-.main {
-  margin: 0 auto;
-  max-width: 1280px;
-  padding: 0 50px; }
-
-bihi-editor {
-  margin: 15px 0; }
+.hidden {
+  display: none; }
 
 .blueprint {
   background: #3B69D5;
   box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.25); }
+
+.grid-element {
+  padding-right: 20px; }
 
 .inverted {
   background: #f8faff;
@@ -109,23 +114,52 @@ h2,
 .size-4 {
   font-size: 36px; }
 
-.editor-container {
+.content {
+  height: 100%;
+  display: flex;
+  flex-direction: column; }
+
+.main {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 0 50px; }
+
+.expanded-editor .main {
+  margin-bottom: -15px;
+  flex: 1 0 700px; }
+
+.editor {
+  height: 0;
+  padding-top: 15px;
+  position: relative;
+  top: -50px;
+  overflow: hidden; }
+
+.expanded-editor .editor {
   height: 700px; }
 
 .renderer-accordion {
   width: 280px; }
 
-.top-section {
-  position: relative;
-  margin-bottom: 15px;
+.top-section-bg {
+  flex: 1 0 500px;
+  display: flex;
   line-height: 1.2;
-  background: url("images/woodworking-tools1.jpg");
+  background: url("images/header.jpg");
   background-size: cover;
+  background-position: center;
   box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.25); }
 
+.top-section-container {
+  padding: 15px 150px 80px;
+  background: rgba(60, 60, 60, 0.3);
+  flex-grow: 1; }
+
 .top-section-content {
-  padding: 15px 150px;
-  background: rgba(0, 0, 0, 0.4); }
+  margin: 0 auto;
+  max-width: 1200px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5); }
 
 .top-section-header {
   margin: 5px 0 15px; }
@@ -140,7 +174,17 @@ h2,
 .carousel {
   width: 50%; }
 
-.grid-element {
-  padding-right: 20px; }
+footer {
+  flex: 0 0 50px;
+  background: #151100; }
+  footer ul {
+    margin: 0;
+    list-style: none;
+    display: flex;
+    justify-content: center; }
+    footer ul li {
+      flex-grow: 1;
+      max-width: 100px;
+      padding: 15px; }
 
 /*# sourceMappingURL=style.css.map */

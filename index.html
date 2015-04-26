@@ -25,57 +25,72 @@
 		<link rel="import" href="elements/bihi-logo.html">
 	</head>
 
-	<body>
-		<header class="">
-			<bihi-logo></bihi-logo>
-		</header>
-		<div class="top-section">
-			<div class="top-section-content">
-				<h2 class="top-section-header">Design your next ramp. No math involved.</h2>
-				<div class="top-section-body">
-					<div class="introduction grid-element">
-						<p>Thinking of building a new kicker but lacking the math skills to design it precisely? We got you covered.</p>
-						<p>The nerds here have done the math for you, so you can focus on the fun part: deciding how big you want to go!</p>
-						<button class="action">Get Started</button>
-					</div>
-					<div class="carousel">
-						My carousel
-					</div>
+	<body class="">
+		<div class="content">
+			<div class="top-section-bg">
+				<div class="top-section-container">
+					<header class="">
+						<bihi-logo></bihi-logo>
+					</header>
+					<section class="top-section-content">
+						<h2 class="top-section-header">Design your next ramp. No math involved.</h2>
+						<div class="top-section-body">
+							<div class="introduction grid-element size-2">
+								<p>Thinking of building a new kicker but lacking the math skills to design it precisely? We got you covered.</p>
+								<p>The nerds here have done the math for you, so you can focus on the fun part: deciding how big you want to go!</p>
+								<button id="start-button" class="action">Get Started</button>
+							</div>
+							<div class="carousel">
+								My carousel
+							</div>
+						</div>
+					</section>
 				</div>
 			</div>
-		</div>
-		<div class="main" role="main">
-			<bihi-editor class="editor-container">
-				<bihi-accordion class="renderer-accordion blueprint" role="tablist">
-					<bihi-design-step id="design-tab" caption="Design" step="1" active first>
-						<bihi-design-fieldset legend="Parameters">
-							<bihi-design-parameter id="height" caption="Height" value="1.2" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>
-							<bihi-design-parameter id="width" caption="Width" value="1.0" min=".5" max="4" step="0.1" unit="m"></bihi-design-parameter>
-							<bihi-design-parameter id="angle" caption="Exit angle" value="45" min="30" max="89.9" step="1" unit="&deg;"></bihi-design-parameter>
-						</bihi-design-fieldset>
+			<div class="main" role="main">
+				<bihi-editor class="editor">
+					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
+						<bihi-design-step id="design-tab" caption="Design" step="1" active first>
+							<bihi-design-fieldset legend="Parameters">
+								<bihi-design-parameter id="height" caption="Height" value="1.2" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>
+								<bihi-design-parameter id="width" caption="Width" value="1.0" min=".5" max="4" step="0.1" unit="m"></bihi-design-parameter>
+								<bihi-design-parameter id="angle" caption="Exit angle" value="45" min="30" max="89.9" step="1" unit="&deg;"></bihi-design-parameter>
+							</bihi-design-fieldset>
 
-						<bihi-design-fieldset legend="Results">
-							<bihi-design-result id="radius" caption="Radius" unit="m"></bihi-design-result>
-							<bihi-design-result id="length" caption="Base length" unit="m"></bihi-design-result>
-							<bihi-design-result id="arc" caption="Surface length" unit="m"></bihi-design-result>
-						</bihi-design-fieldset>
-						<bihi-design-fieldset legend="Representation">
-							<bihi-representation></bihi-representation>
-						</bihi-design-fieldset>						
-					</bihi-design-step>
-					<bihi-design-step caption="Visualize" step="2"></bihi-design-step>
-					<bihi-design-step caption="Save" step="3"></bihi-design-step>
-					<bihi-design-step caption="Share" step="4" last></bihi-design-step>
-				</bihi-accordion>
-				<bihi-renderer3d editor-id="design-tab" class="blueprint"></bihi-renderer3d>
-			</bihi-editor>
+							<bihi-design-fieldset legend="Results">
+								<bihi-design-result id="radius" caption="Radius" unit="m"></bihi-design-result>
+								<bihi-design-result id="length" caption="Base length" unit="m"></bihi-design-result>
+								<bihi-design-result id="arc" caption="Surface length" unit="m"></bihi-design-result>
+							</bihi-design-fieldset>
+							<bihi-design-fieldset legend="Representation">
+								<bihi-representation></bihi-representation>
+							</bihi-design-fieldset>						
+						</bihi-design-step>
+						<bihi-design-step caption="Visualize" step="2"></bihi-design-step>
+						<bihi-design-step caption="Save" step="3"></bihi-design-step>
+						<bihi-design-step caption="Share" step="4" last></bihi-design-step>
+					</bihi-accordion>
+					<bihi-renderer3d editor-id="design-tab" class="blueprint"></bihi-renderer3d>
+				</bihi-editor>
+			</div>
+			<footer>
+				<ul>
+					<li>Twitter</li>
+					<li>Facebook</li>
+					<li>Contact</li>
+				</ul>
+			</footer>
 		</div>
-		<footer class="blueprint">
-			<ul>
-				<li>Twitter</li>
-				<li>Facebook</li>
-				<li>Contact</li>
-			</ul>
-		</footer>
+		<script>
+			(function() {
+				var main = document.getElementsByClassName('main')[0],
+					editor = document.getElementsByClassName('editor')[0],
+					start = document.getElementById('start-button');
+				start.addEventListener('click', function() {
+					document.body.classList.add('expanded-editor');
+					editor.scrollIntoView();
+				});
+			})();
+		</script>
 	</body>
 </html>

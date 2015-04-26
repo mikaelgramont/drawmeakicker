@@ -50,7 +50,7 @@
         <content></content>
       </div>
       <div class="button-section">
-          <button id="prev" on-click="onBackClick">Back</button>
+          <button id="prev" class="deemphasized" on-click="onBackClick">Back</button>
           <input type="submit" id="next" on-click="onNextClick" value="Next">
       </div>
       </div>
@@ -101,11 +101,11 @@
 
   function init() {
     if (this.first) {
-      this.$.prev.setAttribute("disabled", "disabled");
+      this.$.prev.classList.add("invisible");
     }
 
     if (this.last) {
-      this.$.next.setAttribute("disabled", "disabled");
+      this.$.next.classList.add("invisible");
     }
   }
 </script>
