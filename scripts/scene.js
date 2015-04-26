@@ -91,7 +91,10 @@ EditorScene.createKicker = function(kicker, config, imageList, representation) {
 	var kickerObj = new THREE.Object3D();
 	var rep = kicker.model.create3dObject(config, imageList);
 	Utils.iterateOverParts(rep.parts, function(part) {
-		kickerObj.add(part.getMeshForDisplay(representation));
+		part.setMeshVisibilityForDisplay(representation);
+		for (rep in part.meshes) {
+			kickerObj.add(part.meshes[rep]);	
+		}
 	});
 
 	kickerObj.position.sub(new THREE.Vector3(1, 0, 0));

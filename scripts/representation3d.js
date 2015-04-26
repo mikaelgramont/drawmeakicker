@@ -18,7 +18,6 @@ Representation3D.prototype.getParts = function() {
 
 Representation3D.prototype.buildSide = function(points, offset, imageList) {
 	var side = new Side(points, offset, imageList);
-	console.log('Representation3D.buildSide', 'side.meshes[\'3d\'].randomId', side.meshes['3d'].randomId);
 	return side;
 };
 

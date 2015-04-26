@@ -6,7 +6,6 @@ var Strut = function(width, thickness, radius, currentAngleRad, offset, imageLis
 	var mainMesh = this.createMesh(width, thickness, radius, currentAngleRad, offset);
 	this.meshes['3d'] = mainMesh;
 	this.meshes['2d'] = this.createGhostFor(mainMesh);
-	console.log('Strut 2d position', this.meshes['2d'].position);
 };
 Strut.prototype = new Part();
 

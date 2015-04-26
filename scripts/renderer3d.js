@@ -19,12 +19,9 @@ var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 Renderer3d.prototype.init = function() {
 	// Cameras - needs to happen before calling setRepresentationType.
 	this.cameras = EditorScene.getCameras(this.canvasEl, this.kickerObj);
-	this.orbits = {
-		ortho: new THREE.OrbitControls(this.cameras.ortho, this.canvasEl),
-		prespective: new THREE.OrbitControls(this.cameras.perspective, this.canvasEl)
-	}
+	this.orbitControls = new THREE.OrbitControls(this.cameras.perspective, this.canvasEl),
 
-	this.setRepresentationType('2d');
+	this.representationType = '2d';
 
 	// Scene
 	this.scene = EditorScene.getScene();
@@ -37,6 +34,7 @@ Renderer3d.prototype.init = function() {
 	// Additional content
 	// EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
 
+	this.updateRenderingForRepresentationType();
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
 
 	this.resize();
@@ -45,17 +43,27 @@ Renderer3d.prototype.init = function() {
 
 Renderer3d.prototype.setRepresentationType = function(type) {
 	this.representationType = type;
-	if (type == '2d') {
-		// TODO: disable the orbitControls
+	this.updateRenderingForRepresentationType();
+}
+
+Renderer3d.prototype.updateRenderingForRepresentationType = function() {
+	// Go over all parts and tell them which needs to show.
+	var rep = this.kicker.getRepresentation3d();
+	repType = this.representationType;
+	Utils.iterateOverParts(rep.parts, function(part) {
+		part.setMeshVisibilityForDisplay(repType);
+	});
+
+	if (this.representationType == '2d') {
+		// TODO: recenter the camera on the kicker
 		this.camera = this.cameras.ortho;
-		this.orbitControls = this.orbits.ortho;
+		this.orbitControls.enabled = false;
 	} else {
-		// TODO: enable the orbitControls
 		this.camera = this.cameras.perspective;
-		this.orbitControls = this.orbits.perspective;		
+		this.orbitControls.enabled = true;
 	}
 	Utils.makeAvailableForDebug('camera', this.camera);
-}
+};
 
 Renderer3d.prototype.resize = function() {
 	EditorScene.setSize(this.threeRenderer, this.canvasEl);

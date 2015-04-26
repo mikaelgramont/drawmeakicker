@@ -5,8 +5,11 @@ var Part = function() {
 	};
 };
 
-Part.prototype.getMeshForDisplay = function(representation) {
-	return this.meshes[representation];
+Part.prototype.setMeshVisibilityForDisplay = function(representation) {
+	for (rep in this.meshes) {
+		this.meshes[rep].visible = false;
+	}
+	return this.meshes[representation].visible = true;
 }
 
 Part.prototype.createGhostFor = function(obj) {
