@@ -10,18 +10,20 @@ $color-dark-brown: #151100
 
 $text-default-size: 16px
 $margin-default: 15px
-
 $gutter-width: 20px
+$default-shadow-width: 3px
+$default-box-shadow: $default-shadow-width $default-shadow-width 1px rgba(0,0,0,.25)
+
 $main-vertical-offset: -50px
-$footer-height: 30px
+$editor-height: 700px
 
 @font-face
 	font-family: Archer
-	src: url('archer-medium.otf')
+	src: url('fonts/archer-medium.otf')
 
 @font-face
 	font-family: Bebas
-	src: url('bebas.otf')
+	src: url('fonts/bebas.otf')
 
 body,
 input,
@@ -89,10 +91,11 @@ header
 
 .blueprint
 	background: $color-light-blue
-	box-shadow: 2px 2px 1px rgba(0,0,0,.25)
+	box-shadow: $default-box-shadow
 
 .grid-element
 	padding-right: $gutter-width
+	box-sizing: border-box
 
 .inverted
 	background: $color-text
@@ -119,7 +122,7 @@ h3,
 
 h2,
 .size-4
-	font-size: 36px
+	font-size: 50px
 
 .content
 	height: 100%
@@ -134,32 +137,33 @@ h2,
 
 .expanded-editor .main
 	margin-bottom: -$margin-default
-	flex: 1 0 700px
+	flex: 1 0 $editor-height
 
 .editor
 	height: 0
-	padding-top: $margin-default
 	position: relative
 	top: $main-vertical-offset
 	overflow: hidden
 
 .expanded-editor .editor
-	height: 700px
+	/* Can't use 100% because for some reason that translates to 1oo% of the viewport */
+	height: $editor-height
+	padding: $margin-default 3px 3px 0
 
 .renderer-accordion
 	width: 280px
 
 .top-section-bg
-	flex: 1 0 500px
+	flex: 1 0 530px
 	display: flex
 	line-height: 1.2
 	background: url('images/header.jpg')
 	background-size: cover
 	background-position: center
-	box-shadow: 0px 2px 1px rgba(0,0,0,.25)
+	box-shadow: $default-box-shadow
 
 .top-section-container
-	padding: $margin-default 150px 80px
+	padding: 0 150px 80px
 	background: rgba(60, 60, 60, .3)
 	flex-grow: 1
 
@@ -173,13 +177,16 @@ h2,
 
 .top-section-body
 	display: flex
+	height: 300px
+	overflow: hidden
 
-.introduction
-	width: 50%
-	margin: 0
+.top-section-content
+	flex: 1 0 50%
 
-.carousel
-	width: 50%
+.screenshot
+	background: url('images/bihi-3d-edges.png')
+	background-position: center
+	background-size: cover
 
 footer	
 	flex: 0 0 50px

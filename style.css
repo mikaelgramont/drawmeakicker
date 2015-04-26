@@ -1,9 +1,9 @@
 @font-face {
   font-family: Archer;
-  src: url("archer-medium.otf"); }
+  src: url("fonts/archer-medium.otf"); }
 @font-face {
   font-family: Bebas;
-  src: url("bebas.otf"); }
+  src: url("fonts/bebas.otf"); }
 body,
 input,
 textarea,
@@ -82,10 +82,11 @@ header {
 
 .blueprint {
   background: #3B69D5;
-  box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.25); }
+  box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.25); }
 
 .grid-element {
-  padding-right: 20px; }
+  padding-right: 20px;
+  box-sizing: border-box; }
 
 .inverted {
   background: #f8faff;
@@ -112,7 +113,7 @@ h3,
 
 h2,
 .size-4 {
-  font-size: 36px; }
+  font-size: 50px; }
 
 .content {
   height: 100%;
@@ -131,28 +132,29 @@ h2,
 
 .editor {
   height: 0;
-  padding-top: 15px;
   position: relative;
   top: -50px;
   overflow: hidden; }
 
 .expanded-editor .editor {
-  height: 700px; }
+  /* Can't use 100% because for some reason that translates to 1oo% of the viewport */
+  height: 700px;
+  padding: 15px 3px 3px 0; }
 
 .renderer-accordion {
   width: 280px; }
 
 .top-section-bg {
-  flex: 1 0 500px;
+  flex: 1 0 530px;
   display: flex;
   line-height: 1.2;
   background: url("images/header.jpg");
   background-size: cover;
   background-position: center;
-  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.25); }
+  box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.25); }
 
 .top-section-container {
-  padding: 15px 150px 80px;
+  padding: 0 150px 80px;
   background: rgba(60, 60, 60, 0.3);
   flex-grow: 1; }
 
@@ -165,14 +167,17 @@ h2,
   margin: 5px 0 15px; }
 
 .top-section-body {
-  display: flex; }
+  display: flex;
+  height: 300px;
+  overflow: hidden; }
 
-.introduction {
-  width: 50%;
-  margin: 0; }
+.top-section-content {
+  flex: 1 0 50%; }
 
-.carousel {
-  width: 50%; }
+.screenshot {
+  background: url("images/bihi-3d-edges.png");
+  background-position: center;
+  background-size: cover; }
 
 footer {
   flex: 0 0 50px;

@@ -7,6 +7,13 @@
 	- is firing and catching events through the dom the way to go to communicate? Seems to work for elements that are related to each other. Should we use some kind of pubsub sitting at the top of the page for elements that are not in the same branch of the tree?
 
 	TODO:
+	- add a hybrid mode to see the edges in 3d
+	- add measurements in 2d, and board, character in 3d.
+	- center the 2d view
+	- animate the introduction of the editor
+	- make resizing work correctly
+	- stop re-rendering unless the camera moves.
+
 		
 -->
 <html>
@@ -25,7 +32,7 @@
 		<link rel="import" href="elements/bihi-logo.html">
 	</head>
 
-	<body class="">
+	<body>
 		<div class="content">
 			<div class="top-section-bg">
 				<div class="top-section-container">
@@ -35,14 +42,12 @@
 					<section class="top-section-content">
 						<h2 class="top-section-header">Design your next ramp. No math involved.</h2>
 						<div class="top-section-body">
-							<div class="introduction grid-element size-2">
+							<div class="top-section-content grid-element size-2">
 								<p>Thinking of building a new kicker but lacking the math skills to design it precisely? We got you covered.</p>
 								<p>The nerds here have done the math for you, so you can focus on the fun part: deciding how big you want to go!</p>
 								<button id="start-button" class="action">Get Started</button>
 							</div>
-							<div class="carousel">
-								My carousel
-							</div>
+							<div class="top-section-content screenshot" role="image" aria-label="Three-dimension representation of a kicker with visible edges."></div>
 						</div>
 					</section>
 				</div>
@@ -62,15 +67,16 @@
 								<bihi-design-result id="length" caption="Base length" unit="m"></bihi-design-result>
 								<bihi-design-result id="arc" caption="Surface length" unit="m"></bihi-design-result>
 							</bihi-design-fieldset>
+						</bihi-design-step>
+						<bihi-design-step caption="Visualize" step="2">
 							<bihi-design-fieldset legend="Representation">
 								<bihi-representation></bihi-representation>
 							</bihi-design-fieldset>						
 						</bihi-design-step>
-						<bihi-design-step caption="Visualize" step="2"></bihi-design-step>
 						<bihi-design-step caption="Save" step="3"></bihi-design-step>
 						<bihi-design-step caption="Share" step="4" last></bihi-design-step>
 					</bihi-accordion>
-					<bihi-renderer3d editor-id="design-tab" class="blueprint"></bihi-renderer3d>
+					<bihi-renderer3d id="renderer" editor-id="design-tab" class="blueprint"></bihi-renderer3d>
 				</bihi-editor>
 			</div>
 			<footer>
@@ -83,12 +89,15 @@
 		</div>
 		<script>
 			(function() {
-				var main = document.getElementsByClassName('main')[0],
-					editor = document.getElementsByClassName('editor')[0],
-					start = document.getElementById('start-button');
-				start.addEventListener('click', function() {
+				var editor = document.getElementsByClassName('editor')[0],
+					start = document.getElementById('start-button'),
+					renderer = document.getElementById('renderer');
+				start.addEventListener('click', function(e) {
+					e.target.disabled = true;
 					document.body.classList.add('expanded-editor');
 					editor.scrollIntoView();
+					event = new Event('renderer-init');
+					renderer.dispatchEvent(event);
 				});
 			})();
 		</script>

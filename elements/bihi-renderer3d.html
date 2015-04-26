@@ -66,15 +66,45 @@
   Polymer({
     is: "bihi-renderer3d",
     listeners: {
+      "renderer-init": "init",
       "renderer-refresh": "refresh",
       "renderer-set-representation-type": "setRepresentationType"
     },
     properties: {
+      initialized: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
       renderer: {type: Object},
       blueprintBorderRenderer: {type: Object},
       editorId: {type: String}
     },
-    ready: init,
+    init: function() {
+      if (this.initialized) {
+        return;
+      }
+      var editorEl = document.getElementById(this.editorId),
+          canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
+          canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
+          view = new KickerEditorView(editorEl),
+          model = new KickerModel(view),
+          kicker = new Kicker(model),
+          imageList = new ImageList();
+      this.renderer = new Renderer3d(kicker, canvas3dEl, imageList, config, canvas2dEl);
+      this.initialized = true;
+
+      var resizeTimeoutHandle = null;
+
+      var onResize = (function() {
+        if (resizeTimeoutHandle) {
+          clearTimeout(resizeTimeoutHandle);
+        }
+        resizeTimeoutHandle = setTimeout((function() {
+          this.renderer.resize();
+        }).bind(this), 200);
+      }).bind(this);
+      window.addEventListener('resize', onResize);
+    },
     refresh: function() {
       this.renderer.refresh();
     },
@@ -86,26 +116,4 @@
     }
   });
 
-  function init() {
-    var editorEl = document.getElementById(this.editorId),
-        canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
-        canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
-        view = new KickerEditorView(editorEl),
-        model = new KickerModel(view),
-        kicker = new Kicker(model),
-        imageList = new ImageList();
-    this.renderer = new Renderer3d(kicker, canvas3dEl, imageList, config, canvas2dEl);
-
-    var resizeTimeoutHandle = null;
-
-    var onResize = (function() {
-      if (resizeTimeoutHandle) {
-        clearTimeout(resizeTimeoutHandle);
-      }
-      resizeTimeoutHandle = setTimeout((function() {
-        this.renderer.resize();
-      }).bind(this), 200);
-    }).bind(this);
-    window.addEventListener('resize', onResize);
-  }
 </script>

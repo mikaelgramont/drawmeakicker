@@ -1,8 +1,8 @@
 var ImageList = function() {
 	this.images = {
-		'side': "./images/wood1_256.jpg",
-		'slat': "./images/wood2_256.jpg",
-		'strut': "./images/wood3_256.jpg"
+		'side': "./images/textures/wood1_256.jpg",
+		'slat': "./images/textures//wood2_256.jpg",
+		'strut': "./images/textures//wood3_256.jpg"
 	};
 };
 
