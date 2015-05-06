@@ -9,7 +9,7 @@ Part.prototype.setMeshVisibilityForDisplay = function(representation) {
 	for (rep in this.meshes) {
 		this.meshes[rep].visible = false;
 	}
-	return this.meshes[representation].visible = true;
+	return this.meshes['2d'].visible = true;
 }
 
 Part.prototype.createGhostFor = function(obj) {

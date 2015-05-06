@@ -34,11 +34,12 @@
 
 	<body>
 		<div class="content">
-			<div class="top-section-bg">
-				<div class="top-section-container">
-					<header class="">
-						<bihi-logo></bihi-logo>
-					</header>
+			<header>
+				<bihi-logo></bihi-logo>
+			</header>
+
+			<div class="top-section-container">
+				<div class="top-section">
 					<section class="top-section-content">
 						<h2 class="top-section-header">Design your next ramp. No math involved.</h2>
 						<div class="top-section-body">
@@ -47,11 +48,16 @@
 								<p>The nerds here have done the math for you, so you can focus on the fun part: deciding how big you want to go!</p>
 								<button id="start-button" class="action">Get Started</button>
 							</div>
-							<div class="top-section-content screenshot" role="image" aria-label="Three-dimension representation of a kicker with visible edges."></div>
+							<div class="top-section-content grid-element">
+								<div class="video-aspect-ratio-wrapper">
+									<iframe src="https://www.youtube.com/embed/rE5O35mUvBg" frameborder="0" allowfullscreen></iframe>
+								</div>
+							</div>
 						</div>
 					</section>
 				</div>
 			</div>
+
 			<div class="main" role="main">
 				<bihi-editor class="editor">
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">

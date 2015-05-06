@@ -16,6 +16,8 @@ $default-box-shadow: $default-shadow-width $default-shadow-width 1px rgba(0,0,0,
 
 $main-vertical-offset: -50px
 $editor-height: 700px
+$bg-blur: 3px
+$content-max-width: 1280px
 
 @font-face
 	font-family: Archer
@@ -35,6 +37,7 @@ select
 h1,h2,h3
 	margin: 0
 	font-family: Bebas
+	letter-spacing: 1px
 
 p
 	margin: 0 0 1.2em
@@ -42,7 +45,7 @@ p
 body
 	margin: 0
 	background: $color-background
-	background: url('images/seamlessbg.jpg')
+	background: url('images/seamlessbg2.png')
 	color: $color-text
 	font-size: $text-default-size
 
@@ -57,12 +60,15 @@ input[type=button],
 input[type=submit],
 button.deemphasized:hover,
 button.deemphasized:focus,
-	background: $color-text
-	color: $color-dark-blue
-	border: 0
+	background: transparent
+	color: $color-text
+	border: 1px solid $color-text
+	border-radius: 3px
 	padding: 15px 20px
 	opacity: .95
 	&:hover
+		background: $color-text
+		color: $color-dark-blue
 		opacity: 1
 		cursor: pointer
 	&:disabled
@@ -70,17 +76,18 @@ button.deemphasized:focus,
 		&:hover
 			cursor: auto
 
-input[type=submit],
 button.action
 	background: $color-light-brown
 	color: $color-text
+	border: none
 
 button.deemphasized
 	background: transparent
 	color: $color-text
-	border: none
+	border-color: transparent
 
 header
+	height: 100px
 	margin-bottom: $margin-default
 
 .invisible
@@ -96,6 +103,19 @@ header
 .grid-element
 	padding-right: $gutter-width
 	box-sizing: border-box
+
+.video-aspect-ratio-wrapper
+	position: relative
+	width: 100%
+	height: 0
+	padding-bottom: 56.25%
+
+.video-aspect-ratio-wrapper iframe
+	position: absolute
+	top: 0
+	left: 0
+	width: 100%
+	height: 100%
 
 .inverted
 	background: $color-text
@@ -129,10 +149,14 @@ h2,
 	display: flex
 	flex-direction: column
 
+.expanded-editor .content
+	display: block
+
 .main
-	width: 100%
+	box-sizing: border-box
+	width: 100%	
 	margin: 0 auto
-	max-width: 1280px
+	max-width: $content-max-width
 	padding: 0 50px
 
 .expanded-editor .main
@@ -153,23 +177,21 @@ h2,
 .renderer-accordion
 	width: 280px
 
-.top-section-bg
-	flex: 1 0 530px
-	display: flex
-	line-height: 1.2
-	background: url('images/header.jpg')
-	background-size: cover
-	background-position: center
-	box-shadow: $default-box-shadow
-
 .top-section-container
-	padding: 0 150px 80px
-	background: rgba(60, 60, 60, .3)
-	flex-grow: 1
+	max-width: $content-max-width
+	flex: 1 0 400px
+	margin: 30px auto 100px
+
+.top-section
+	position: relative
+	box-sizing: border-box
+	margin: 0 50px
+	border: 8px solid #fff
+	padding: 30px
+	box-shadow: $default-box-shadow
+	background: url('images/header.jpg')
 
 .top-section-content
-	margin: 0 auto
-	max-width: 1200px
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, .5)
 
 .top-section-header
@@ -183,10 +205,9 @@ h2,
 .top-section-content
 	flex: 1 0 50%
 
-.screenshot
-	background: url('images/bihi-3d-edges.png')
-	background-position: center
-	background-size: cover
+.action-container
+	text-align: center
+
 
 footer	
 	flex: 0 0 50px
