@@ -1,9 +1,9 @@
 var EditorScene = function() {};
 
-EditorScene.getCameras = function(canvasEl) {
+EditorScene.createCameras = function(canvasEl) {
 	var parent = canvasEl.parentElement;
-	var persp = EditorScene.getPerspectiveCamera_(parent);
-	var ortho = EditorScene.getOrthoCamera_(parent);
+	var persp = EditorScene.createPerspectiveCamera_(parent);
+	var ortho = EditorScene.createOrthoCamera_(parent);
 
 	return {
 		perspective: persp,
@@ -11,7 +11,7 @@ EditorScene.getCameras = function(canvasEl) {
 	};	
 };
 
-EditorScene.getPerspectiveCamera_ = function(el) {
+EditorScene.createPerspectiveCamera_ = function(el) {
 	var aspectRatio = el.clientWidth / el.clientHeight;
 	var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
 
@@ -23,11 +23,11 @@ EditorScene.getPerspectiveCamera_ = function(el) {
 	return camera;
 };
 
-EditorScene.getOrthoCamera_ = function(el) {
-	var w = 5
-	var h = w * el.clientHeight / el.clientWidth;
+EditorScene.createOrthoCamera_ = function(el) {
+	var aspectRatio = el.clientWidth / el.clientHeight;
+	var h = 5;
+	var w = h / aspectRatio ;
 	var viewSize = h;
-	var aspectRatio = w / h;
 
 	var viewport = {
 	    viewSize: viewSize,
@@ -48,7 +48,6 @@ EditorScene.getOrthoCamera_ = function(el) {
 	    viewport.near, 
 	    viewport.far 
 	);
-
 	return camera;
 };
 
@@ -109,13 +108,3 @@ EditorScene.getRenderer = function(canvasEl) {
 	});
 	return threeRenderer;
 };
-
-EditorScene.setSize = function(threeRenderer, canvasEl) {
-	// TODO: maintain the desired aspect ratio at all times.
-	// That means adjusting the height of the canvas element based
-	// on the available width, and centering it vertically.
-	// The aspect ratio should be a constant, not calculated in the
-	// camera instantiation code in getCamera.
-	var parent = canvasEl.parentElement;
-	threeRenderer.setSize(parent.clientWidth, parent.clientHeight, false);
-}

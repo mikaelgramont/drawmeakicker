@@ -87,7 +87,6 @@ button.deemphasized
 	border-color: transparent
 
 header
-	height: 100px
 	margin-bottom: $margin-default
 
 .invisible
@@ -179,23 +178,26 @@ h2,
 
 .top-section-container
 	max-width: $content-max-width
-	flex: 1 0 400px
+	flex: 1 0 500px
 	margin: 30px auto 100px
 
 .top-section
 	position: relative
 	box-sizing: border-box
+	min-height: 500px
 	margin: 0 50px
 	border: 8px solid #fff
 	padding: 30px
 	box-shadow: $default-box-shadow
 	background: url('images/header.jpg')
+	background-size: cover
 
 .top-section-content
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, .5)
 
 .top-section-header
 	margin: 5px 0 $margin-default
+	word-break: break-word
 
 .top-section-body
 	display: flex

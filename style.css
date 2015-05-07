@@ -76,7 +76,6 @@ button.deemphasized {
   border-color: transparent; }
 
 header {
-  height: 100px;
   margin-bottom: 15px; }
 
 .invisible {
@@ -168,23 +167,26 @@ h2,
 
 .top-section-container {
   max-width: 1280px;
-  flex: 1 0 400px;
+  flex: 1 0 500px;
   margin: 30px auto 100px; }
 
 .top-section {
   position: relative;
   box-sizing: border-box;
+  min-height: 500px;
   margin: 0 50px;
   border: 8px solid #fff;
   padding: 30px;
   box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.25);
-  background: url("images/header.jpg"); }
+  background: url("images/header.jpg");
+  background-size: cover; }
 
 .top-section-content {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5); }
 
 .top-section-header {
-  margin: 5px 0 15px; }
+  margin: 5px 0 15px;
+  word-break: break-word; }
 
 .top-section-body {
   display: flex;

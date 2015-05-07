@@ -18,8 +18,7 @@ var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 
 Renderer3d.prototype.init = function() {
 	// Cameras - needs to happen before calling setRepresentationType.
-	this.cameras = EditorScene.getCameras(this.canvasEl, this.kickerObj);
-	this.orbitControls = new THREE.OrbitControls(this.cameras.perspective, this.canvasEl),
+	this.createCameras();
 
 	this.representationType = '2d';
 
@@ -41,10 +40,15 @@ Renderer3d.prototype.init = function() {
 	this.render();
 };
 
+Renderer3d.prototype.createCameras = function() {
+	this.cameras = EditorScene.createCameras(this.canvasEl, this.kickerObj);
+	this.orbitControls = new THREE.OrbitControls(this.cameras.perspective, this.canvasEl);	
+};
+
 Renderer3d.prototype.setRepresentationType = function(type) {
 	this.representationType = type;
 	this.updateRenderingForRepresentationType();
-}
+};
 
 Renderer3d.prototype.updateRenderingForRepresentationType = function() {
 	// Go over all parts and tell them which needs to show.
@@ -54,6 +58,10 @@ Renderer3d.prototype.updateRenderingForRepresentationType = function() {
 		part.setMeshVisibilityForDisplay(repType);
 	});
 
+	this.installCameras();
+};
+
+Renderer3d.prototype.installCameras = function() {
 	if (this.representationType == '2d') {
 		// TODO: recenter the camera on the kicker
 		this.camera = this.cameras.ortho;
@@ -66,7 +74,10 @@ Renderer3d.prototype.updateRenderingForRepresentationType = function() {
 };
 
 Renderer3d.prototype.resize = function() {
-	EditorScene.setSize(this.threeRenderer, this.canvasEl);
+	var parent = this.canvasEl.parentElement;
+	this.threeRenderer.setSize(parent.clientWidth, parent.clientHeight, false);
+	this.createCameras();
+	this.installCameras();
 	this.blueprintBorderRenderer.resize();
 };
 
