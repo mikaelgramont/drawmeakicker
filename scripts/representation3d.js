@@ -7,7 +7,7 @@ var Representation3D = function(points, length, angle, arc, radius, width, heigh
 	this.parts.sideL = this.buildSide(this.points, offset.negate(), imageList);
 	this.parts.struts = this.buildStruts(length, width, angle, arc, radius);
 	this.parts.surface = this.buildSurface(this.points, width);
-	// this.parts.measurements = this.buildMeasurements(length, width, radius, height);
+	this.parts.measurements = this.buildMeasurements(length, width, radius, height);
 	
 	Utils.makeAvailableForDebug('parts', this.parts);
 };
@@ -119,27 +119,11 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 	return slats;
 };
 
-Representation3D.prototype.buildMeasurements = function(length, width, radius, height, rendering) {
-	/*
-	 TODO: write a function that can generate a text representation.
-	 That will then need to be moved/rotated to be on a certain plane
-	*/
+Representation3D.prototype.buildMeasurements = function(length, width, radius, height) {
 	return [
-		// this.buildTextObject('length', new THREE.Vector3(2, 2, 2), rendering),
-		// this.buildTextObject('width',  new THREE.Vector3(3, 3, 3), rendering),
-		// this.buildTextObject('radius', new THREE.Vector3(4, 4, 4), rendering),
-		this.buildTextObject('height', new THREE.Vector3(length + .3, height / 4, 0), rendering)
+		new Text('radius', new THREE.Vector3(0, height, 0), new THREE.Euler(0, 0, 0, 'XYZ')),
+		new Text('width', new THREE.Vector3(length, height, 0), new THREE.Euler(0, Math.PI / 2, 0, 'XYZ')),
+		new Text('length', new THREE.Vector3(0.5, -0.4, 0), new THREE.Euler(0, 0, 0, 'XYZ')),
+		new Text('height', new THREE.Vector3(length, height / 4, 0), new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'))
 	];
-};
-
-Representation3D.prototype.buildTextObject = function(text, position, rendering) {
-	var geometry = new THREE.TextGeometry(text, {
-		size: .15,
-		height: 0
-	});
-	var material = new THREE.MeshLambertMaterial();
-	mesh = new THREE.Mesh(geometry, material);
-	mesh.position.copy(position);
-	mesh.rotation.z = Math.PI / 2;	
-	return {mesh: mesh, rendering: rendering};
 };

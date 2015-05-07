@@ -62,7 +62,7 @@ EditorScene.getScene = function() {
 	light2.position.set(-100, 200, -120);
 	scene.add(light2);	
 
-	//scene.add(new THREE.AxisHelper(1));
+	scene.add(new THREE.AxisHelper(1));
 	var gridHelper = new THREE.GridHelper(100,2);
 	gridHelper.setColors(0xf8faff, 0x010845);
 	scene.add(gridHelper);
