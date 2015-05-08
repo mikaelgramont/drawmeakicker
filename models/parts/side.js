@@ -17,6 +17,7 @@ Side.prototype.createMesh = function(points, offset) {
         map: woodMap
     });	
 	var mesh = new THREE.Mesh(geometry, material);
+	mesh.name = 'Side';
 	mesh.randomId = Math.random() * 100;
 	return mesh;
 };

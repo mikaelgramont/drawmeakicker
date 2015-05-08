@@ -15,6 +15,7 @@ Slat.prototype.createMesh = function(width, length, thickness, scale) {
         map: THREE.ImageUtils.loadTexture(this.imageList.getImageUrl('slat'))
     });
 	var mesh = new THREE.Mesh(geometry, material);
+	mesh.name = 'Slat';
 	return mesh;
 };
 

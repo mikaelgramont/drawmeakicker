@@ -7,9 +7,8 @@
 	- is firing and catching events through the dom the way to go to communicate? Seems to work for elements that are related to each other. Should we use some kind of pubsub sitting at the top of the page for elements that are not in the same branch of the tree?
 
 	TODO:
-	- make measurements children of the scene, not the kicker.
-	- add board and character in 3d.
 	- center the 2d view
+	- add board and character in 3d.
 	- create a better background image for the top section. Possibly add a blueprint in the bottom right corner, so that the action button can be made white against blue.
 	- add presets for 2d cam positions
 	- add a hybrid mode to see the edges in 3d
@@ -108,6 +107,8 @@
 					event = new Event('renderer-init');
 					renderer.dispatchEvent(event);
 				});
+				// Temporary for dev purposes.
+				start.dispatchEvent(new Event('click'));
 			})();
 		</script>
 	</body>

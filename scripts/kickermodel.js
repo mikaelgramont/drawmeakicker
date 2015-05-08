@@ -16,7 +16,7 @@ KickerModel.prototype.readView = function() {
 };
 
 KickerModel.prototype.refreshView = function() {
-	this.view.refresh(this.radius, this.length, this.arc);
+	this.view.refresh(this.radius, this.length, this.arc, this.height, this.width, this.angle);
 };
 
 KickerModel.prototype.calculate = function() {
@@ -47,7 +47,8 @@ KickerModel.prototype.calculateSidePoints = function(angle, radius, config) {
 
 	var angleRad = angle * Math.PI / 180;
 	var steps = config.model3d.sides.steps;
-	var currentAngleRad, x, y;
+	var currentAngleRad, x, y,
+		extraLength = config.model3d.sides.extraLength;
 
 	// The first point is calculated outside of the loop because it must
 	// account for a minimum height of the sides, otherwise it looks too
@@ -64,20 +65,25 @@ KickerModel.prototype.calculateSidePoints = function(angle, radius, config) {
 			x = minX;
 		}
 		if (y < minY) {
+			continue;
 			y = minY;
 		}
 		points.push([x,y]);
 	}
-	var lastPointX = x + config.model3d.sides.extraLength;
+	var lastPointX = x + extraLength;
 	points.push([lastPointX, y]); 
 	points.push([lastPointX, 0]); 
 
+	// Offset by extraLength to start at x=0.
+	points.forEach(function(point) {
+		point[0] -= extraLength;
+	});
 	return points;
 };
 
 KickerModel.prototype.create3dObject = function(config, imageList) {
 	var points = this.calculateSidePoints(this.angle, this.radius, config);
-	this.representation3d = new Representation3D(points, this.length, this.angle, this.arc, this.radius, this.width, this.height, imageList, config);
+	this.representation3d = new Representation3D(this.view, points, this.length, this.angle, this.arc, this.radius, this.width, this.height, imageList, config);
 	return this.representation3d;
 };
 

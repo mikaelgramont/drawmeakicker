@@ -17,11 +17,6 @@ var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 };
 
 Renderer3d.prototype.init = function() {
-	// Cameras - needs to happen before calling setRepresentationType.
-	this.createCameras();
-
-	this.representationType = '2d';
-
 	// Scene
 	this.scene = EditorScene.getScene();
 	Utils.makeAvailableForDebug('scene', this.scene);
@@ -30,12 +25,16 @@ Renderer3d.prototype.init = function() {
 	this.createKicker();
 	this.scene.add(this.kickerObj);
 
-	// Additional content
-	// EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
+	// Cameras - needs to happen before calling setRepresentationType.
+	this.createCameras();
 
+	this.representationType = '2d';
 	this.updateRenderingForRepresentationType();
+
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
 
+	// Additional content
+	// EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
 	this.resize();
 	this.render();
 };
@@ -76,10 +75,14 @@ Renderer3d.prototype.installCameras = function() {
 Renderer3d.prototype.resize = function() {
 	var parent = this.canvasEl.parentElement;
 	this.threeRenderer.setSize(parent.clientWidth, parent.clientHeight, false);
-	this.createCameras();
-	this.installCameras();
+	this.prepareCameras();
 	this.blueprintBorderRenderer.resize();
 };
+
+Renderer3d.prototype.prepareCameras = function() {
+	this.createCameras();
+	this.installCameras();
+}
 
 Renderer3d.prototype.render = function() {
 	if (!this.rafId) {
@@ -112,6 +115,10 @@ Renderer3d.prototype.draw = function() {
 Renderer3d.prototype.refresh = function() {
 	this.kicker.refresh();
 	this.createKicker();
+	if (this.representationType == '2d') {
+		// Need to recenter the camera on the new kicker.
+		this.prepareCameras();
+	}
 }
 
 Renderer3d.prototype.createKicker = function() {

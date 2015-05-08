@@ -1,29 +1,38 @@
-var Text = function(text, position, rotation) {
+var Text = function(name, text, position, rotation) {
 	Part.call(this);
 
-	var material = new THREE.MeshLambertMaterial(),
-		mesh = this.createMesh(text, material);
+	var material = new THREE.MeshLambertMaterial(0xfff),
+		mesh = this.createMesh(name, text, material, rotation);
 
-	mesh.position.copy(position);
-	if (rotation) {
-		mesh.rotation.copy(rotation);
-	}
+	var bb = mesh.geometry.boundingBox;
+	var size = bb.max.sub(bb.min);
+	var finalPosition = position.sub(size.divideScalar(2));
+	mesh.position.copy(finalPosition);
 
-	this.meshes['3d'] = mesh;
+	this.meshes['3d'] = null;
 	this.meshes['2d'] = mesh;
 };
 Text.prototype = new Part();
 
-Text.prototype.createMesh = function(text, material) {
-	var geometry = this.buildGeometry(text);
+Text.prototype.createMesh = function(name, text, material, rotation) {
+	var geometry = this.buildGeometry(text, rotation);
 	var mesh = new THREE.Mesh(geometry, material);
+	mesh.name = 'Text - '+ name + ' - ' + text;
 	return mesh;
 };
 
-Text.prototype.buildGeometry = function(text) { 
+Text.prototype.buildGeometry = function(text, rotation) { 
 	var geometry = new THREE.TextGeometry(text, {
 		size: .15,
 		height: 0
 	});
+	if (rotation) {
+		// Rotate individual vertices so we can just move
+		// the object around later
+		geometry.vertices.forEach(function(vertex) {
+			vertex.applyEuler(rotation);
+		});
+	}
+	geometry.computeBoundingBox();
 	return geometry;
 };

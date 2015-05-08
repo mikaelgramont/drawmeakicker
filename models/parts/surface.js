@@ -17,6 +17,7 @@ Surface.prototype.createMesh = function(points, width) {
         map: woodMap
     });	
 	var mesh = new THREE.Mesh(geometry, material);
+	mesh.name = 'Surface';
 	return mesh;
 };
 

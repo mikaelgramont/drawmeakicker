@@ -15,6 +15,7 @@ Strut.prototype.createMesh = function(width, thickness, radius, currentAngleRad,
         map: THREE.ImageUtils.loadTexture(this.imageList.getImageUrl('strut'))
     });
 	var mesh = new THREE.Mesh(geometry, material);
+	mesh.name = 'Strut';
 	if (radius) {
 		// Rotate the vertices to follow the kicker profile.
 		this.positionByAngle(mesh, radius, currentAngleRad);

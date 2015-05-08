@@ -1,9 +1,9 @@
 var EditorScene = function() {};
 
-EditorScene.createCameras = function(canvasEl) {
+EditorScene.createCameras = function(canvasEl, kickerObj) {
 	var parent = canvasEl.parentElement;
 	var persp = EditorScene.createPerspectiveCamera_(parent);
-	var ortho = EditorScene.createOrthoCamera_(parent);
+	var ortho = EditorScene.createOrthoCamera_(parent, kickerObj);
 
 	return {
 		perspective: persp,
@@ -16,26 +16,39 @@ EditorScene.createPerspectiveCamera_ = function(el) {
 	var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
 
 	camera.position.copy(new THREE.Vector3(
-		-2.953021168199046,
+		-1.953021168199046,
 		2.9067382584295327,
-		2.3965944941147135
+		2.6965944941147135
 	));
 	return camera;
 };
 
-EditorScene.createOrthoCamera_ = function(el) {
-	var aspectRatio = el.clientWidth / el.clientHeight;
-	var h = 5;
-	var w = h / aspectRatio ;
-	var viewSize = h;
+EditorScene.createOrthoCamera_ = function(el, kickerObj) {
+	var aspectRatio = el.clientWidth / el.clientHeight,
+		bb = new THREE.BoundingBoxHelper(kickerObj),
+		margin = 0.2,
+		w, h;
+	bb.update();
 
+	var xRange = bb.box.max.x - bb.box.min.x,
+		yRange = bb.box.max.y - bb.box.min.y;
+
+	if (xRange > yRange) {
+		w = xRange;
+		h = w / aspectRatio;
+	} else {
+		h = yRange;
+		w = h * aspectRatio;
+	}
+
+	var viewSize = h;
 	var viewport = {
 	    viewSize: viewSize,
 	    aspectRatio: aspectRatio,
-	    left: (-aspectRatio * viewSize) / 2,
-	    right: (aspectRatio * viewSize) / 2,
-	    top: viewSize / 2,
-	    bottom: -viewSize / 2,
+	    left: bb.box.min.x - margin,
+	    right: bb.box.min.x + w + margin,
+	    top: bb.box.min.y + h + margin,	
+	    bottom: bb.box.min.y - margin,
 	    near: -10,
 	    far: 10
 	}
@@ -62,7 +75,7 @@ EditorScene.getScene = function() {
 	light2.position.set(-100, 200, -120);
 	scene.add(light2);	
 
-	scene.add(new THREE.AxisHelper(1));
+	// scene.add(new THREE.AxisHelper(1));
 	var gridHelper = new THREE.GridHelper(100,2);
 	gridHelper.setColors(0xf8faff, 0x010845);
 	scene.add(gridHelper);
@@ -96,7 +109,7 @@ EditorScene.createKicker = function(kicker, config, imageList, representation) {
 		}
 	});
 
-	kickerObj.position.sub(new THREE.Vector3(1, 0, 0));
+	// kickerObj.position.sub(new THREE.Vector3(1, 0, 0));
 	return kickerObj;
 };
 

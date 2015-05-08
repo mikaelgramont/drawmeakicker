@@ -1,4 +1,5 @@
-var Representation3D = function(points, length, angle, arc, radius, width, height, imageList, config) {
+var Representation3D = function(view, points, length, angle, arc, radius, width, height, imageList, config) {
+	this.view = view;
 	this.parts = {};
 	this.imageList = imageList;
 	this.points = points;
@@ -27,7 +28,8 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 	var strutsCount = Math.ceil(arc / config.model3d.struts.maximumDistance);
 	var i = strutsCount;
 	var smallStrutSide;
-	var thickness = config.model3d.struts.side;
+	var thickness = config.model3d.struts.side,
+		extraLength = config.model3d.sides.extraLength;
 
 	// We need to move the struts back a bit so they sit flush with the end
 	// of the ramp. 
@@ -48,8 +50,9 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 			break;
 		} 
 
+		var offset = new THREE.Vector3( - extraLength, 0, 0);
 		var strut = new Strut(
-			strutWidth, thickness, radius, currentAngleRad, null, this.imageList
+			strutWidth, thickness, radius, currentAngleRad, offset, this.imageList
 		);
 		struts.push(strut);
 		i--;
@@ -59,7 +62,7 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 	// One at the lip.
 	thickness = config.model3d.struts.side;
 	offset = new THREE.Vector3(
-		(length + config.model3d.sides.extraLength - thickness / 2),
+		(length - thickness / 2),
 		thickness,
 		0
 	);
@@ -69,11 +72,12 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 	struts.push(strut);
 
 	// One strut 2/3 of the length from entry to lip.
-	offset = new THREE.Vector3(length * 2 / 3, thickness, 0);
+	offset = new THREE.Vector3(length * 2 / 3 - extraLength, thickness, 0);
 	strut = new Strut(
 		strutWidth, thickness, null, null, offset, this.imageList
 	);
 	struts.push(strut);
+
 	return struts;
 };
 
@@ -120,10 +124,32 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 };
 
 Representation3D.prototype.buildMeasurements = function(length, width, radius, height) {
+	var distance = .3;
+	var dimensions = this.view.getHumanReadableDimensions();
 	return [
-		new Text('radius', new THREE.Vector3(0, height, 0), new THREE.Euler(0, 0, 0, 'XYZ')),
-		new Text('width', new THREE.Vector3(length, height, 0), new THREE.Euler(0, Math.PI / 2, 0, 'XYZ')),
-		new Text('length', new THREE.Vector3(0.5, -0.4, 0), new THREE.Euler(0, 0, 0, 'XYZ')),
-		new Text('height', new THREE.Vector3(length, height / 4, 0), new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'))
+		new Text(
+			'radius',
+			dimensions.radius,
+			new THREE.Vector3(0, height, 0),
+			new THREE.Euler(0, 0, 0, 'XYZ')
+		),
+		new Text(
+			'width',
+			dimensions.width,
+			new THREE.Vector3(length, height + distance, 0),
+			new THREE.Euler(0, 0 / 2, 0, 'XYZ')
+		),
+		new Text(
+			'length',
+			dimensions.length,
+			new THREE.Vector3(length / 2, - distance, 0),
+			new THREE.Euler(0, 0, 0, 'XYZ')
+		),
+		new Text(
+			'height',
+			dimensions.height,
+			new THREE.Vector3(length + distance, height / 4, 0),
+			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ')
+		)
 	];
 };
