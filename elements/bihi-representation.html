@@ -27,6 +27,16 @@
     is: "bihi-representation",
     onClick: function(e) {
       this.fire('representation-change', {type: e.currentTarget.value});
+    },
+    ready: function() {
+      var checkedEl = Polymer.dom(this.root).querySelector(':checked');
+      this.repType = checkedEl.value;
+    },
+    properties: {
+      repType: {
+        type: String,
+        reflectToAttribute: true
+      }
     }
   });
 

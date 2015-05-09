@@ -30,8 +30,14 @@ EditorScene.createOrthoCamera_ = function(el, kickerObj) {
 		w, h;
 	bb.update();
 
-	var xRange = bb.box.max.x - bb.box.min.x,
-		yRange = bb.box.max.y - bb.box.min.y;
+	var xRange = Math.ceil(bb.box.max.x - bb.box.min.x),
+		yRange = Math.ceil(bb.box.max.y - bb.box.min.y);
+
+	xRange += xRange % 3;
+	yRange += yRange % 3;
+
+	var xCenter = (bb.box.max.x + bb.box.min.x) / 2,
+		yCenter = (bb.box.max.y + bb.box.min.y) / 2;
 
 	if (xRange > yRange) {
 		w = xRange;
@@ -45,10 +51,10 @@ EditorScene.createOrthoCamera_ = function(el, kickerObj) {
 	var viewport = {
 	    viewSize: viewSize,
 	    aspectRatio: aspectRatio,
-	    left: bb.box.min.x - margin,
-	    right: bb.box.min.x + w + margin,
-	    top: bb.box.min.y + h + margin,	
-	    bottom: bb.box.min.y - margin,
+	    left: xCenter - w / 2,
+	    right: xCenter + w / 2,
+	    top: yCenter + h / 2,
+	    bottom: yCenter - h / 2,
 	    near: -10,
 	    far: 10
 	}
@@ -105,6 +111,9 @@ EditorScene.createKicker = function(kicker, config, imageList, representation) {
 	Utils.iterateOverParts(rep.parts, function(part) {
 		part.setMeshVisibilityForDisplay(representation);
 		for (rep in part.meshes) {
+			if (!part.meshes[rep]) {
+				continue;
+			}
 			kickerObj.add(part.meshes[rep]);	
 		}
 	});

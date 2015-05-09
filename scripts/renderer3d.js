@@ -1,5 +1,6 @@
 var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 	this.kicker = kicker;
+	this.view = this.kicker.model.view;
 	this.canvasEl = canvas3dEl;
 	this.canvas2dEl = canvas2dEl;
 	this.blueprintBorderRenderer = new BlueprintBorderRenderer(canvas2dEl);
@@ -28,6 +29,7 @@ Renderer3d.prototype.init = function() {
 	// Cameras - needs to happen before calling setRepresentationType.
 	this.createCameras();
 
+	// TODO: fetch relevant data from the view, and pass it through.
 	this.representationType = '2d';
 	this.updateRenderingForRepresentationType();
 
@@ -42,10 +44,19 @@ Renderer3d.prototype.init = function() {
 Renderer3d.prototype.createCameras = function() {
 	this.cameras = EditorScene.createCameras(this.canvasEl, this.kickerObj);
 	this.orbitControls = new THREE.OrbitControls(this.cameras.perspective, this.canvasEl);	
+	// this.orbitControls.addEventListener('start', function(){
+	// 	console.log('orbitControls, start');
+	// });
+	// this.orbitControls.addEventListener('end', function(){
+	// 	console.log('orbitControls, end');
+	// });
 };
 
-Renderer3d.prototype.setRepresentationType = function(type) {
-	this.representationType = type;
+Renderer3d.prototype.updateViz = function(update) {
+	console.log('Renderer3d.prototype.updateViz', update);
+	if ('type' in update) {
+		this.representationType = update.type;
+	}
 	this.updateRenderingForRepresentationType();
 };
 
@@ -67,6 +78,8 @@ Renderer3d.prototype.installCameras = function() {
 		this.orbitControls.enabled = false;
 	} else {
 		this.camera = this.cameras.perspective;
+		this.orbitControls.target.copy(this.cameraTarget.position);
+		this.orbitControls.update();
 		this.orbitControls.enabled = true;
 	}
 	Utils.makeAvailableForDebug('camera', this.camera);
@@ -126,6 +139,12 @@ Renderer3d.prototype.createKicker = function() {
 		this.scene.remove(this.kickerObj);
 	}
 	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList, this.representationType);
+
+	this.cameraTarget = new THREE.AxisHelper(1);
+	this.kickerObj.add(this.cameraTarget);
+	this.cameraTarget.visible = false;
+	this.cameraTarget.position.x = this.kicker.model.length / 2;
+
 	this.scene.add(this.kickerObj);
 };
 

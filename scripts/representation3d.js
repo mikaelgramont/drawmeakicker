@@ -133,12 +133,12 @@ Representation3D.prototype.buildMeasurements = function(length, width, radius, h
 			new THREE.Vector3(0, height, 0),
 			new THREE.Euler(0, 0, 0, 'XYZ')
 		),
-		new Text(
-			'width',
-			dimensions.width,
-			new THREE.Vector3(length, height + distance, 0),
-			new THREE.Euler(0, 0 / 2, 0, 'XYZ')
-		),
+		// new Text(
+		// 	'width',
+		// 	dimensions.width,
+		// 	new THREE.Vector3(length, height + distance, 0),
+		// 	new THREE.Euler(0, 0 / 2, 0, 'XYZ')
+		// ),
 		new Text(
 			'length',
 			dimensions.length,
@@ -148,7 +148,7 @@ Representation3D.prototype.buildMeasurements = function(length, width, radius, h
 		new Text(
 			'height',
 			dimensions.height,
-			new THREE.Vector3(length + distance, height / 4, 0),
+			new THREE.Vector3(length + distance, height / 2, 0),
 			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ')
 		)
 	];

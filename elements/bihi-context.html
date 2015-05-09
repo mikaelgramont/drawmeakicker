@@ -1,0 +1,47 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-context">
+  <style>
+    .container {
+      padding: 10px 0;
+    }
+    label {
+      display: block;
+    }
+  </style>
+
+  <template>
+    <div class="container size-2">
+      <label>
+        <input id="mountainboard" type="checkbox" on-click="onClick" value="1">
+        <span>Mountainboard</span>
+      </label>
+      <label>
+        <input id="rider" type="checkbox" on-click="onClick" value="1">
+        <span>Rider</span>
+      </label>
+    </div>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-context",
+    onClick: function(e) {
+      var detail = {};
+      detail[e.currentTarget.id] = !!this.$[e.currentTarget.id].checked;
+      this.fire('context-change', detail);
+    },
+    properties: {
+      values: {
+        type: Object,
+        value: function() {
+          // console.log('running bihi-context.getValues');
+          return {};
+        }
+      }
+    }
+  });
+
+</script>

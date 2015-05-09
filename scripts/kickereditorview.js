@@ -1,17 +1,22 @@
 var KickerEditorView = function(rootEl) {
-	var els = rootEl.querySelectorAll('bihi-design-parameter');
 	this.parameters = {};
+	this.results = {};
+	this.viz = {};
+
+	var els = rootEl.querySelectorAll('bihi-design-parameter');
 	for (var i = 0; i < els.length; i++) {
 		var id = els[i].getAttribute('id');
 		this.parameters[id] = els[i];
 	};
 
 	els = rootEl.querySelectorAll('bihi-design-result');
-	this.results = {};
 	for (var i = 0; i < els.length; i++) {
 		var id = els[i].getAttribute('id');
 		this.results[id] = els[i];
 	};
+
+	vizEl = rootEl.querySelector('bihi-viz');
+	this.viz['rep'] = vizEl.representation;
 };
 
 KickerEditorView.prototype.refresh = function(radius, length, arc, height, width, angle) {

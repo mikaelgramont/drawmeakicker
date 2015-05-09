@@ -19,15 +19,15 @@
     is: "bihi-editor",
     listeners: {
       "parameter-change": "rendererRefresh",
-      "representation-change": "setRepresentationType"
+      "viz-change": "updateViz"
     },
     rendererRefresh: function() {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
       this.fire("renderer-refresh", {}, rendererEl, false);
     },
-    setRepresentationType: function(e) {
+    updateViz: function(e) {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
-      this.fire("renderer-set-representation-type", {type: e.detail.type}, rendererEl, false);
+      this.fire("renderer-update-viz", e.detail, rendererEl, false);
     }
   });
 </script>

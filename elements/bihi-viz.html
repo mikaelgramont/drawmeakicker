@@ -1,0 +1,25 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-viz">
+  <template>
+    <content></content>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-viz",
+    listeners: {
+      "representation-change": "onVizChange",
+      "context-change": "onVizChange"
+    },
+    onVizChange: function(e) {
+      this.fire("viz-change", e.detail);
+    },
+    ready: function() {
+      var c = Polymer.dom(this).querySelector('bihi-context');
+      // console.log('context values', c.values);
+    }
+  });
+</script>
