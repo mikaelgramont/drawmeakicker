@@ -89,22 +89,6 @@ EditorScene.getScene = function() {
 	return scene;
 };
 
-EditorScene.setupContent = function(scene, kicker, config, imageList) {
-	var loader = new THREE.ColladaLoader();
-	loader.options.convertUpAxis = true;
-	loader.load('./models/board.dae', function onBoardLoaded(collada) {
-		var dae = collada.scene;
-		dae.scale.set(1.0, 1.0, 1.0);
-		
-		var boardGroup = new THREE.Object3D();
-		boardGroup.add(dae);
-		boardGroup.position.set(5, 0, -5);
-		boardGroup.scale.set(.5, .5, .5)
-		boardGroup.rotateY(10 * Math.PI/64);
-		scene.add(boardGroup);
-	});
-}
-
 EditorScene.createKicker = function(kicker, config, imageList, representation) {
 	var kickerObj = new THREE.Object3D();
 	var rep = kicker.model.create3dObject(config, imageList);
@@ -117,8 +101,6 @@ EditorScene.createKicker = function(kicker, config, imageList, representation) {
 			kickerObj.add(part.meshes[rep]);	
 		}
 	});
-
-	// kickerObj.position.sub(new THREE.Vector3(1, 0, 0));
 	return kickerObj;
 };
 

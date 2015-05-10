@@ -24,19 +24,12 @@ Renderer3d.prototype.init = function() {
 
 	// Kicker
 	this.createKicker();
-	this.scene.add(this.kickerObj);
 
 	// Cameras - needs to happen before calling setRepresentationType.
 	this.createCameras();
 
-	// TODO: fetch relevant data from the view, and pass it through.
-	this.representationType = '2d';
-	this.updateRenderingForRepresentationType();
-
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
-
-	// Additional content
-	// EditorScene.setupContent(this.scene, this.kicker, this.config, this.imageList);
+	this.setVisibleObjects();
 	this.resize();
 	this.render();
 };
@@ -44,6 +37,7 @@ Renderer3d.prototype.init = function() {
 Renderer3d.prototype.createCameras = function() {
 	this.cameras = EditorScene.createCameras(this.canvasEl, this.kickerObj);
 	this.orbitControls = new THREE.OrbitControls(this.cameras.perspective, this.canvasEl);	
+	Utils.makeAvailableForDebug('orbitControls', this.orbitControls);
 	// this.orbitControls.addEventListener('start', function(){
 	// 	console.log('orbitControls, start');
 	// });
@@ -53,26 +47,31 @@ Renderer3d.prototype.createCameras = function() {
 };
 
 Renderer3d.prototype.updateViz = function(update) {
-	console.log('Renderer3d.prototype.updateViz', update);
-	if ('type' in update) {
-		this.representationType = update.type;
+	console.log('updateViz', update);
+	for (prop in update) {
+		if (prop in this.view.viz) {
+			this.view.viz[prop] = update[prop];
+		} else if (prop == 'type') {
+			this.view.viz.representationType = update[prop];	
+		}
 	}
-	this.updateRenderingForRepresentationType();
+
+	this.setVisibleObjects();
 };
 
-Renderer3d.prototype.updateRenderingForRepresentationType = function() {
+Renderer3d.prototype.setVisibleObjects = function() {
 	// Go over all parts and tell them which needs to show.
-	var rep = this.kicker.getRepresentation3d();
-	repType = this.representationType;
+	var rep = this.kicker.getRepresentation3d(),
+		viz = this.view.viz;
 	Utils.iterateOverParts(rep.parts, function(part) {
-		part.setMeshVisibilityForDisplay(repType);
+		part.setMeshVisibilityForDisplay(viz);
 	});
 
-	this.installCameras();
+	this.pickCamera();
 };
 
-Renderer3d.prototype.installCameras = function() {
-	if (this.representationType == '2d') {
+Renderer3d.prototype.pickCamera = function() {
+	if (this.view.viz.representationType == '2d') {
 		// TODO: recenter the camera on the kicker
 		this.camera = this.cameras.ortho;
 		this.orbitControls.enabled = false;
@@ -94,7 +93,7 @@ Renderer3d.prototype.resize = function() {
 
 Renderer3d.prototype.prepareCameras = function() {
 	this.createCameras();
-	this.installCameras();
+	this.pickCamera();
 }
 
 Renderer3d.prototype.render = function() {
@@ -112,6 +111,9 @@ Renderer3d.prototype.animate = function() {
 Renderer3d.prototype.step = function() {
 	// TODO: perform physics updates here.
 	 // this.camera.rotation.y += 0.005;
+	 if (this.orbitControls.enabled && this.orbitControls.autorotate) {
+	 	this.orbitControls.update();
+	 }
 	this.draw();
 };
 
@@ -128,17 +130,18 @@ Renderer3d.prototype.draw = function() {
 Renderer3d.prototype.refresh = function() {
 	this.kicker.refresh();
 	this.createKicker();
-	if (this.representationType == '2d') {
+	if (this.view.viz.representationType == '2d') {
 		// Need to recenter the camera on the new kicker.
 		this.prepareCameras();
 	}
+	this.setVisibleObjects();
 }
 
 Renderer3d.prototype.createKicker = function() {
 	if (this.kickerObj) {
 		this.scene.remove(this.kickerObj);
 	}
-	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList, this.representationType);
+	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList, this.view.viz.representationType);
 
 	this.cameraTarget = new THREE.AxisHelper(1);
 	this.kickerObj.add(this.cameraTarget);

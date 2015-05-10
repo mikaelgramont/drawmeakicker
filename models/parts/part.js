@@ -5,7 +5,8 @@ var Part = function() {
 	};
 };
 
-Part.prototype.setMeshVisibilityForDisplay = function(representation) {
+Part.prototype.setMeshVisibilityForDisplay = function(viz) {
+	var representation = viz.representationType;
 	for (rep in this.meshes) {
 		if (!this.meshes[rep]) {
 			continue;

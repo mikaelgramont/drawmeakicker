@@ -9,6 +9,7 @@ var Representation3D = function(view, points, length, angle, arc, radius, width,
 	this.parts.struts = this.buildStruts(length, width, angle, arc, radius);
 	this.parts.surface = this.buildSurface(this.points, width);
 	this.parts.measurements = this.buildMeasurements(length, width, radius, height);
+	this.parts.board = this.buildBoard(length, width, height);
 	
 	Utils.makeAvailableForDebug('parts', this.parts);
 };
@@ -152,4 +153,9 @@ Representation3D.prototype.buildMeasurements = function(length, width, radius, h
 			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ')
 		)
 	];
+}
+
+Representation3D.prototype.buildBoard = function(length, width, height) {
+	var board = new Board(length, width, height);
+	return board;
 };

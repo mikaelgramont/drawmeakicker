@@ -14,9 +14,14 @@ var KickerEditorView = function(rootEl) {
 		var id = els[i].getAttribute('id');
 		this.results[id] = els[i];
 	};
-
-	vizEl = rootEl.querySelector('bihi-viz');
-	this.viz['rep'] = vizEl.representation;
+	
+	// TODO: these parameters need to be set based on the markup.
+	// Problem is that this can only be done after the whole page is ready.
+	this.viz = {
+		'representationType': '2d',
+		'mountainboard': false,
+		'rider': false
+	};
 };
 
 KickerEditorView.prototype.refresh = function(radius, length, arc, height, width, angle) {

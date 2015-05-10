@@ -35,12 +35,18 @@
     },
     properties: {
       values: {
-        type: Object,
+        type: Function,
         value: function() {
-          // console.log('running bihi-context.getValues');
-          return {};
-        }
+          return {
+            mountainboard: !!this.$.mountainboard.checked,
+            rider: !!this.$.rider.checked
+          }          
+        },
+        reflectToAttribute: true
       }
+    // },
+    // ready: function() {
+    //   console.log('context ready');
     }
   });
 

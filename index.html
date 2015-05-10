@@ -93,7 +93,7 @@
 								<bihi-design-fieldset legend="Context">
 									<bihi-context></bihi-context>
 								</bihi-design-fieldset>
-							<bihi-viz>
+							</bihi-viz>
 						</bihi-design-step>
 						<bihi-design-step caption="Save" step="3"></bihi-design-step>
 						<bihi-design-step caption="Share" step="4" last></bihi-design-step>
@@ -122,7 +122,9 @@
 					renderer.dispatchEvent(event);
 				});
 				// Temporary for dev purposes.
-				start.dispatchEvent(new Event('click'));
+				setTimeout(function(){
+					start.dispatchEvent(new Event('click'));
+				}, 50);
 			})();
 		</script>
 	</body>
