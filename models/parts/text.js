@@ -1,7 +1,7 @@
 var Text = function(name, text, position, rotation) {
 	Part.call(this);
 
-	var material = new THREE.MeshLambertMaterial(0xfff),
+	var material = new THREE.MeshBasicMaterial(0xfff),
 		mesh = this.createMesh(name, text, material, rotation);
 
 	var bb = mesh.geometry.boundingBox;

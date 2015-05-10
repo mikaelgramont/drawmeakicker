@@ -31,19 +31,46 @@ Renderer3d.prototype.init = function() {
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
 	this.setVisibleObjects();
 	this.resize();
-	this.render();
+	this.renderOnce();	
 };
+
+Renderer3d.prototype.renderOnce = function() {
+	this.setRenderingPace_('once');
+};
+
+Renderer3d.prototype.renderContinuously = function() {
+	this.setRenderingPace_('continuous');
+};
+
+Renderer3d.prototype.stopRendering = function() {
+	this.setRenderingPace_('done');
+	cancelAnimationFrame(this.rafId);
+	this.rafId = null;	
+};
+
+Renderer3d.prototype.setRenderingPace_ = function(renderingPace) {
+	if (renderingPace == 'once' || renderingPace == 'continuous' || renderingPace == 'done') {
+		console.log('setRenderingPace', renderingPace);
+		this.renderingPace = renderingPace;
+	}
+
+	if (this.renderingPace == 'once') {
+		console.log('calling draw');
+		this.draw();
+	} else if(this.renderingPace == 'continuous') {
+		console.log('calling render');
+		this.render();
+	}
+}
 
 Renderer3d.prototype.createCameras = function() {
 	this.cameras = EditorScene.createCameras(this.canvasEl, this.kickerObj);
 	this.orbitControls = new THREE.OrbitControls(this.cameras.perspective, this.canvasEl);	
+	this.orbitControls.zoomSpeed = .3;
 	Utils.makeAvailableForDebug('orbitControls', this.orbitControls);
-	// this.orbitControls.addEventListener('start', function(){
-	// 	console.log('orbitControls, start');
-	// });
-	// this.orbitControls.addEventListener('end', function(){
-	// 	console.log('orbitControls, end');
-	// });
+	
+	this.orbitControls.addEventListener('start', this.renderContinuously.bind(this));
+	this.orbitControls.addEventListener('end', this.stopRendering.bind(this));
 };
 
 Renderer3d.prototype.updateViz = function(update) {
@@ -57,6 +84,7 @@ Renderer3d.prototype.updateViz = function(update) {
 	}
 
 	this.setVisibleObjects();
+	this.renderOnce();
 };
 
 Renderer3d.prototype.setVisibleObjects = function() {
@@ -89,6 +117,7 @@ Renderer3d.prototype.resize = function() {
 	this.threeRenderer.setSize(parent.clientWidth, parent.clientHeight, false);
 	this.prepareCameras();
 	this.blueprintBorderRenderer.resize();
+	this.renderOnce();
 };
 
 Renderer3d.prototype.prepareCameras = function() {
@@ -117,14 +146,13 @@ Renderer3d.prototype.step = function() {
 	this.draw();
 };
 
-Renderer3d.prototype.stop = function() {
-	cancelAnimationFrame(this.rafId);
-	this.rafId = null;	
-};
-
 Renderer3d.prototype.draw = function() {
+	console.log('draw')
 	this.threeRenderer.render(this.scene, this.camera);
 	this.blueprintBorderRenderer.render();
+	if (this.renderingPace == 'once') {
+		this.stopRendering();
+	}	
 };
 
 Renderer3d.prototype.refresh = function() {
@@ -135,6 +163,7 @@ Renderer3d.prototype.refresh = function() {
 		this.prepareCameras();
 	}
 	this.setVisibleObjects();
+	this.renderOnce();
 }
 
 Renderer3d.prototype.createKicker = function() {
