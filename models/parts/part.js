@@ -13,8 +13,15 @@ Part.prototype.setMeshVisibilityForDisplay = function(viz) {
 		}
 		this.meshes[rep].visible = false;
 	}
-	if (this.meshes[representation]) {
-		this.meshes[representation].visible = true;
+
+	if (representation == '2d' || !viz.textured) {
+		if (this.meshes['2d']) {
+			this.meshes['2d'].visible = true;
+		}
+	} else {
+		if (this.meshes['3d']) {
+			this.meshes['3d'].visible = true;
+		}			
 	}
 }
 

@@ -20,7 +20,8 @@ var KickerEditorView = function(rootEl) {
 	this.viz = {
 		'representationType': '2d',
 		'mountainboard': false,
-		'rider': false
+		'rider': false,
+		'textured': true
 	};
 };
 

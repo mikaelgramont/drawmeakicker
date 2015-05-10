@@ -8,16 +8,23 @@
   </style>
 
   <template>
-    <div class="container size-2">
-      <label>
-        <input type="radio" on-click="onClick" name="representation" value="2d" checked>
-        <span>2d</span>
-      </label>
-      <label>
-        <input type="radio" on-click="onClick" name="representation" value="3d">
-        <span>3d</span>
-      </label>
-    </div>
+    <ul class="container size-2">
+      <li>
+        <label>
+          <input type="radio" on-click="onClick" name="representation" value="2d" checked>
+          <span>2d</span>
+        </label>
+      </li>
+      <li>
+        <label>
+          <input type="radio" on-click="onClick" name="representation" value="3d">
+          <span>3d</span>
+        </label>
+        <label>
+          <input type="checkbox" id="textured" on-click="onClick" checked disabled> Textured
+        </label>
+      </li>
+    </ul>
   </template>
 
 </dom-module>
@@ -26,15 +33,30 @@
   Polymer({
     is: "bihi-representation",
     onClick: function(e) {
-      this.fire('representation-change', {type: e.currentTarget.value});
+      this.ready();
+
+      this.fire('representation-change', {
+        type: this.repType,
+        textured: this.textured
+      });
     },
     ready: function() {
-      var checkedEl = Polymer.dom(this.root).querySelector(':checked');
-      this.repType = checkedEl.value;
+      var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');
+      this.repType = checkedTypeEl.value;
+      this.updateTextureCheckbox(this.repType);
+    },
+    updateTextureCheckbox: function(repType) {
+      var el = Polymer.dom(this.root).querySelector('#textured');
+      el.disabled = repType == '2d';
+      this.textured = el.checked;
     },
     properties: {
       repType: {
         type: String,
+        reflectToAttribute: true
+      },
+      repType: {
+        type: Boolean,
         reflectToAttribute: true
       }
     }

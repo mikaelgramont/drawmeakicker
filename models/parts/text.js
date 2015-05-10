@@ -37,3 +37,18 @@ Text.prototype.buildGeometry = function(text, rotation) {
 	geometry.computeBoundingBox();
 	return geometry;
 };
+
+Text.prototype.setMeshVisibilityForDisplay = function(viz) {
+	var representation = viz.representationType;
+	for (rep in this.meshes) {
+		if (!this.meshes[rep]) {
+			continue;
+		}
+		this.meshes[rep].visible = false;
+	}
+
+	if (representation == '2d') {
+		this.meshes['2d'].visible = true;
+	}
+}
+

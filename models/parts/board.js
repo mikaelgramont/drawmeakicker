@@ -24,7 +24,7 @@ Board.prototype.createMeshes = function() {
 		z = this.width / 2 + .7;
 	board.position.set(x, y, z);
 	board.scale.set(.5, .5, .5)
-	board.rotateY(10 * Math.PI/64);
+	board.rotation.set(0, 10 * Math.PI / 64, 0);
 
 	this.meshes['3d'] = board;
 	this.meshes['2d'] = board;
