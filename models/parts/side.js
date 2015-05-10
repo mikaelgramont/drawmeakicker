@@ -25,12 +25,10 @@ Side.prototype.createMesh = function(points, offset) {
 Side.prototype.buildGeometry = function(points, offset) { 
 	var i, l;
 	var rectShape = new THREE.Shape();
-
 	rectShape.moveTo(points[0][0], points[0][1]);
 	for (i = 1, l = points.length; i < l; i++) {
 		rectShape.lineTo(points[i][0], points[i][1]);
 	}
-
 	var extrudeSettings = {
 		amount: config.model3d.sides.thickness,
 		bevelSize: 0,

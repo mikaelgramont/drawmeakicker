@@ -22,13 +22,14 @@ Surface.prototype.createMesh = function(points, width) {
 };
 
 Surface.prototype.buildGeometry = function(points, width) {
-	var rectShape = new THREE.Shape();
+	var shape = new THREE.Shape();
 	var thickness = config.model3d.surface.thickness;
 
 	var i;
 	var l = points.length;
 
-	// Remove the last two points we don't need.
+	// Remove the last two points we don't need
+	// (they would add a coping at the top and close the back too).
 	points.splice(l - 2);
 
 	// Duplicate the points, and offset them upwards.
@@ -36,9 +37,9 @@ Surface.prototype.buildGeometry = function(points, width) {
 		points.push([points[i][0], points[i][1] + thickness]);
 	}
 
-	rectShape.moveTo(points[0][0], points[0][1]);
-	for (i = 0, l = points.length; i < l; i++) {
-		rectShape.lineTo(points[i][0], points[i][1]);
+	shape.moveTo(points[0][0], points[0][1]);
+	for (i = 1, l = points.length; i < l; i++) {
+		shape.lineTo(points[i][0], points[i][1]);
 	}
 
 	var extrudeSettings = {
@@ -47,7 +48,7 @@ Surface.prototype.buildGeometry = function(points, width) {
 		bevelSegments: 1,
 		bevelThickness: 0
 	};
-	var geometry = new THREE.ExtrudeGeometry(rectShape, extrudeSettings);
+	var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 
 	var offset = new THREE.Vector3(0, 0, - width / 2);
 	geometry.vertices.forEach(function(vertex) {
