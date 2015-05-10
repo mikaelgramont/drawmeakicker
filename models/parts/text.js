@@ -24,7 +24,8 @@ Text.prototype.createMesh = function(name, text, material, rotation) {
 Text.prototype.buildGeometry = function(text, rotation) { 
 	var geometry = new THREE.TextGeometry(text, {
 		size: .15,
-		height: 0
+		height: 0,
+		font: "archer medium"
 	});
 	if (rotation) {
 		// Rotate individual vertices so we can just move

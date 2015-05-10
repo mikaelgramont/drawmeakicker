@@ -1,7 +1,17 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <script src="../bower_components/threejs/build/three.js"></script>
-<script src="../scripts/helvetiker_regular.typeface.js"></script>
+<script src="../fonts/archer_medium_regular.typeface.js"></script>
+<script src="../scripts/pnltri.2.1.1.min.js"></script>
+<script>
+  // Workaround for issue with font rendering:
+  THREE.Shape.Utils.triangulateShape = (function() {
+    var pnlTriangulator = new PNLTRI.Triangulator();
+    return function (contour, holes) {
+      return pnlTriangulator.triangulate_polygon([contour].concat(holes));
+    };
+  })();
+</script>
 <script src="../scripts/config.js"></script>
 <script src="../scripts/imagelist.js"></script>
 <script src="../scripts/utils.js"></script>

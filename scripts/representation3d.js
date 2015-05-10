@@ -142,6 +142,7 @@ Representation3D.prototype.buildMeasurements = function(length, width, radius, h
 		// ),
 		new Text(
 			'length',
+			// 'abcdefghijklmnopqrstuvwxyz0123456789,;.',
 			dimensions.length,
 			new THREE.Vector3(length / 2, - distance, 0),
 			new THREE.Euler(0, 0, 0, 'XYZ')
