@@ -8,13 +8,17 @@ var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 	this.config = config;
 	this.parts = null;
 	this.rafId = null;
+	// Placeholder empty objects:
+	this.models = {
+		board: new THREE.Object3D()
+	};
 	var init = this.init.bind(this);
 	setTimeout(function(){
 		// Some kind of race condition is causing the canvas element to not
 		// be sized correctly unless we push this to the next tick. Sigh.
 		init();
 	}, 0);
-	
+	Utils.makeAvailableForDebug('renderer3d', this);
 };
 
 Renderer3d.prototype.init = function() {
@@ -34,6 +38,18 @@ Renderer3d.prototype.init = function() {
 	this.renderOnce();	
 };
 
+Renderer3d.prototype.replaceModel = function(name, model) {
+	this.models[name] = model;
+	this.refresh();
+};
+
+Renderer3d.prototype.getModel = function(name) {
+	if (!name in this.models) {
+		throw new Error('No model exists with name', name);
+	}
+	return this.models[name];
+};
+
 Renderer3d.prototype.renderOnce = function() {
 	this.setRenderingPace_('once');
 };
@@ -50,15 +66,12 @@ Renderer3d.prototype.stopRendering = function() {
 
 Renderer3d.prototype.setRenderingPace_ = function(renderingPace) {
 	if (renderingPace == 'once' || renderingPace == 'continuous' || renderingPace == 'done') {
-		console.log('setRenderingPace', renderingPace);
 		this.renderingPace = renderingPace;
 	}
 
 	if (this.renderingPace == 'once') {
-		console.log('calling draw');
 		this.draw();
 	} else if(this.renderingPace == 'continuous') {
-		console.log('calling render');
 		this.render();
 	}
 }
@@ -74,7 +87,6 @@ Renderer3d.prototype.createCameras = function() {
 };
 
 Renderer3d.prototype.updateViz = function(update) {
-	console.log('updateViz', update);
 	for (prop in update) {
 		if (prop in this.view.viz) {
 			this.view.viz[prop] = update[prop];
@@ -147,7 +159,6 @@ Renderer3d.prototype.step = function() {
 };
 
 Renderer3d.prototype.draw = function() {
-	console.log('draw')
 	this.threeRenderer.render(this.scene, this.camera);
 	this.blueprintBorderRenderer.render();
 	if (this.renderingPace == 'once') {
@@ -170,7 +181,7 @@ Renderer3d.prototype.createKicker = function() {
 	if (this.kickerObj) {
 		this.scene.remove(this.kickerObj);
 	}
-	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList, this.view.viz.representationType);
+	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList, this.view.viz, this);
 
 	this.cameraTarget = new THREE.AxisHelper(1);
 	this.kickerObj.add(this.cameraTarget);

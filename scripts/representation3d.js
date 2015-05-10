@@ -1,8 +1,9 @@
-var Representation3D = function(view, points, length, angle, arc, radius, width, height, imageList, config) {
+var Representation3D = function(view, points, length, angle, arc, radius, width, height, imageList, config, renderer) {
 	this.view = view;
 	this.parts = {};
 	this.imageList = imageList;
 	this.points = points;
+	this.renderer = renderer;
 	var offset = new THREE.Vector3(0, 0, width / 2);
 	this.parts.sideR = this.buildSide(this.points, offset, imageList);
 	this.parts.sideL = this.buildSide(this.points, offset.negate(), imageList);
@@ -157,6 +158,6 @@ Representation3D.prototype.buildMeasurements = function(length, width, radius, h
 }
 
 Representation3D.prototype.buildBoard = function(length, width, height) {
-	var board = new Board(length, width, height);
+	var board = new Board(length, width, height, this.renderer);
 	return board;
 };

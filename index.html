@@ -14,6 +14,7 @@
 	- Sharing: facebook, twitter, g+. Annotations to embed everything in the target sharing network.
 
 	Nice to have's
+	- board in 2d
 	- add angle, radius with arrows and angle representation to 2d view.
 	- add presets for 2d cam positions
 	- add a hybrid mode to see the edges in 3d
@@ -113,7 +114,7 @@
 					e.target.disabled = true;
 					document.body.classList.add('expanded-editor');
 					editor.scrollIntoView();
-					event = new Event('renderer-init');
+					var event = new Event('renderer-init');
 					renderer.dispatchEvent(event);
 				});
 				// Temporary for dev purposes.
@@ -121,6 +122,7 @@
 					start.dispatchEvent(new Event('click'));
 				}, 50);
 			})();
+
 		</script>
 	</body>
 </html>

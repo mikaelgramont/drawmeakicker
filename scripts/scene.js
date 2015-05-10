@@ -89,11 +89,10 @@ EditorScene.getScene = function() {
 	return scene;
 };
 
-EditorScene.createKicker = function(kicker, config, imageList, representation) {
+EditorScene.createKicker = function(kicker, config, imageList, viz, models) {
 	var kickerObj = new THREE.Object3D();
-	var rep = kicker.model.create3dObject(config, imageList);
+	var rep = kicker.model.create3dObject(config, imageList, models);
 	Utils.iterateOverParts(rep.parts, function(part) {
-		part.setMeshVisibilityForDisplay(representation);
 		for (rep in part.meshes) {
 			if (!part.meshes[rep]) {
 				continue;
