@@ -120,6 +120,7 @@
     },
     ready: function() {
       console.log('bihi-renderer3d ready');
+      this.fire('bihi-signal', {name: "test", data: "Some data"});
     }
   });
 

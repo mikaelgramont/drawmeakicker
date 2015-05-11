@@ -62,7 +62,16 @@
 <script>
   Polymer({
     is: "bihi-design-step",
-    ready: init,
+    ready: function() {
+      console.log('bihi-design-step ready');
+      if (this.first) {
+        this.$.prev.classList.add("invisible");
+      }
+
+      if (this.last) {
+        this.$.next.classList.add("invisible");
+      }
+    },
     listeners: {
       "step-select": "onSelect",
       "step-unselect": "onUnselect"
@@ -98,15 +107,4 @@
       step: {type: Number}
     }
   });
-
-  function init() {
-    console.log('bihi-design-step init');
-    if (this.first) {
-      this.$.prev.classList.add("invisible");
-    }
-
-    if (this.last) {
-      this.$.next.classList.add("invisible");
-    }
-  }
 </script>

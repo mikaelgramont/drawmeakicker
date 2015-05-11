@@ -2,6 +2,7 @@
 
 <dom-module id="bihi-viz">
   <template>
+    <bihi-signals on-bihi-signal-test="testCallback"></bihi-signals>
     <content></content>
   </template>
 
@@ -19,6 +20,9 @@
     },
     ready: function() {
       console.log('bihi-viz ready');
+    },
+    testCallback: function() {
+      console.log('testCallback', arguments);
     }
   });
 </script>
