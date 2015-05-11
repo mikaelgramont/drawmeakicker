@@ -96,10 +96,11 @@
       caption: {type: String},
       last: {type: Boolean},
       step: {type: Number}
-    },
+    }
   });
 
   function init() {
+    console.log('bihi-design-step init');
     if (this.first) {
       this.$.prev.classList.add("invisible");
     }

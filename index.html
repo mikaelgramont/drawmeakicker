@@ -7,6 +7,8 @@
 	- is firing and catching events through the dom the way to go to communicate? Seems to work for elements that are related to each other. Should we use some kind of pubsub sitting at the top of the page for elements that are not in the same branch of the tree?
 
 	TODO:
+	- gather all parameters from the markup (dimensions + viz) and stop hardcoding anything.
+	  
 	- add character.
 	- create a better background image for the top section. Possibly add a blueprint in the bottom right corner, so that the action button can be made white against blue.
 	- Saving to the backend (height, width, angle, name, snapshot, pdf).
@@ -16,6 +18,10 @@
 	- board in 2d (second model part of the export), board with no textures in 3d (traverse children and add edgehelpers, or consolidate all children into one geometry).
 	- add angle, radius with arrows and angle representation to 2d view.
 	- add presets for 2d cam positions
+
+	Optimizations:
+	- cache text objects as they are super slow to generate
+	- use factories for all object creation, in order to recycle them (replace the geometry, position, scale and rotation).
 		
 -->
 <html>
@@ -84,7 +90,7 @@
 								<bihi-design-fieldset legend="Representation">
 									<bihi-representation></bihi-representation>
 								</bihi-design-fieldset>
-								<bihi-design-fieldset legend="Context">
+								<bihi-design-fieldset legend="Context" representation="3d">
 									<bihi-context></bihi-context>
 								</bihi-design-fieldset>
 							</bihi-viz>

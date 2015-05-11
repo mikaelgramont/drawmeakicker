@@ -41,6 +41,7 @@
       });
     },
     ready: function() {
+      console.log('bihi-representation ready');
       var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');
       this.repType = checkedTypeEl.value;
       this.updateTextureCheckbox(this.repType);

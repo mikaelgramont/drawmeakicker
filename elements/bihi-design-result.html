@@ -4,7 +4,7 @@
   <style>
       :host {
         display: block;
-        margin: 10px 0;
+        margin: 5px 0;
       }
       .caption {
         display: block;
@@ -27,6 +27,9 @@
       caption: {type: String},
       unit: {type: String},
       value: {type: Number}
+    },
+    ready: function() {
+      console.log('bihi-design-result ready');
     }    
   });
 </script>

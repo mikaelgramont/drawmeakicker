@@ -80,6 +80,8 @@ Renderer3d.prototype.createCameras = function() {
 	this.cameras = EditorScene.createCameras(this.canvasEl, this.kickerObj);
 	this.orbitControls = new THREE.OrbitControls(this.cameras.perspective, this.canvasEl);	
 	this.orbitControls.zoomSpeed = .3;
+	this.orbitControls.maxDistance = 12;
+	this.orbitControls.minDistance = 2.5;
 	Utils.makeAvailableForDebug('orbitControls', this.orbitControls);
 	
 	this.orbitControls.addEventListener('start', this.renderContinuously.bind(this));

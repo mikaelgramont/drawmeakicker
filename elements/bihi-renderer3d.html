@@ -83,8 +83,10 @@
     },
     init: function() {
       if (this.initialized) {
+        console.log('bihi-renderer3d already initialized');
         return;
       }
+      console.log('bihi-renderer3d init');
       var editorEl = document.querySelector('bihi-editor'),
           canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
           canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
@@ -115,6 +117,9 @@
     },
     updateViz: function(e) {
       this.renderer.updateViz(e.detail);
+    },
+    ready: function() {
+      console.log('bihi-renderer3d ready');
     }
   });
 
