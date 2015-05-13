@@ -1,6 +1,6 @@
 var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 	this.kicker = kicker;
-	this.view = this.kicker.model.view;
+	this.data = this.kicker.model.data;
 	this.canvasEl = canvas3dEl;
 	this.canvas2dEl = canvas2dEl;
 	this.blueprintBorderRenderer = new BlueprintBorderRenderer(canvas2dEl);
@@ -90,10 +90,10 @@ Renderer3d.prototype.createCameras = function() {
 
 Renderer3d.prototype.updateViz = function(update) {
 	for (prop in update) {
-		if (prop in this.view.viz) {
-			this.view.viz[prop] = update[prop];
+		if (prop in this.data.viz) {
+			this.data.viz[prop] = update[prop];
 		} else if (prop == 'type') {
-			this.view.viz.representationType = update[prop];	
+			this.data.viz.representationType = update[prop];	
 		}
 	}
 
@@ -104,7 +104,7 @@ Renderer3d.prototype.updateViz = function(update) {
 Renderer3d.prototype.setVisibleObjects = function() {
 	// Go over all parts and tell them which needs to show.
 	var rep = this.kicker.getRepresentation3d(),
-		viz = this.view.viz;
+		viz = this.data.viz;
 	Utils.iterateOverParts(rep.parts, function(part) {
 		part.setMeshVisibilityForDisplay(viz);
 	});
@@ -113,7 +113,7 @@ Renderer3d.prototype.setVisibleObjects = function() {
 };
 
 Renderer3d.prototype.pickCamera = function() {
-	if (this.view.viz.representationType == '2d') {
+	if (this.data.viz.representationType == '2d') {
 		// TODO: recenter the camera on the kicker
 		this.camera = this.cameras.ortho;
 		this.orbitControls.enabled = false;
@@ -171,7 +171,7 @@ Renderer3d.prototype.draw = function() {
 Renderer3d.prototype.refresh = function() {
 	this.kicker.refresh();
 	this.createKicker();
-	if (this.view.viz.representationType == '2d') {
+	if (this.data.viz.representationType == '2d') {
 		// Need to recenter the camera on the new kicker.
 		this.prepareCameras();
 	}
@@ -183,7 +183,7 @@ Renderer3d.prototype.createKicker = function() {
 	if (this.kickerObj) {
 		this.scene.remove(this.kickerObj);
 	}
-	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList, this.view.viz, this);
+	this.kickerObj = EditorScene.createKicker(this.kicker, this.config, this.imageList, this.data.viz, this);
 
 	this.cameraTarget = new THREE.AxisHelper(1);
 	this.kickerObj.add(this.cameraTarget);

@@ -1,22 +1,23 @@
-var KickerModel = function(view) {
-	this.view = view;
-	this.processViewParameters()
+var KickerModel = function(data) {
+	this.data = data;
+	this.processDataParameters();
 };
 
-KickerModel.prototype.processViewParameters = function() {
-	this.readView();
+KickerModel.prototype.processDataParameters = function() {
+	this.readData();
 	this.calculate();
-	this.refreshView();
+	this.refreshData();
 };
 
-KickerModel.prototype.readView = function() {
-	this.height = parseFloat(this.view.parameters.height.getAttribute('value'));
-	this.width = parseFloat(this.view.parameters.width.getAttribute('value'));
-	this.angle = parseFloat(this.view.parameters.angle.getAttribute('value'));
+KickerModel.prototype.readData = function() {
+	console.log('Should be asking a param element for values.');
+	this.height = parseFloat(this.data.parameters.height.getAttribute('value'));
+	this.width = parseFloat(this.data.parameters.width.getAttribute('value'));
+	this.angle = parseFloat(this.data.parameters.angle.getAttribute('value'));
 };
 
-KickerModel.prototype.refreshView = function() {
-	this.view.refresh(this.radius, this.length, this.arc, this.height, this.width, this.angle);
+KickerModel.prototype.refreshData = function() {
+	this.data.refresh(this.radius, this.length, this.arc, this.height, this.width, this.angle);
 };
 
 KickerModel.prototype.calculate = function() {
@@ -83,7 +84,7 @@ KickerModel.prototype.calculateSidePoints = function(angle, radius, config) {
 
 KickerModel.prototype.create3dObject = function(config, imageList, models) {
 	var points = this.calculateSidePoints(this.angle, this.radius, config);
-	this.representation3d = new Representation3D(this.view, points, this.length, this.angle, this.arc, this.radius, this.width, this.height, imageList, config, models);
+	this.representation3d = new Representation3D(this.data, points, this.length, this.angle, this.arc, this.radius, this.width, this.height, imageList, config, models);
 	return this.representation3d;
 };
 

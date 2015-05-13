@@ -1,5 +1,5 @@
-var Representation3D = function(view, points, length, angle, arc, radius, width, height, imageList, config, renderer) {
-	this.view = view;
+var Representation3D = function(data, points, length, angle, arc, radius, width, height, imageList, config, renderer) {
+	this.data = data;
 	this.parts = {};
 	this.imageList = imageList;
 	this.points = points;
@@ -127,7 +127,7 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 
 Representation3D.prototype.buildMeasurements = function(length, width, radius, height) {
 	var distance = .3;
-	var dimensions = this.view.getHumanReadableDimensions();
+	var dimensions = this.data.getHumanReadableDimensions();
 	return [
 		new Text(
 			'radius',

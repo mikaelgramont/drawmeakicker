@@ -7,7 +7,19 @@
 	- is firing and catching events through the dom the way to go to communicate? Seems to work for elements that are related to each other. Should we use some kind of pubsub sitting at the top of the page for elements that are not in the same branch of the tree?
 
 	TODO:
-	- gather all parameters from the markup (dimensions + viz) and stop hardcoding anything.
+	Init:
+	- rename KickerData to KickerIOAbstract
+	- give it some unimplemented methods like parse and reflect
+	- implement a concrete version of KickerIOAbstract named KickerIOFromDOM that does the same as the current situation
+	- next implementation can do what it needs to render to PDF and take in a JSON object.
+	
+	Measurements:
+	- function to draw a straight two-ended arrow. Params: start point, stop point.
+	- function to draw a curved two-ended arrow. Params: center, radius, angle.
+	- function to draw an angle. Params: position, angle, CCW rotation from 0.
+	- send a pull request to allow https://github.com/mrdoob/three.js/blob/master/src/extras/helpers/EdgesHelper.js to take in a material object instead of hex => thicker lines.
+
+	- send another pull request to do (!!visible) instead of (visible === true)
 
 	- add character.
 	- create a better background image for the top section. Possibly add a blueprint in the bottom right corner, so that the action button can be made white against blue.
@@ -39,12 +51,9 @@
 		<link rel="import" href="elements/bihi-logo.html">
 		<link rel="import" href="elements/bihi-representation.html">
 		<link rel="import" href="elements/bihi-renderer3d.html">
-		<link rel="import" href="elements/bihi-signals.html">
-		<link rel="import" href="elements/bihi-viz.html">
 	</head>
 
 	<body>
-		<bihi-signals></bihi-signals>
 		<div class="content">
 			<header>
 				<bihi-logo></bihi-logo>
@@ -74,7 +83,7 @@
 			<div class="main" role="main">
 				<bihi-editor class="editor">
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
-						<bihi-design-step id="design-tab" caption="Design" step="1" active first>
+						<bihi-design-step caption="Design" step="1" active first>
 							<bihi-design-fieldset legend="Parameters">
 								<bihi-design-parameter id="height" caption="Height" value="1.2" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>
 								<bihi-design-parameter id="width" caption="Width" value="1.0" min=".5" max="4" step="0.1" unit="m"></bihi-design-parameter>
@@ -87,17 +96,18 @@
 								<bihi-design-result id="arc" caption="Surface length" unit="m"></bihi-design-result>
 							</bihi-design-fieldset>
 						</bihi-design-step>
+
 						<bihi-design-step caption="Visualize" step="2">
-							<bihi-viz>
-								<bihi-design-fieldset legend="Representation">
-									<bihi-representation></bihi-representation>
-								</bihi-design-fieldset>
-								<bihi-design-fieldset legend="Context" representation="3d">
-									<bihi-context></bihi-context>
-								</bihi-design-fieldset>
-							</bihi-viz>
+							<bihi-design-fieldset legend="Representation">
+								<bihi-representation rep-type="3d"></bihi-representation>
+							</bihi-design-fieldset>
+							<bihi-design-fieldset legend="Context">
+								<bihi-context rider></bihi-context>
+							</bihi-design-fieldset>
 						</bihi-design-step>
+
 						<bihi-design-step caption="Save" step="3"></bihi-design-step>
+
 						<bihi-design-step caption="Share" step="4" last></bihi-design-step>
 					</bihi-accordion>
 					<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>

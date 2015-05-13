@@ -3,7 +3,7 @@ var Kicker = function(model) {
 };
 
 Kicker.prototype.refresh = function() {
-	this.model.processViewParameters();
+	this.model.processDataParameters();
 };
 
 Kicker.prototype.getRepresentation3d = function() {

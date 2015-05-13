@@ -5,7 +5,7 @@
 <script src="../scripts/config.js"></script>
 <script src="../scripts/imagelist.js"></script>
 <script src="../scripts/utils.js"></script>
-<script src="../scripts/kickereditorview.js"></script>
+<script src="../scripts/kickerdata.js"></script>
 <script src="../scripts/kickermodel.js"></script>
 <script src="../scripts/kicker.js"></script>
 <script src="../scripts/ColladaLoader.js"></script> 
@@ -90,8 +90,8 @@
       var editorEl = document.querySelector('bihi-editor'),
           canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
           canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
-          view = new KickerEditorView(editorEl),
-          model = new KickerModel(view),
+          kickerData = new KickerData(editorEl),
+          model = new KickerModel(kickerData),
           kicker = new Kicker(model),
           imageList = new ImageList();
       this.renderer = new Renderer3d(kicker, canvas3dEl, imageList, config, canvas2dEl);

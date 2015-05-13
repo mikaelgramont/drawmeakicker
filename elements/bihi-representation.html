@@ -21,7 +21,7 @@
           <span>3d</span>
         </label>
         <label>
-          <input type="checkbox" id="textured" on-click="onClick" checked disabled> Textured
+          <input type="checkbox" id="texturedEl" on-click="onClick" checked disabled> Textured
         </label>
       </li>
     </ul>
@@ -32,34 +32,39 @@
 <script>
   Polymer({
     is: "bihi-representation",
-    onClick: function(e) {
-      this.ready();
+    ready: function() {
+      var radioEls = Polymer.dom(this.root).querySelectorAll('input[type=radio]');
+      for(var i = 0, l = radioEls.length; i < l; i++) {
+        radioEls[i].checked = (radioEls[i].value == this.repType);
+      }
+      this.$.texturedEl.checked = this.textured;
+      this.updateTextureCheckbox(this.repType);
 
-      this.fire('representation-change', {
+      console.log('bihi-representation ready, textured', this.textured);
+    },
+    onClick: function(e) {
+      var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');
+      this.repType = checkedTypeEl.value;
+      this.textured = this.$.texturedEl.checked;
+      this.updateTextureCheckbox(this.repType);
+
+      this.fire('viz-change', {
         type: this.repType,
         textured: this.textured
       });
     },
-    ready: function() {
-      console.log('bihi-representation ready');
-      var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');
-      this.repType = checkedTypeEl.value;
-      this.updateTextureCheckbox(this.repType);
-    },
     updateTextureCheckbox: function(repType) {
-      var el = Polymer.dom(this.root).querySelector('#textured');
-      el.disabled = repType == '2d';
-      this.textured = el.checked;
+      this.$.texturedEl.disabled = repType == '2d';
     },
     properties: {
       repType: {
         type: String,
         reflectToAttribute: true
       },
-      repType: {
+      textured: {
         type: Boolean,
         reflectToAttribute: true
-      }
+      }      
     }
   });
 

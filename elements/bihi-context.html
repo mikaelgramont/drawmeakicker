@@ -28,25 +28,31 @@
 <script>
   Polymer({
     is: "bihi-context",
-    onClick: function(e) {
-      var detail = {};
-      detail[e.currentTarget.id] = !!this.$[e.currentTarget.id].checked;
-      this.fire('context-change', detail);
-    },
-    properties: {
-      values: {
-        type: Function,
-        value: function() {
-          return {
-            mountainboard: !!this.$.mountainboard.checked,
-            rider: !!this.$.rider.checked
-          }          
-        },
-        reflectToAttribute: true
-      }
-    },
     ready: function() {
       console.log('bihi-context ready');
+      this.$.mountainboard.checked = !!this.mountainboard;
+      this.$.rider.checked = !!this.rider;
+    },
+    update: function() {
+      this.mountainboard = this.$.mountainboard.checked;
+      this.rider = this.$.rider.checked;
+    },
+    onClick: function(e) {
+      this.update();
+      this.fire('viz-change', {
+        mountainboard: this.mountainboard,
+        rider: this.rider
+      });
+    },
+    properties: {
+      mountainboard: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
+      rider: {
+        type: Boolean,
+        reflectToAttribute: true
+      }
     }
   });
 
