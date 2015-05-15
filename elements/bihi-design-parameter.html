@@ -44,7 +44,7 @@
     onInputChange: function(e) {
       // Update the actual property.
       this.value = e.target.value;
-      this.fire("parameter-change");
+      this.fire("parameter-change", this.value);
     }
   });
 </script>

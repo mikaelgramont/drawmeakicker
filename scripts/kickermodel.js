@@ -10,10 +10,9 @@ KickerModel.prototype.processDataParameters = function() {
 };
 
 KickerModel.prototype.readData = function() {
-	console.log('Should be asking a param element for values.');
-	this.height = parseFloat(this.data.parameters.height.getAttribute('value'));
-	this.width = parseFloat(this.data.parameters.width.getAttribute('value'));
-	this.angle = parseFloat(this.data.parameters.angle.getAttribute('value'));
+	this.height = this.data.get('height');
+	this.width = this.data.get('width');
+	this.angle = this.data.get('angle');
 };
 
 KickerModel.prototype.refreshData = function() {

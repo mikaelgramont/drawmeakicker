@@ -1,0 +1,45 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-params">
+  <style>
+  </style>
+
+  <template>
+    <bihi-design-parameter id="height" caption="Height" value="1.2" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>
+    <bihi-design-parameter id="width" caption="Width" value="1.0" min=".5" max="4" step="0.1" unit="m"></bihi-design-parameter>
+    <bihi-design-parameter id="angle" caption="Exit angle" value="45" min="30" max="89.9" step="1" unit="&deg;"></bihi-design-parameter>  
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-params",
+    listeners: {
+      "parameter-change": "onParamChange"
+    },
+    onParamChange: function(e) {
+      this[e.target.id] = e.detail;
+    },
+    properties: {
+      width: {
+        type: Number,
+        reflectToAttribute: true
+      },
+      height: {
+        type: Number,
+        reflectToAttribute: true
+      },
+      angle: {
+        type: Number,
+        reflectToAttribute: true
+      }
+    },
+    ready: function() {
+      this.height = this.$.height.value;
+      this.width = this.$.width.value;
+      this.angle = this.$.angle.value;
+    }
+  });
+
+</script>

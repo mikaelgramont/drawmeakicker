@@ -8,6 +8,7 @@
 
 	TODO:
 	Init:
+	- stop passing viz around, and pass data instead. Call it editorData?
 	- rename KickerData to KickerIOAbstract
 	- give it some unimplemented methods like parse and reflect
 	- implement a concrete version of KickerIOAbstract named KickerIOFromDOM that does the same as the current situation
@@ -49,8 +50,10 @@
 		<link rel="import" href="elements/bihi-design-result.html">
 		<link rel="import" href="elements/bihi-design-step.html">
 		<link rel="import" href="elements/bihi-logo.html">
+		<link rel="import" href="elements/bihi-params.html">
 		<link rel="import" href="elements/bihi-representation.html">
 		<link rel="import" href="elements/bihi-renderer3d.html">
+		<link rel="import" href="elements/bihi-results.html">
 	</head>
 
 	<body>
@@ -85,15 +88,10 @@
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 						<bihi-design-step caption="Design" step="1" active first>
 							<bihi-design-fieldset legend="Parameters">
-								<bihi-design-parameter id="height" caption="Height" value="1.2" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>
-								<bihi-design-parameter id="width" caption="Width" value="1.0" min=".5" max="4" step="0.1" unit="m"></bihi-design-parameter>
-								<bihi-design-parameter id="angle" caption="Exit angle" value="45" min="30" max="89.9" step="1" unit="&deg;"></bihi-design-parameter>
+								<bihi-params></bihi-params>
 							</bihi-design-fieldset>
-
 							<bihi-design-fieldset legend="Results">
-								<bihi-design-result id="radius" caption="Radius" unit="m"></bihi-design-result>
-								<bihi-design-result id="length" caption="Base length" unit="m"></bihi-design-result>
-								<bihi-design-result id="arc" caption="Surface length" unit="m"></bihi-design-result>
+								<bihi-results></bihi-results>
 							</bihi-design-fieldset>
 						</bihi-design-step>
 

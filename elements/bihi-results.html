@@ -1,0 +1,34 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-results">
+  <style>
+  </style>
+
+  <template>
+    <bihi-design-result id="radius" caption="Radius" unit="m" value="{{radius}}"></bihi-design-result>
+    <bihi-design-result id="length" caption="Base length" unit="m" value="{{length}}"></bihi-design-result>
+    <bihi-design-result id="arc" caption="Surface length" unit="m" value="{{arc}}"></bihi-design-result>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-results",
+    properties: {
+      radius: {
+        type: Number,
+        reflectToAttribute: true
+      },
+      length: {
+        type: Number,
+        reflectToAttribute: true
+      },
+      arc: {
+        type: Number,
+        reflectToAttribute: true
+      },
+    }
+  });
+
+</script>
