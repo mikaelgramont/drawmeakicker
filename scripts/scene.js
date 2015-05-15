@@ -89,7 +89,7 @@ EditorScene.getScene = function() {
 	return scene;
 };
 
-EditorScene.createKicker = function(kicker, config, imageList, viz, models) {
+EditorScene.createKicker = function(kicker, config, imageList, models) {
 	var kickerObj = new THREE.Object3D();
 	var rep = kicker.model.create3dObject(config, imageList, models);
 	Utils.iterateOverParts(rep.parts, function(part) {

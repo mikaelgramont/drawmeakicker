@@ -1,17 +1,11 @@
 var KickerData = function(paramsEl, resultsEl, repEl, contextEl) {
-	this.parameters = {};
-	this.results = {};
-	this.viz = {};
-
 	this.paramsEl = paramsEl;
 	this.resultsEl = resultsEl;
 	this.repEl = repEl;
 	this.contextEl = contextEl;
 
-	this.parse();
-}	
-
-KickerData.prototype.parse = function() {
+	// TODO: get rid of this once consumers access it through data.get('...')
+	this.viz = {};
 	this.viz.representationType = this.get('rep-type');
 	this.viz.textured = this.get('textured');
 
@@ -33,12 +27,25 @@ KickerData.prototype.get = function(name) {
 		case 'rider':
 			return this.contextEl.hasAttribute(name);
 		default:
-			throw new Error('Not supported:' + name);
+			throw new Error('Get not supported:' + name);
 	}
 };
 
+KickerData.prototype.set = function(name, value) {
+	var supported = ['arc', 'radius', 'length', 'rep-type', 'textured', 'mountainboard', 'rider'];
+	if (supported.indexOf(name) == -1) {
+		throw new Error('Set not supported:' + name);
+	}
+	var floatValues = ['arc', 'radius', 'length'];
+	if (floatValues.indexOf(name) !== -1) {
+		this.resultsEl[name] = value.toFixed(2);
+	} else {
+		this.resultsEl[name] = value;
+	}
+};
 
 KickerData.prototype.refresh = function(radius, length, arc, height, width, angle) {
+	// TODO: we shouldn't need to rewrite some of these things.
 	this.lengthUnit = 'm';
 	this.radius = radius;
 	this.length = length;
@@ -47,14 +54,11 @@ KickerData.prototype.refresh = function(radius, length, arc, height, width, angl
 	this.width = width;
 	this.angle = angle;
 
-	this.reflect(radius, length, arc);
+	this.set('radius', radius);
+	this.set('length', length);
+	this.set('arc', arc);
 }
 
-KickerData.prototype.reflect = function(radius, length, arc) {
-	this.resultsEl.radius = radius.toFixed(2);
-	this.resultsEl.length = length.toFixed(2);
-	this.resultsEl.arc = arc.toFixed(2);
-};
 
 KickerData.prototype.getHumanReadableDimensions = function() {
 	return {

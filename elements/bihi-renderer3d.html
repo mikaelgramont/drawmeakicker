@@ -86,7 +86,6 @@
         console.log('bihi-renderer3d already initialized');
         return;
       }
-      console.log('bihi-renderer3d init');
       var canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
           canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
           kickerData = new KickerData(
@@ -121,10 +120,6 @@
     },
     updateViz: function(e) {
       this.renderer.updateViz(e.detail);
-    },
-    ready: function() {
-      console.log('bihi-renderer3d ready');
-      this.fire('bihi-signal', {name: "test", data: "Some data"});
     }
   });
 

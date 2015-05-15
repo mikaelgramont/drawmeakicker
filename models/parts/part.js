@@ -5,8 +5,8 @@ var Part = function() {
 	};
 };
 
-Part.prototype.setMeshVisibilityForDisplay = function(viz) {
-	var representation = viz.representationType;
+Part.prototype.setMeshVisibilityForDisplay = function(data) {
+	var representation = data.get('rep-type');
 	for (rep in this.meshes) {
 		if (!this.meshes[rep]) {
 			continue;
@@ -14,7 +14,7 @@ Part.prototype.setMeshVisibilityForDisplay = function(viz) {
 		this.meshes[rep].visible = false;
 	}
 
-	if (representation == '2d' || !viz.textured) {
+	if (representation == '2d' || !data.get('textured')) {
 		if (this.meshes['2d']) {
 			this.meshes['2d'].visible = true;
 		}

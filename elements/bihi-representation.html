@@ -39,8 +39,6 @@
       }
       this.$.texturedEl.checked = this.textured;
       this.updateTextureCheckbox(this.repType);
-
-      console.log('bihi-representation ready, textured', this.textured);
     },
     onClick: function(e) {
       var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');
@@ -49,8 +47,8 @@
       this.updateTextureCheckbox(this.repType);
 
       this.fire('viz-change', {
-        type: this.repType,
-        textured: this.textured
+        'rep-type': this.repType,
+        'textured': this.textured
       });
     },
     updateTextureCheckbox: function(repType) {

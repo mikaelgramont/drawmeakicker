@@ -38,8 +38,8 @@ Text.prototype.buildGeometry = function(text, rotation) {
 	return geometry;
 };
 
-Text.prototype.setMeshVisibilityForDisplay = function(viz) {
-	var representation = viz.representationType;
+Text.prototype.setMeshVisibilityForDisplay = function(data) {
+	var representation = data.get('rep-type');
 	for (rep in this.meshes) {
 		if (!this.meshes[rep]) {
 			continue;

@@ -38,8 +38,8 @@ Board.prototype.onBoardLoaded = function(collada) {
 	this.createMeshes();
 };
 
-Board.prototype.setMeshVisibilityForDisplay = function(viz) {
-	var representation = viz.representationType;
+Board.prototype.setMeshVisibilityForDisplay = function(data) {
+	var representation = data.get('rep-type');
 	this.meshes['2d'].visible = false;
-	this.meshes['3d'].visible = (representation == '3d' && viz.mountainboard);
+	this.meshes['3d'].visible = (representation == '3d' && data.get('mountainboard'));
 };
