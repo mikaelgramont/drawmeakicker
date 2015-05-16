@@ -127,11 +127,10 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 
 Representation3D.prototype.buildMeasurements = function(length, width, radius, height) {
 	var distance = .3;
-	var dimensions = this.data.getHumanReadableDimensions();
 	return [
 		new Text(
 			'radius',
-			dimensions.radius,
+			this.getHumanReadableDimension_(radius, 'm'),
 			new THREE.Vector3(0, height, 0),
 			new THREE.Euler(0, 0, 0, 'XYZ')
 		),
@@ -144,17 +143,21 @@ Representation3D.prototype.buildMeasurements = function(length, width, radius, h
 		new Text(
 			'length',
 			// 'abcdefghijklmnopqrstuvwxyz0123456789,;.',
-			dimensions.length,
+			this.getHumanReadableDimension_(length, 'm'),
 			new THREE.Vector3(length / 2, - distance, 0),
 			new THREE.Euler(0, 0, 0, 'XYZ')
 		),
 		new Text(
 			'height',
-			dimensions.height,
+			this.getHumanReadableDimension_(height, 'm'),
 			new THREE.Vector3(length + distance, height / 2, 0),
 			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ')
 		)
 	];
+}
+
+Representation3D.prototype.getHumanReadableDimension_ = function(dimension, unit) {
+	return dimension.toFixed(2) + unit;
 }
 
 Representation3D.prototype.buildBoard = function(length, width, height) {

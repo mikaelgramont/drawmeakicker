@@ -5,7 +5,9 @@
 <script src="../scripts/config.js"></script>
 <script src="../scripts/imagelist.js"></script>
 <script src="../scripts/utils.js"></script>
-<script src="../scripts/kickerdata.js"></script>
+<script src="../scripts/kickerio.js"></script>
+<script src="../scripts/kickeriofromdom.js"></script>
+<script src="../scripts/kickeriofromjson.js"></script>
 <script src="../scripts/kickermodel.js"></script>
 <script src="../scripts/kicker.js"></script>
 <script src="../scripts/ColladaLoader.js"></script> 
@@ -88,13 +90,22 @@
       }
       var canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
           canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
-          kickerData = new KickerData(
+          kickerIOFromDOM = new KickerIOFromDOM(
             document.querySelector('bihi-params'),
             document.querySelector('bihi-results'),
             document.querySelector('bihi-representation'),
             document.querySelector('bihi-context')
           ),
-          model = new KickerModel(kickerData),
+          // kickerIOFromJSON = new KickerIOFromJSON({
+          //   'height': 1.52,
+          //   'width': 1.31,
+          //   'angle': 50,
+          //   'rep-type': '2d',
+          //   'mountainboard': true,
+          //   'textured': true,
+          //   'rider': true
+          // }),
+          model = new KickerModel(kickerIOFromDOM),
           kicker = new Kicker(model),
           imageList = new ImageList();
       this.renderer = new Renderer3d(kicker, canvas3dEl, imageList, config, canvas2dEl);

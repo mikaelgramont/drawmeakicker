@@ -16,7 +16,9 @@ KickerModel.prototype.readData = function() {
 };
 
 KickerModel.prototype.refreshData = function() {
-	this.data.refresh(this.radius, this.length, this.arc, this.height, this.width, this.angle);
+	this.data.set('radius', this.radius);
+	this.data.set('length', this.length);
+	this.data.set('arc', this.arc);
 };
 
 KickerModel.prototype.calculate = function() {
