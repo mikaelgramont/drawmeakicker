@@ -8,8 +8,8 @@
 
 	TODO:
 	Init:
-	- initialize the markup with values from the object
 	- next implementation used on the backend can do what it needs to render to PDF and take in a JSON object.
+
 	
 	Measurements:
 	- function to draw a straight two-ended arrow. Params: start point, stop point.
@@ -32,6 +32,9 @@
 	Optimizations:
 	- cache text objects as they are super slow to generate
 	- use factories for all object creation, in order to recycle them (replace the geometry, position, scale and rotation).
+
+	Mobile:
+	- Add a darkish background color to all containers with background images.
 		
 -->
 <html>
@@ -94,7 +97,7 @@
 
 						<bihi-design-step caption="Visualize" step="2">
 							<bihi-design-fieldset legend="Representation">
-								<bihi-representation rep-type="3d"></bihi-representation>
+								<bihi-representation></bihi-representation>
 							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Context">
 								<bihi-context rider></bihi-context>
@@ -125,7 +128,15 @@
 					e.target.disabled = true;
 					document.body.classList.add('expanded-editor');
 					editor.scrollIntoView();
-					var event = new Event('renderer-init');
+					var event = new CustomEvent('renderer-init', {detail: {
+				        'height': 1.2,
+				        'width': 1,
+				        'angle': 45,
+				        'repType': '2d',
+				        'mountainboard': false,
+				        'textured': false,
+				        'rider': false
+				    }});
 					renderer.dispatchEvent(event);
 				});
 				// Temporary for dev purposes.

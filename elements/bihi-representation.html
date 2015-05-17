@@ -11,17 +11,17 @@
     <ul class="container size-2">
       <li>
         <label>
-          <input type="radio" on-click="onClick" name="representation" value="2d" checked>
+          <input type="radio" on-click="onClick" name="representation" value="2d" checked={{is2d}}>
           <span>2d</span>
         </label>
       </li>
       <li>
         <label>
-          <input type="radio" on-click="onClick" name="representation" value="3d">
+          <input type="radio" on-click="onClick" name="representation" value="3d" checked={{is3d}}>
           <span>3d</span>
         </label>
         <label>
-          <input type="checkbox" id="texturedEl" on-click="onClick" checked disabled> Textured
+          <input type="checkbox" id="texturedEl" on-click="onClick" checked={{textured}} disabled={{texturedDisabled}}> Textured
         </label>
       </li>
     </ul>
@@ -33,12 +33,16 @@
   Polymer({
     is: "bihi-representation",
     ready: function() {
-      var radioEls = Polymer.dom(this.root).querySelectorAll('input[type=radio]');
-      for(var i = 0, l = radioEls.length; i < l; i++) {
-        radioEls[i].checked = (radioEls[i].value == this.repType);
-      }
-      this.$.texturedEl.checked = this.textured;
+      // var radioEls = Polymer.dom(this.root).querySelectorAll('input[type=radio]');
+      // for(var i = 0, l = radioEls.length; i < l; i++) {
+      //   radioEls[i].checked = (radioEls[i].value == this.repType);
+      // }
+      // this.$.texturedEl.checked = this.textured;
       this.updateTextureCheckbox(this.repType);
+      // var self = this;
+      // setTimeout(function() {
+      //   console.log('bihi-representation - repType', self.repType);
+      // }, 20);
     },
     onClick: function(e) {
       var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');
@@ -47,22 +51,33 @@
       this.updateTextureCheckbox(this.repType);
 
       this.fire('viz-change', {
-        'rep-type': this.repType,
+        'repType': this.repType,
         'textured': this.textured
       });
     },
+    setRadioChecked: function() {
+      this.is2d = this.repType == '2d';
+      this.is3d = this.repType == '3d';
+    },
+    onRepTypeUpdate: function() {
+      this.setRadioChecked();
+    },
     updateTextureCheckbox: function(repType) {
-      this.$.texturedEl.disabled = repType == '2d';
+      this.texturedDisabled = repType != '3d';
     },
     properties: {
       repType: {
         type: String,
-        reflectToAttribute: true
+        reflectToAttribute: true,
+        observer: "onRepTypeUpdate"
       },
       textured: {
         type: Boolean,
         reflectToAttribute: true
-      }      
+      },
+      texturedDisabled: Boolean,
+      is2d: Boolean,
+      is3d: Boolean,
     }
   });
 

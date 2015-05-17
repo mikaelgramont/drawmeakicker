@@ -39,7 +39,7 @@ Board.prototype.onBoardLoaded = function(collada) {
 };
 
 Board.prototype.setMeshVisibilityForDisplay = function(data) {
-	var representation = data.get('rep-type');
+	var representation = data.get('repType');
 	this.meshes['2d'].visible = false;
 	this.meshes['3d'].visible = (representation == '3d' && data.get('mountainboard'));
 };

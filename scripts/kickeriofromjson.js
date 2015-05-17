@@ -1,9 +1,13 @@
-var KickerIOFromJSON = function(storage) {
+var KickerIOFromJSON = function(initialValues) {
 	KickerIO.call(this);
 
-	// TODO: take in a JSON string instead of an object, and parse it
-	// into the storage var.
-	this.storage = storage;
+	if (typeof initialValues === 'string') {
+		this.storage = JSON.parse(JSONString);
+	} else {
+		// Also support plain objects
+		this.storage = initialValues;
+	}
+	
 };
 KickerIOFromJSON.prototype = new KickerIO();
 
@@ -13,7 +17,7 @@ KickerIOFromJSON.prototype.get = function(name) {
 		case 'width':
 		case 'angle':
 			return parseFloat(this.storage[name]);
-		case 'rep-type':
+		case 'repType':
 			return this.storage[name];
 		case 'textured':
 		case 'mountainboard':
@@ -25,12 +29,10 @@ KickerIOFromJSON.prototype.get = function(name) {
 };
 
 KickerIOFromJSON.prototype.set = function(name, value) {
-	var supported = ['arc', 'radius', 'length', 'rep-type', 'textured', 'mountainboard', 'rider'];
-	if (supported.indexOf(name) == -1) {
+	if (this.supported.indexOf(name) == -1) {
 		throw new Error('Set not supported:' + name);
 	}
-	var floatValues = ['arc', 'radius', 'length'];
-	if (floatValues.indexOf(name) !== -1) {
+	if (this.floatValues.indexOf(name) !== -1) {
 		this.storage[name] = value.toFixed(2);
 	} else {
 		this.storage[name] = value;

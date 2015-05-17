@@ -1,40 +1,59 @@
-var KickerIOFromDOM = function(paramsEl, resultsEl, repEl, contextEl) {
+var KickerIOFromDOM = function(paramsEl, resultsEl, repEl, contextEl, initialValues) {
 	KickerIO.call(this);
 
 	this.paramsEl = paramsEl;
 	this.resultsEl = resultsEl;
 	this.repEl = repEl;
 	this.contextEl = contextEl;
+
+	this.init(initialValues);
 };
 KickerIOFromDOM.prototype = new KickerIO();
+
+KickerIOFromDOM.prototype.init = function(initialValues) {
+	if (!initialValues) {
+		return;
+	}
+	for (name in initialValues) {
+		this.set(name, initialValues[name]);
+	}
+};
 
 KickerIOFromDOM.prototype.get = function(name) {
 	switch(name) {
 		case 'height':
 		case 'width':
 		case 'angle':
-			return parseFloat(this.paramsEl.getAttribute(name));
-		case 'rep-type':
-			return this.repEl.getAttribute(name);
+			return parseFloat(this.paramsEl[name]);
+		case 'repType':
+			return this.repEl[name];
 		case 'textured':
-			return this.repEl.hasAttribute(name);
+			return !!this.repEl[name];
 		case 'mountainboard':
 		case 'rider':
-			return this.contextEl.hasAttribute(name);
+			return !!this.contextEl[name];
 		default:
 			throw new Error('Get not supported:' + name);
 	}
 };
 
 KickerIOFromDOM.prototype.set = function(name, value) {
-	var supported = ['arc', 'radius', 'length', 'rep-type', 'textured', 'mountainboard', 'rider'];
-	if (supported.indexOf(name) == -1) {
+	if (this.supported.indexOf(name) == -1) {
 		throw new Error('Set not supported:' + name);
 	}
-	var floatValues = ['arc', 'radius', 'length'];
-	if (floatValues.indexOf(name) !== -1) {
-		this.resultsEl[name] = value.toFixed(2);
+
+	var targetEl = this.resultsEl;
+	if (this.params.indexOf(name) !== -1) {
+		targetEl = this.paramsEl;	
+	} else if (this.rep.indexOf(name) !== -1) {
+		targetEl = this.repEl;	
+	} else if (this.context.indexOf(name) !== -1) {
+		targetEl = this.contextEl;	
+	}
+
+	if (this.floatValues.indexOf(name) !== -1) {
+		targetEl[name] = value.toFixed(2);
 	} else {
-		this.resultsEl[name] = value;
+		targetEl[name] = value;
 	}
 };

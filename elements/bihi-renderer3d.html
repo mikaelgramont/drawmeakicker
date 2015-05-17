@@ -83,28 +83,22 @@
       renderer: {type: Object},
       blueprintBorderRenderer: {type: Object}
     },
-    init: function() {
+    init: function(e) {
       if (this.initialized) {
         console.log('bihi-renderer3d already initialized');
         return;
       }
+      var initialValues = e.detail;
       var canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
           canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
           kickerIOFromDOM = new KickerIOFromDOM(
             document.querySelector('bihi-params'),
             document.querySelector('bihi-results'),
             document.querySelector('bihi-representation'),
-            document.querySelector('bihi-context')
+            document.querySelector('bihi-context'),
+            initialValues
           ),
-          // kickerIOFromJSON = new KickerIOFromJSON({
-          //   'height': 1.52,
-          //   'width': 1.31,
-          //   'angle': 50,
-          //   'rep-type': '2d',
-          //   'mountainboard': true,
-          //   'textured': true,
-          //   'rider': true
-          // }),
+          // kickerIOFromJSON = new KickerIOFromJSON(initialValues),
           model = new KickerModel(kickerIOFromDOM),
           kicker = new Kicker(model),
           imageList = new ImageList();

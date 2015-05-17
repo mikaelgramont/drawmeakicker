@@ -6,7 +6,7 @@ var Part = function() {
 };
 
 Part.prototype.setMeshVisibilityForDisplay = function(data) {
-	var representation = data.get('rep-type');
+	var representation = data.get('repType');
 	for (rep in this.meshes) {
 		if (!this.meshes[rep]) {
 			continue;

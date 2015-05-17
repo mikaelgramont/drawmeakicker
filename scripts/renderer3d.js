@@ -35,7 +35,6 @@ Renderer3d.prototype.init = function() {
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
 	this.setVisibleObjects();
 	this.resize();
-	this.renderOnce();	
 };
 
 Renderer3d.prototype.replaceModel = function(name, model) {
@@ -112,7 +111,7 @@ Renderer3d.prototype.setVisibleObjects = function() {
 };
 
 Renderer3d.prototype.pickCamera = function() {
-	if (this.data.get('rep-type') == '2d') {
+	if (this.data.get('repType') == '2d') {
 		// TODO: recenter the camera on the kicker
 		this.camera = this.cameras.ortho;
 		this.orbitControls.enabled = false;
@@ -160,6 +159,7 @@ Renderer3d.prototype.step = function() {
 };
 
 Renderer3d.prototype.draw = function() {
+	console.log('Renderer3d - draw');
 	this.threeRenderer.render(this.scene, this.camera);
 	this.blueprintBorderRenderer.render();
 	if (this.renderingPace == 'once') {
@@ -170,7 +170,7 @@ Renderer3d.prototype.draw = function() {
 Renderer3d.prototype.refresh = function() {
 	this.kicker.refresh();
 	this.createKicker();
-	if (this.data.get('rep-type') == '2d') {
+	if (this.data.get('repType') == '2d') {
 		// Need to recenter the camera on the new kicker.
 		this.prepareCameras();
 	}
