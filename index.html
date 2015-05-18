@@ -7,8 +7,7 @@
 	- is firing and catching events through the dom the way to go to communicate? Seems to work for elements that are related to each other. Should we use some kind of pubsub sitting at the top of the page for elements that are not in the same branch of the tree?
 
 	TODO:
-	Init:
-	- next implementation used on the backend can do what it needs to render to PDF and take in a JSON object.
+	- replace renderer sequencing code with that of the sequencer.
 
 	
 	Measurements:
@@ -34,8 +33,7 @@
 	- use factories for all object creation, in order to recycle them (replace the geometry, position, scale and rotation).
 
 	Mobile:
-	- Add a darkish background color to all containers with background images.
-		
+	- Add a darkish background color to all containers with background images.		
 -->
 <html>
 	<head>
@@ -132,12 +130,15 @@
 				        'height': 1.2,
 				        'width': 1,
 				        'angle': 45,
-				        'repType': '2d',
+				        'repType': '3d',
 				        'mountainboard': false,
-				        'textured': false,
+				        'textured': true,
 				        'rider': false
 				    }});
 					renderer.dispatchEvent(event);
+				});
+				document.body.addEventListener('renderer-redraw-request', function() {
+					renderer.dispatchEvent(new Event('renderer-redraw'));
 				});
 				// Temporary for dev purposes.
 				setTimeout(function(){

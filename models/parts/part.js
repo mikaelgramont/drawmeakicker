@@ -34,3 +34,11 @@ Part.prototype.createGhostFor = function(obj) {
 	return ghostObj;
 };
 
+Part.prototype.getTexture = function(url) {
+	return THREE.ImageUtils.loadTexture(url, undefined, this.requestRedraw_.bind(this));
+};
+
+Part.prototype.requestRedraw_ = function() {
+	var event = new Event('renderer-redraw-request');
+	document.body.dispatchEvent(event);
+}

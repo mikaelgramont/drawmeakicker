@@ -12,7 +12,7 @@ Strut.prototype = new Part();
 Strut.prototype.createMesh = function(width, thickness, radius, currentAngleRad, offset) {
 	var geometry = this.buildGeometry(width, thickness);
 	var material = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture(this.imageList.getImageUrl('strut'))
+        map: this.getTexture(this.imageList.getImageUrl('strut'))
     });
 	var mesh = new THREE.Mesh(geometry, material);
 	mesh.name = 'Strut';

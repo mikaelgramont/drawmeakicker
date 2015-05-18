@@ -12,7 +12,7 @@ var Slat = function(width, length, thickness, currentAngle, offset, imageList) {
 Slat.prototype.createMesh = function(width, length, thickness, scale) {
 	var geometry = this.buildGeometry(width, length, thickness, scale);
 	var material = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture(this.imageList.getImageUrl('slat'))
+        map: this.getTexture(this.imageList.getImageUrl('slat'))
     });
 	var mesh = new THREE.Mesh(geometry, material);
 	mesh.name = 'Slat';

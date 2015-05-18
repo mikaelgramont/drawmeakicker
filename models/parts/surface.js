@@ -12,7 +12,7 @@ Surface.prototype = new Part();
 
 Surface.prototype.createMesh = function(points, width) {
 	var geometry = this.buildGeometry(points, width);
-	var woodMap = THREE.ImageUtils.loadTexture(this.imageList.getImageUrl('side'));
+	var woodMap = this.getTexture(this.imageList.getImageUrl('side'));
 	var material = new THREE.MeshLambertMaterial({
         map: woodMap
     });	

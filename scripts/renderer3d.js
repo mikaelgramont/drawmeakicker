@@ -1,4 +1,6 @@
-var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
+var Renderer3d = function(sequencer, kicker, canvas3dEl, imageList, config, canvas2dEl) {
+	this.sequencer = sequencer;
+
 	this.kicker = kicker;
 	this.data = this.kicker.model.data;
 	this.canvasEl = canvas3dEl;
@@ -8,16 +10,11 @@ var Renderer3d = function(kicker, canvas3dEl, imageList, config, canvas2dEl) {
 	this.config = config;
 	this.parts = null;
 	this.rafId = null;
+	this.drawCounter = 0;
 	// Placeholder empty objects:
 	this.models = {
 		board: new THREE.Object3D()
 	};
-	var init = this.init.bind(this);
-	setTimeout(function(){
-		// Some kind of race condition is causing the canvas element to not
-		// be sized correctly unless we push this to the next tick. Sigh.
-		init();
-	}, 0);
 	Utils.makeAvailableForDebug('renderer3d', this);
 };
 
@@ -35,6 +32,8 @@ Renderer3d.prototype.init = function() {
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
 	this.setVisibleObjects();
 	this.resize();
+
+	this.sequencer.start();
 };
 
 Renderer3d.prototype.replaceModel = function(name, model) {
@@ -50,29 +49,40 @@ Renderer3d.prototype.getModel = function(name) {
 };
 
 Renderer3d.prototype.renderOnce = function() {
-	this.setRenderingPace_('once');
+	this.sequencer.requestSingleRender();
 };
 
 Renderer3d.prototype.renderContinuously = function() {
-	this.setRenderingPace_('continuous');
+	this.sequencer.requestContinuousRendering();
 };
 
 Renderer3d.prototype.stopRendering = function() {
-	this.setRenderingPace_('done');
-	cancelAnimationFrame(this.rafId);
-	this.rafId = null;	
+	this.sequencer.requestStopRendering();
 };
 
-Renderer3d.prototype.setRenderingPace_ = function(renderingPace) {
-	if (renderingPace == 'once' || renderingPace == 'continuous' || renderingPace == 'done') {
-		this.renderingPace = renderingPace;
-	}
+Renderer3d.prototype.update = function() {
+	// TODO: perform physics updates here.
+	 // this.camera.rotation.y += 0.005;
+	 if (this.orbitControls.enabled && this.orbitControls.autorotate) {
+	 	this.orbitControls.update();
+	 }
+	this.draw();
+};
 
-	if (this.renderingPace == 'once') {
-		this.draw();
-	} else if(this.renderingPace == 'continuous') {
-		this.render();
+Renderer3d.prototype.draw = function() {
+	this.threeRenderer.render(this.scene, this.camera);
+	this.blueprintBorderRenderer.render();
+};
+
+Renderer3d.prototype.refresh = function() {
+	this.kicker.refresh();
+	this.createKicker();
+	if (this.data.get('repType') == '2d') {
+		// Need to recenter the camera on the new kicker.
+		this.prepareCameras();
 	}
+	this.setVisibleObjects();
+	this.sequencer.requestSingleRender();
 }
 
 Renderer3d.prototype.createCameras = function() {
@@ -96,7 +106,7 @@ Renderer3d.prototype.updateViz = function(update) {
 	}
 
 	this.setVisibleObjects();
-	this.renderOnce();
+	this.sequencer.requestSingleRender();
 };
 
 Renderer3d.prototype.setVisibleObjects = function() {
@@ -129,53 +139,12 @@ Renderer3d.prototype.resize = function() {
 	this.threeRenderer.setSize(parent.clientWidth, parent.clientHeight, false);
 	this.prepareCameras();
 	this.blueprintBorderRenderer.resize();
-	this.renderOnce();
+	this.sequencer.requestSingleRender();
 };
 
 Renderer3d.prototype.prepareCameras = function() {
 	this.createCameras();
 	this.pickCamera();
-}
-
-Renderer3d.prototype.render = function() {
-	if (!this.rafId) {
-		this.animate();
-	}
-};
-
-Renderer3d.prototype.animate = function() {
-	var animate = this.animate.bind(this);
-	this.rafId = requestAnimationFrame(animate);
-	this.step();
-};
-
-Renderer3d.prototype.step = function() {
-	// TODO: perform physics updates here.
-	 // this.camera.rotation.y += 0.005;
-	 if (this.orbitControls.enabled && this.orbitControls.autorotate) {
-	 	this.orbitControls.update();
-	 }
-	this.draw();
-};
-
-Renderer3d.prototype.draw = function() {
-	console.log('Renderer3d - draw');
-	this.threeRenderer.render(this.scene, this.camera);
-	this.blueprintBorderRenderer.render();
-	if (this.renderingPace == 'once') {
-		this.stopRendering();
-	}	
-};
-
-Renderer3d.prototype.refresh = function() {
-	this.kicker.refresh();
-	this.createKicker();
-	if (this.data.get('repType') == '2d') {
-		// Need to recenter the camera on the new kicker.
-		this.prepareCameras();
-	}
-	this.setVisibleObjects();
-	this.renderOnce();
 }
 
 Renderer3d.prototype.createKicker = function() {

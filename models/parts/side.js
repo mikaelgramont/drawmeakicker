@@ -11,8 +11,7 @@ Side.prototype = new Part();
 
 Side.prototype.createMesh = function(points, offset) {
 	var geometry = this.buildGeometry(points, offset);
-	var woodMap = THREE.ImageUtils.loadTexture(
-		this.imageList.getImageUrl('side'));
+	var woodMap = this.getTexture(this.imageList.getImageUrl('side'));
 	var material = new THREE.MeshLambertMaterial({
         map: woodMap
     });	

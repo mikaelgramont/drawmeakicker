@@ -25,6 +25,7 @@
 <script src="../models/parts/surface.js"></script>
 <script src="../models/parts/text.js"></script>
 
+<script src="../scripts/sequencer.js"></script>
 <script src="../scripts/renderer3d.js"></script>
 <script src="../scripts/blueprintborderrenderer.js"></script>
 
@@ -73,7 +74,8 @@
     listeners: {
       "renderer-init": "init",
       "renderer-refresh": "refresh",
-      "renderer-update-viz": "updateViz"
+      "renderer-update-viz": "updateViz",
+      "renderer-redraw": "renderOnce"
     },
     properties: {
       initialized: {
@@ -88,22 +90,28 @@
         console.log('bihi-renderer3d already initialized');
         return;
       }
-      var initialValues = e.detail;
-      var canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
+      var sequencer = new Sequencer(false),
+          canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
           canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
           kickerIOFromDOM = new KickerIOFromDOM(
             document.querySelector('bihi-params'),
             document.querySelector('bihi-results'),
             document.querySelector('bihi-representation'),
             document.querySelector('bihi-context'),
-            initialValues
+            e.detail
           ),
           // kickerIOFromJSON = new KickerIOFromJSON(initialValues),
           model = new KickerModel(kickerIOFromDOM),
           kicker = new Kicker(model),
           imageList = new ImageList();
-      this.renderer = new Renderer3d(kicker, canvas3dEl, imageList, config, canvas2dEl);
-      this.initialized = true;
+      this.renderer = new Renderer3d(sequencer, kicker, canvas3dEl, imageList, config, canvas2dEl);
+      sequencer.renderer = this.renderer;
+      var start = this.start.bind(this);
+      setTimeout(function(){
+        // Some kind of race condition is causing the canvas element to not
+        // be sized correctly unless we push this to the next tick. Sigh.
+        start();
+      }, 0);
 
       var resizeTimeoutHandle = null;
 
@@ -116,6 +124,13 @@
         }).bind(this), 200);
       }).bind(this);
       window.addEventListener('resize', onResize);
+    },
+    start: function() {
+      this.renderer.init();
+      this.initialized = true;
+    },
+    renderOnce: function() {
+      this.renderer.renderOnce();
     },
     refresh: function() {
       this.renderer.refresh();
