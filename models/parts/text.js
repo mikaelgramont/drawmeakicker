@@ -1,54 +1,24 @@
-var Text = function(name, text, position, rotation) {
-	Part.call(this);
-
-	var material = new THREE.MeshBasicMaterial(0xfff),
-		mesh = this.createMesh(name, text, material, rotation);
-
-	var bb = mesh.geometry.boundingBox;
-	var size = bb.max.sub(bb.min);
-	var finalPosition = position.sub(size.divideScalar(2));
-	mesh.position.copy(finalPosition);
-
-	this.meshes['3d'] = null;
-	this.meshes['2d'] = mesh;
+var Text = function(text, material) {
+	this.mesh = this.createMesh(text, material);
 };
-Text.prototype = new Part();
 
-Text.prototype.createMesh = function(name, text, material, rotation) {
-	var geometry = this.buildGeometry(text, rotation);
+Text.prototype.createMesh = function(text, material) {
+	var geometry = this.buildGeometry(text);
 	var mesh = new THREE.Mesh(geometry, material);
-	mesh.name = 'Text - '+ name + ' - ' + text;
+	mesh.name = 'Text - ' + ' - ' + text;
+
+	var bb = geometry.boundingBox;
+	var size = bb.max.sub(bb.min);
+	this.offset = - size.x / 2;
 	return mesh;
 };
 
-Text.prototype.buildGeometry = function(text, rotation) { 
+Text.prototype.buildGeometry = function(text) { 
 	var geometry = new THREE.TextGeometry(text, {
 		size: .15,
 		height: 0,
 		font: "archer medium"
 	});
-	if (rotation) {
-		// Rotate individual vertices so we can just move
-		// the object around later
-		geometry.vertices.forEach(function(vertex) {
-			vertex.applyEuler(rotation);
-		});
-	}
 	geometry.computeBoundingBox();
 	return geometry;
 };
-
-Text.prototype.setMeshVisibilityForDisplay = function(data) {
-	var representation = data.get('repType');
-	for (rep in this.meshes) {
-		if (!this.meshes[rep]) {
-			continue;
-		}
-		this.meshes[rep].visible = false;
-	}
-
-	if (representation == '2d') {
-		this.meshes['2d'].visible = true;
-	}
-}
-

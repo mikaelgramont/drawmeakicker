@@ -9,7 +9,7 @@ var Representation3D = function(data, points, length, angle, arc, radius, width,
 	this.parts.sideL = this.buildSide(this.points, offset.negate(), imageList);
 	this.parts.struts = this.buildStruts(length, width, angle, arc, radius);
 	this.parts.surface = this.buildSurface(this.points, width);
-	this.parts.measurements = this.buildMeasurements(length, width, radius, height);
+	this.parts.annotations = this.buildAnnotations(length, width, radius, height);
 	this.parts.board = this.buildBoard(length, width, height);
 	
 	Utils.makeAvailableForDebug('parts', this.parts);
@@ -127,32 +127,56 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 
 Representation3D.prototype.buildMeasurements = function(length, width, radius, height) {
 	var distance = .3;
+	var lengthRotation = new THREE.Euler(0, 0, 0, 'XYZ');
+	var lengthPosition = new THREE.Vector3(length / 2, - distance * 1.75, 0);
 	return [
-		new Text(
+		new Measurement(
 			'radius',
 			this.getHumanReadableDimension_(radius, 'm'),
-			new THREE.Vector3(0, height, 0),
+			new THREE.Vector3(0, radius / 2, 0),
 			new THREE.Euler(0, 0, 0, 'XYZ')
 		),
-		// new Text(
-		// 	'width',
-		// 	dimensions.width,
-		// 	new THREE.Vector3(length, height + distance, 0),
-		// 	new THREE.Euler(0, 0 / 2, 0, 'XYZ')
-		// ),
-		new Text(
+		new Measurement(
 			'length',
-			// 'abcdefghijklmnopqrstuvwxyz0123456789,;.',
 			this.getHumanReadableDimension_(length, 'm'),
-			new THREE.Vector3(length / 2, - distance, 0),
-			new THREE.Euler(0, 0, 0, 'XYZ')
+			lengthPosition,
+			lengthRotation,
+			new Arrow(lengthPosition, length, lengthRotation, distance)
 		),
-		new Text(
+		new Measurement(
 			'height',
 			this.getHumanReadableDimension_(height, 'm'),
 			new THREE.Vector3(length + distance, height / 2, 0),
 			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ')
 		)
+	];
+}
+
+Representation3D.prototype.buildAnnotations = function(length, width, radius, height) {
+	var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+	var distance = .2,
+		textDistance = distance;
+
+	return [
+		new Annotation(
+			'length',
+			new THREE.Vector3(0, - distance, 0),
+			length,
+			this.getHumanReadableDimension_(length, 'm'),
+			textDistance,
+			new THREE.Euler(0, 0, 0, 'XYZ'),
+			material
+		),
+		new Annotation(
+			'height',
+			new THREE.Vector3(length + distance, 0, 0),
+			height,
+			this.getHumanReadableDimension_(height, 'm'),
+			textDistance,
+			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'),
+			material
+		)
+
 	];
 }
 
