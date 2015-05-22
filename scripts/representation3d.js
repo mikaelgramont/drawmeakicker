@@ -9,8 +9,12 @@ var Representation3D = function(data, points, length, angle, arc, radius, width,
 	this.parts.sideL = this.buildSide(this.points, offset.negate(), imageList);
 	this.parts.struts = this.buildStruts(length, width, angle, arc, radius);
 	this.parts.surface = this.buildSurface(this.points, width);
-	this.parts.annotations = this.buildAnnotations(length, width, radius, height);
 	this.parts.board = this.buildBoard(length, width, height);
+
+	// Make a copy of the points, and drop the "coping" ones.
+	var curvePoints = points.slice(0);
+	curvePoints.splice(curvePoints.length - 2);
+	this.parts.annotations = this.buildAnnotations(length, width, radius, height, arc, angle, curvePoints);
 	
 	Utils.makeAvailableForDebug('parts', this.parts);
 };
@@ -152,13 +156,14 @@ Representation3D.prototype.buildMeasurements = function(length, width, radius, h
 	];
 }
 
-Representation3D.prototype.buildAnnotations = function(length, width, radius, height) {
+Representation3D.prototype.buildAnnotations = function(length, width, radius, height, arc, angle, points) {
 	var material = new THREE.MeshBasicMaterial({color: 0xffffff});
 	var distance = .2,
 		textDistance = distance;
 
 	return [
 		new Annotation(
+			Annotation.types.TWO_SIDED_STRAIGHT,
 			'length',
 			new THREE.Vector3(0, - distance, 0),
 			length,
@@ -168,6 +173,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			material
 		),
 		new Annotation(
+			Annotation.types.TWO_SIDED_STRAIGHT,
 			'height',
 			new THREE.Vector3(length + distance, 0, 0),
 			height,
@@ -175,8 +181,28 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			textDistance,
 			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'),
 			material
+		),
+		new Annotation(
+			Annotation.types.ONE_SIDED_STRAIGHT,
+			'radius',
+			new THREE.Vector3(0, radius, 0),
+			radius,
+			this.getHumanReadableDimension_(radius, 'm'),
+			textDistance,
+			new THREE.Euler(0, 0, - Math.PI / 2, 'XYZ'),
+			material
+		),
+		new Annotation(
+			Annotation.types.TWO_SIDED_CURVED,
+			'arc',
+			new THREE.Vector3(- distance / 1.414, distance / 1.414, 0),
+			arc,
+			angle,
+			points,
+			this.getHumanReadableDimension_(arc, 'm'),
+			textDistance,
+			material
 		)
-
 	];
 }
 

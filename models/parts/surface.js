@@ -1,10 +1,10 @@
 var Surface = function(points, width, imageList) {
 	Part.call(this);
 	
-	this.points = points;
+	this.points = points.slice(0);
 	this.width = width;
 	this.imageList = imageList;
-	var mainMesh = this.createMesh(points, width + config.model3d.sides.thickness * 2);
+	var mainMesh = this.createMesh(this.points, width + config.model3d.sides.thickness * 2);
 	this.meshes['3d'] = mainMesh;
 	this.meshes['2d'] = this.createGhostFor(mainMesh);
 };

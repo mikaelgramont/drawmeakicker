@@ -1,49 +1,57 @@
-var Arrow = function(length, material) {    
+var Arrow = function(length, material, hasStartTip) {    
 	var mainObj = new THREE.Object3D();
 
-    var start = new THREE.Vector3(0, 0, 0);
-    var end = new THREE.Vector3(length, 0, 0);
+    var tipSize = .2;
+    if (hasStartTip) {
+	    var startTip = this.createStartTip(tipSize, material);
+		mainObj.add(startTip);
+    }
 
-	var lineGeometry = new THREE.Geometry();
-    lineGeometry.vertices.push(start);
-    lineGeometry.vertices.push(end);
-    var line = new THREE.Line(lineGeometry, material);
-
-    var arrowSize = .2;
-    var startArrow = this.createStartArrow(arrowSize, material);
-    var endArrow = this.createEndArrow(arrowSize, length, material);
-
-	mainObj.add(startArrow);
+    this.start = new THREE.Vector3(0, 0, 0);
+    this.end = new THREE.Vector3(length, 0, 0);
+    this.material = material;
+    var line = this.createLine();
 	mainObj.add(line);
-	mainObj.add(endArrow);
+
+    var endTip = this.createEndTip(tipSize, length, material);
+	mainObj.add(endTip);
 
 	this.mesh = mainObj;
 };
 
-Arrow.prototype.createStartArrow = function(arrowSize, material) {
+Arrow.prototype.createLine = function() {
+	var lineGeometry = new THREE.Geometry();
+	lineGeometry.vertices.push(this.start);
+	lineGeometry.vertices.push(this.end);
+	var line = new THREE.Line(lineGeometry, this.material);
+
+	return line;
+};
+
+Arrow.prototype.createStartTip = function(tipSize, material) {
 	var start = new THREE.Vector3(.05, -.05, 0);
 	var mid = new THREE.Vector3(0, 0, 0);
 	var end = new THREE.Vector3(.05, .05, 0);
 
-	var startArrowGeometry = new THREE.Geometry();
-    startArrowGeometry.vertices.push(start);
-    startArrowGeometry.vertices.push(mid);
-    startArrowGeometry.vertices.push(end);
-    var startArrow = new THREE.Line(startArrowGeometry, material);
+	var startTipGeometry = new THREE.Geometry();
+    startTipGeometry.vertices.push(start);
+    startTipGeometry.vertices.push(mid);
+    startTipGeometry.vertices.push(end);
+    var startTip = new THREE.Line(startTipGeometry, material);
     
-    return startArrow;
+    return startTip;
 };
 
-Arrow.prototype.createEndArrow = function(arrowSize, length, material) {
+Arrow.prototype.createEndTip = function(tipSize, length, material) {
 	var start = new THREE.Vector3(-.05 + length, -.05, 0);
 	var mid = new THREE.Vector3(length, 0, 0);
 	var end = new THREE.Vector3(-.05 + length, .05, 0);
 
-	var endArrowGeometry = new THREE.Geometry();
-    endArrowGeometry.vertices.push(start);
-    endArrowGeometry.vertices.push(mid);
-    endArrowGeometry.vertices.push(end);
-    var endArrow = new THREE.Line(endArrowGeometry, material);
+	var endTipGeometry = new THREE.Geometry();
+    endTipGeometry.vertices.push(start);
+    endTipGeometry.vertices.push(mid);
+    endTipGeometry.vertices.push(end);
+    var endTip = new THREE.Line(endTipGeometry, material);
     
-    return endArrow;
+    return endTip;
 };
