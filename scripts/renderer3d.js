@@ -93,8 +93,17 @@ Renderer3d.prototype.createCameras = function() {
 	this.orbitControls.minDistance = 2.5;
 	Utils.makeAvailableForDebug('orbitControls', this.orbitControls);
 	
-	this.orbitControls.addEventListener('start', this.renderContinuously.bind(this));
-	this.orbitControls.addEventListener('end', this.stopRendering.bind(this));
+	this.orbitControls.addEventListener('start', this.onOrbitStart.bind(this));
+	this.orbitControls.addEventListener('end', this.onOrbitEnd.bind(this));
+};
+
+Renderer3d.prototype.onOrbitStart = function(update) {
+	this.renderContinuously();
+};
+
+Renderer3d.prototype.onOrbitEnd = function(update) {
+	this.orbitControls.update();
+	this.renderOnce();
 };
 
 Renderer3d.prototype.updateViz = function(update) {
