@@ -17,7 +17,7 @@ var config = {
 			'maximumDistance': 0.3
 		},
 		'surface': {
-			'thickness': 0.006
+			'thickness': 0.03
 		}
 	}
 };

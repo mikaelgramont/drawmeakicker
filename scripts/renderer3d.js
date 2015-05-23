@@ -126,6 +126,12 @@ Renderer3d.prototype.setVisibleObjects = function() {
 		part.setMeshVisibilityForDisplay(data);
 	});
 
+	var grid = this.scene.getObjectByName('grid');
+	if (grid) {
+		var is2d = data.get('repType') != '2d';
+		grid.visible = is2d;	
+	}
+
 	this.pickCamera();
 };
 

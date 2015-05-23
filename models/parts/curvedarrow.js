@@ -4,7 +4,7 @@ var CurvedArrow = function(arc, exitAngle, radius, distance, material) {
 
 	var mainObj = new THREE.Object3D();
 
-    var tipSize = .2;
+    var tipSize = 0.05;
     var startTip = this.createStartTip(points[0], tipSize, material);
 	mainObj.add(startTip);
 
@@ -28,9 +28,9 @@ CurvedArrow.prototype.createLine = function(points, material) {
 };
 
 CurvedArrow.prototype.createStartTip = function(origin, tipSize, material) {
-	var start = new THREE.Vector3(.05 + origin[0], -.025 + origin[1], 0);
+	var start = new THREE.Vector3(tipSize + origin[0], -tipSize / 2 + origin[1], 0);
 	var mid = new THREE.Vector3(0 + origin[0], 0 + origin[1], 0);
-	var end = new THREE.Vector3(.05 + origin[0], .025 + origin[1], 0);
+	var end = new THREE.Vector3(tipSize + origin[0], tipSize / 2 + origin[1], 0);
 
 	var startTipGeometry = new THREE.Geometry();
     startTipGeometry.vertices.push(start);
@@ -46,9 +46,9 @@ CurvedArrow.prototype.createEndTip = function(origin, tipSize, arc, angle, mater
     var rot = new THREE.Euler(0, 0, angleRad, 'XYZ');
 	var endTipGeometry = new THREE.Geometry();
 
-    endTipGeometry.vertices.push(new THREE.Vector3(-.05, -.025, 0));
+    endTipGeometry.vertices.push(new THREE.Vector3(-tipSize, -tipSize / 2, 0));
     endTipGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
-    endTipGeometry.vertices.push(new THREE.Vector3(-.05, + .025, 0));
+    endTipGeometry.vertices.push(new THREE.Vector3(-tipSize, + tipSize / 2, 0));
     endTipGeometry.vertices.forEach(function(vertex) {
     	vertex.applyEuler(rot);
     	vertex.add(new THREE.Vector3(origin[0], origin[1]));

@@ -33,7 +33,7 @@ Surface.prototype.buildGeometry = function(points, width) {
 	points.splice(l - 2);
 
 	// Duplicate the points, and offset them upwards.
-	for (l = points.length - 1, i = l; i > 0; i--) {
+	for (l = points.length - 1, i = l; i >= 0; i--) {
 		points.push([points[i][0], points[i][1] + thickness]);
 	}
 

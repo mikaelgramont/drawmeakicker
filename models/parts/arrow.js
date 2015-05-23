@@ -1,7 +1,7 @@
 var Arrow = function(length, material, hasStartTip) {    
 	var mainObj = new THREE.Object3D();
 
-    var tipSize = .2;
+    var tipSize = .1;
     if (hasStartTip) {
 	    var startTip = this.createStartTip(tipSize, material);
 		mainObj.add(startTip);
@@ -29,9 +29,9 @@ Arrow.prototype.createLine = function() {
 };
 
 Arrow.prototype.createStartTip = function(tipSize, material) {
-	var start = new THREE.Vector3(.05, -.025, 0);
+	var start = new THREE.Vector3(tipSize, -tipSize / 2, 0);
 	var mid = new THREE.Vector3(0, 0, 0);
-	var end = new THREE.Vector3(.05, .025, 0);
+	var end = new THREE.Vector3(tipSize, tipSize / 2, 0);
 
 	var startTipGeometry = new THREE.Geometry();
     startTipGeometry.vertices.push(start);
@@ -43,9 +43,9 @@ Arrow.prototype.createStartTip = function(tipSize, material) {
 };
 
 Arrow.prototype.createEndTip = function(tipSize, length, material) {
-	var start = new THREE.Vector3(-.05 + length, -.025, 0);
+	var start = new THREE.Vector3(-tipSize + length, -tipSize / 2, 0);
 	var mid = new THREE.Vector3(length, 0, 0);
-	var end = new THREE.Vector3(-.05 + length, .025, 0);
+	var end = new THREE.Vector3(-tipSize + length, tipSize / 2, 0);
 
 	var endTipGeometry = new THREE.Geometry();
     endTipGeometry.vertices.push(start);

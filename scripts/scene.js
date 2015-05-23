@@ -84,6 +84,7 @@ EditorScene.getScene = function() {
 	// scene.add(new THREE.AxisHelper(1));
 	var gridHelper = new THREE.GridHelper(100,2);
 	gridHelper.setColors(0xf8faff, 0x010845);
+	gridHelper.name = 'grid';
 	scene.add(gridHelper);
 
 	return scene;
