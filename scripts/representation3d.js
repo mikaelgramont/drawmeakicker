@@ -33,18 +33,17 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 	var strutWidth = width;
 	var strutsCount = Math.ceil(arc / config.model3d.struts.maximumDistance);
 	var i = strutsCount;
-	var smallStrutSide;
 	var thickness = config.model3d.struts.side,
 		extraLength = config.model3d.sides.extraLength;
 
 	// We need to move the struts back a bit so they sit flush with the end
 	// of the ramp. 
 	var offsetAngleRad = thickness / (2 * radius);
-
+	var strut,
+		offset;
 	while(i) {
 		var currentAngle = angle * i / strutsCount;
 		var currentAngleRad = currentAngle * Math.PI / 180 - offsetAngleRad;
-		var x = radius * Math.sin(currentAngleRad);
 		var y = radius * (1 - Math.cos(currentAngleRad));
 
 		if (y < thickness) {
@@ -56,8 +55,8 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 			break;
 		} 
 
-		var offset = new THREE.Vector3( - extraLength, 0, 0);
-		var strut = new Strut(
+		offset = new THREE.Vector3( - extraLength, 0, 0);
+		strut = new Strut(
 			strutWidth, thickness, radius, currentAngleRad, offset, this.imageList
 		);
 		struts.push(strut);
@@ -72,7 +71,7 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 		thickness,
 		0
 	);
-	var strut = new Strut(
+	strut = new Strut(
 		strutWidth, thickness, null, null, offset, this.imageList
 	);
 	struts.push(strut);
@@ -95,11 +94,9 @@ Representation3D.prototype.buildSurface = function(points, width) {
 
 Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 	var defaultLength = config.model3d.slats.defaultLength;
-	var minLength = config.model3d.slats.minLength;
 	var thickness = config.model3d.slats.thickness;
 
 	var slats = [];
-	var currentSlat;
 	var currentAngle = 0;
 	var currentAngleRad;
 	var remainingArcLength = arc;
@@ -113,7 +110,7 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 		currentAngle = angle * i / slatCount;
 		currentAngleRad = currentAngle * Math.PI / 180;
 		angles.push(currentAngle);
-		slatLength = defaultLength
+		slatLength = defaultLength;
 		remainingArcLength -= slatLength;
 
 		x = radius * Math.sin(currentAngleRad);
@@ -122,7 +119,7 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 		offset = new THREE.Vector3(x, y , 0);
 
 		slats.push(new Slat(
-			width + .125, slatLength, thickness, currentAngle, offset, this.imageList
+			width + 0.125, slatLength, thickness, currentAngle, offset, this.imageList
 		));
 		i--;
 	}
@@ -130,7 +127,7 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 };
 
 Representation3D.prototype.buildMeasurements = function(length, width, radius, height) {
-	var distance = .3;
+	var distance = 0.3;
 	var lengthRotation = new THREE.Euler(0, 0, 0, 'XYZ');
 	var lengthPosition = new THREE.Vector3(length / 2, - distance * 1.75, 0);
 	return [
@@ -154,13 +151,12 @@ Representation3D.prototype.buildMeasurements = function(length, width, radius, h
 			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ')
 		)
 	];
-}
+};
 
 Representation3D.prototype.buildAnnotations = function(length, width, radius, height, arc, angle, points) {
-	var material = new THREE.MeshBasicMaterial({color: 0xffffff});
-	var distance = .2,
+	var distance = 0.2,
 		textDistance = distance;
-
+	var material = new THREE.MeshBasicMaterial({color: 0xffffff});
 	return [
 		new Annotation(
 			Annotation.types.TWO_SIDED_STRAIGHT,
@@ -195,20 +191,20 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 		new Annotation(
 			Annotation.types.TWO_SIDED_CURVED,
 			'arc',
-			new THREE.Vector3(- distance / 1.414, distance / 1.414, 0),
 			arc,
 			angle,
-			points,
+			radius,
 			this.getHumanReadableDimension_(arc, 'm'),
+			distance,
 			textDistance,
 			material
 		)
 	];
-}
+};
 
 Representation3D.prototype.getHumanReadableDimension_ = function(dimension, unit) {
 	return dimension.toFixed(2) + unit;
-}
+};
 
 Representation3D.prototype.buildBoard = function(length, width, height) {
 	var board = new Board(length, width, height, this.renderer);

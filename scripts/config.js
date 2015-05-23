@@ -2,23 +2,22 @@ var config = {
 	'model3d': {
 		'sides': {
 			'steps': 20,
-			'thickness': .03,
-			'extraLength': .1,
-			'minHeight': .015
+			'thickness': 0.03,
+			'extraLength': 0.1,
+			'minHeight': 0.015
 		},
 		'slats': {
-			'defaultLength': .015,
-			'thickness': .015,
-			'space': .01
+			'defaultLength': 0.015,
+			'thickness': 0.015,
+			'space': 0.01
 		},
 		'struts': {
-			'side': .08,
-			'smallSide': .04,
-			'maximumDistance': .3
+			'side': 0.08,
+			'smallSide': 0.04,
+			'maximumDistance': 0.3
 		},
 		'surface': {
-			'thickness': .006
+			'thickness': 0.006
 		}
 	}
-	
 };

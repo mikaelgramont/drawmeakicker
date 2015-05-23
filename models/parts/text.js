@@ -9,7 +9,8 @@ Text.prototype.createMesh = function(text, material) {
 
 	var bb = geometry.boundingBox;
 	var size = bb.max.sub(bb.min);
-	this.offset = - size.x / 2;
+	this.offsetX = - size.x / 2;
+	this.offsetY = - size.y / 2;
 	return mesh;
 };
 

@@ -25,14 +25,14 @@ var Annotation = function(type) {
 };
 Annotation.prototype = new Part();
 
-Annotation.prototype.getTwoSidedStraight_ = function(name, origin, length, text, textDistance, rotation, material) {
+Annotation.prototype.getTwoSidedStraight_ = function() {
 	var args = Array.prototype.slice.call(arguments);
 	// hasStartTip = true;
 	args.push(true);
 	return this.getStraight_.apply(this, args);
 };
 
-Annotation.prototype.getOneSidedStraight_ = function(name, origin, length, text, textDistance, rotation, material) {
+Annotation.prototype.getOneSidedStraight_ = function() {
 	var args = Array.prototype.slice.call(arguments);
 	// hasStartTip = false;
 	args.push(false);
@@ -43,33 +43,33 @@ Annotation.prototype.getStraight_ = function(name, origin, length, text, textDis
 	var mainObj = new THREE.Object3D();
 	mainObj.name = name;
 
-	var arrow = new Arrow(length, material, hasStartTip);
-	var text = new Text(text, material);
+	var arrowObj = new Arrow(length, material, hasStartTip);
+	var textObj = new Text(text, material);
 
-	text.mesh.position.copy(new THREE.Vector3(length / 2 + text.offset, - textDistance, 0));
+	textObj.mesh.position.copy(new THREE.Vector3(length / 2 + textObj.offsetX, - textDistance, 0));
 
-	mainObj.add(arrow.mesh);
-	mainObj.add(text.mesh);
+	mainObj.add(arrowObj.mesh);
+	mainObj.add(textObj.mesh);
 	mainObj.position.copy(origin);
 	mainObj.rotation.copy(rotation);
 
 	return mainObj;
 };
 
-Annotation.prototype.getTwoSidedCurved_ = function(name, origin, arc, angle, points, text, textDistance, material) {
+Annotation.prototype.getTwoSidedCurved_ = function(name, arc, angle, radius, text, distance, textDistance, material) {
 	var mainObj = new THREE.Object3D();
 	mainObj.name = name;
 
-	var arrow = new CurvedArrow(points, arc, angle, material);
-	mainObj.add(arrow.mesh);
-	var text = new Text(text, material);
-	mainObj.add(text.mesh);
-	var angleRad = angle * Math.PI / 180;
-	text.mesh.rotation.z = angleRad / 2;
-	text.mesh.position.x = (points[0][0] + points[points.length - 1][0]) / 2;
-	text.mesh.position.y = (points[0][1] + points[points.length - 1][1]) / 2;
+	var arrowObj = new CurvedArrow(arc, angle, radius, distance, material);
+	var points = arrowObj.points;
+	mainObj.add(arrowObj.mesh);
 
-	mainObj.position.copy(origin);
+	var textObj = new Text(text, material);
+	mainObj.add(textObj.mesh);
+	var angleRad = angle * Math.PI / 180;
+	textObj.mesh.rotation.z = angleRad / 2;
+	textObj.mesh.position.x = (points[0][0] + points[points.length - 1][0]) / 2 + textObj.offsetX /2;
+	textObj.mesh.position.y = (points[0][1] + points[points.length - 1][1]) / 2 - 0.15;
 
 	return mainObj;
 };
