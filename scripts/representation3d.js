@@ -155,48 +155,83 @@ Representation3D.prototype.buildMeasurements = function(length, width, radius, h
 
 Representation3D.prototype.buildAnnotations = function(length, width, radius, height, arc, angle, points) {
 	var distance = 0.2,
-		textDistance = distance;
-	var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+		textDistance = distance,
+		material = new THREE.MeshBasicMaterial({color: 0xffffff}),
+		angleRad = angle * Math.PI / 180,
+		fakeRadiusSize = 2.0;
 	return [
 		new Annotation(
-			Annotation.types.TWO_SIDED_STRAIGHT,
+			Annotation.types.STRAIGHT,
 			'length',
-			new THREE.Vector3(0, - distance, 0),
+			new THREE.Vector3(0, - distance, width / 2),
 			length,
 			this.getHumanReadableDimension_(length, 'm'),
 			textDistance,
 			new THREE.Euler(0, 0, 0, 'XYZ'),
-			material
+			material,
+			true,
+			true,
+			false
 		),
 		new Annotation(
-			Annotation.types.TWO_SIDED_STRAIGHT,
+			Annotation.types.STRAIGHT,
+			'width',
+			// new THREE.Vector3(length, height + distance, - width / 2),
+			new THREE.Vector3(- distance, - distance, - width / 2),
+			width,
+			this.getHumanReadableDimension_(width, 'm'),
+			textDistance,
+			new THREE.Euler(0, - Math.PI / 2, 0, 'XYZ'),
+			material,
+			true,
+			true,
+			false
+		),
+		new Annotation(
+			Annotation.types.STRAIGHT,
 			'height',
-			new THREE.Vector3(length + distance, 0, 0),
+			new THREE.Vector3(length + distance, 0, width / 2),
 			height,
 			this.getHumanReadableDimension_(height, 'm'),
 			textDistance,
 			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'),
-			material
+			material,
+			true,
+			true,
+			false
 		),
 		new Annotation(
-			Annotation.types.ONE_SIDED_STRAIGHT,
+			Annotation.types.STRAIGHT,
 			'radius',
-			new THREE.Vector3(0, radius, 0),
-			radius,
+			new THREE.Vector3(0, distance, - width / 2),
+			fakeRadiusSize - distance,
 			this.getHumanReadableDimension_(radius, 'm'),
 			textDistance,
-			new THREE.Euler(0, 0, - Math.PI / 2, 'XYZ'),
-			material
+			new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'),
+			material,
+			true,
+			false,
+			false
 		),
 		new Annotation(
-			Annotation.types.TWO_SIDED_CURVED,
+			Annotation.types.CURVED,
 			'arc',
+			new THREE.Vector3(0, 0, - width / 2),
 			arc,
 			angle,
 			radius,
 			this.getHumanReadableDimension_(arc, 'm'),
 			distance,
 			textDistance,
+			material
+		),
+		new Annotation(
+			Annotation.types.ANGLE,
+			'angle',
+			new THREE.Vector3(length + distance * Math.cos(angleRad) - config.model3d.sides.extraLength, height + distance * Math.sin(angleRad), - width / 2),
+			angle,
+			this.getHumanReadableDimension_(angle, '°'),
+			.1,
 			material
 		)
 	];

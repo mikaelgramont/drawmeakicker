@@ -7,14 +7,14 @@ var Annotation = function(type) {
 	var mesh = null;
 
 	switch(type) {
-		case Annotation.types.TWO_SIDED_STRAIGHT:
-			mesh = this.getTwoSidedStraight_.apply(this, args);
+		case Annotation.types.STRAIGHT:
+			mesh = this.getStraight_.apply(this, args);
 			break;
-		case Annotation.types.ONE_SIDED_STRAIGHT:
-			mesh = this.getOneSidedStraight_.apply(this, args);
+		case Annotation.types.CURVED:
+			mesh = this.getCurved_.apply(this, args);
 			break;
-		case Annotation.types.TWO_SIDED_CURVED:
-			mesh = this.getTwoSidedCurved_.apply(this, args);
+		case Annotation.types.ANGLE:
+			mesh = this.getAngle_.apply(this, args);
 			break;
 		default:
 			throw new Error('Annotation type not supported: ' + type);
@@ -25,28 +25,15 @@ var Annotation = function(type) {
 };
 Annotation.prototype = new Part();
 
-Annotation.prototype.getTwoSidedStraight_ = function() {
-	var args = Array.prototype.slice.call(arguments);
-	// hasStartTip = true;
-	args.push(true);
-	return this.getStraight_.apply(this, args);
-};
-
-Annotation.prototype.getOneSidedStraight_ = function() {
-	var args = Array.prototype.slice.call(arguments);
-	// hasStartTip = false;
-	args.push(false);
-	return this.getStraight_.apply(this, args);
-};
-
-Annotation.prototype.getStraight_ = function(name, origin, length, text, textDistance, rotation, material, hasStartTip) {
+Annotation.prototype.getStraight_ = function(name, origin, length, text, textDistance, rotation, material, hasStartTip, hasEndTip, switchTextPosition) {
 	var mainObj = new THREE.Object3D();
 	mainObj.name = name;
 
-	var arrowObj = new Arrow(length, material, hasStartTip);
+	var arrowObj = new Arrow(length, material, hasStartTip, hasEndTip);
 	var textObj = new Text(text, material);
 
-	textObj.mesh.position.copy(new THREE.Vector3(length / 2 + textObj.offsetX, - textDistance, 0));
+	var verticalOffset = (switchTextPosition ? 1 : -1) * textDistance
+	textObj.mesh.position.copy(new THREE.Vector3(length / 2 + textObj.offsetX, verticalOffset, 0));
 
 	mainObj.add(arrowObj.mesh);
 	mainObj.add(textObj.mesh);
@@ -56,7 +43,7 @@ Annotation.prototype.getStraight_ = function(name, origin, length, text, textDis
 	return mainObj;
 };
 
-Annotation.prototype.getTwoSidedCurved_ = function(name, arc, angle, radius, text, distance, textDistance, material) {
+Annotation.prototype.getCurved_ = function(name, origin, arc, angle, radius, text, distance, textDistance, material) {
 	var mainObj = new THREE.Object3D();
 	mainObj.name = name;
 
@@ -71,16 +58,27 @@ Annotation.prototype.getTwoSidedCurved_ = function(name, arc, angle, radius, tex
 	textObj.mesh.position.x = (points[0][0] + points[points.length - 1][0]) / 2 + textObj.offsetX /2;
 	textObj.mesh.position.y = (points[0][1] + points[points.length - 1][1]) / 2 - 0.15;
 
+	mainObj.position.copy(origin);
 	return mainObj;
 };
 
-Annotation.prototype.getAngle_ = function() {
+Annotation.prototype.getAngle_ = function(name, origin, angle, text, textDistance, material) {
+	var mainObj = new THREE.Object3D();
+	mainObj.name = name;
 
+	var angleObj = new Angle(origin, angle, material);
+	mainObj.add(angleObj.mesh);
+
+	var textObj = new Text(text, material);
+	textObj.mesh.position.copy(new THREE.Vector3(length / 2 + textObj.offsetX, textDistance, 0));
+	mainObj.add(textObj.mesh);
+
+	mainObj.position.copy(origin);
+	return mainObj;
 };
 
 Annotation.types = {
-	TWO_SIDED_STRAIGHT: 'TWO_SIDED_STRAIGHT',
-	ONE_SIDED_STRAIGHT: 'ONE_SIDED_STRAIGHT',
-	TWO_SIDED_CURVED: 'TWO_SIDED_CURVED',
+	STRAIGHT: 'STRAIGHT',
+	CURVED: 'CURVED',
 	ANGLE: 'ANGLE'
 };

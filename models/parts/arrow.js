@@ -1,4 +1,8 @@
-var Arrow = function(length, material, hasStartTip) {    
+var Arrow = function(length, material, hasStartTip, hasEndTip) {    
+    this.start = new THREE.Vector3(0, 0, 0);
+    this.end = new THREE.Vector3(length, 0, 0);
+    this.material = material;
+
 	var mainObj = new THREE.Object3D();
 
     var tipSize = .1;
@@ -7,15 +11,14 @@ var Arrow = function(length, material, hasStartTip) {
 		mainObj.add(startTip);
     }
 
-    this.start = new THREE.Vector3(0, 0, 0);
-    this.end = new THREE.Vector3(length, 0, 0);
-    this.material = material;
     var line = this.createLine();
 	mainObj.add(line);
 
-    var endTip = this.createEndTip(tipSize, length, material);
-	mainObj.add(endTip);
-
+    if (hasEndTip) {
+	    var endTip = this.createEndTip(tipSize, length, material);
+		mainObj.add(endTip);
+	}
+	
 	this.mesh = mainObj;
 };
 
