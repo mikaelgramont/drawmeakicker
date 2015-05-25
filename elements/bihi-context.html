@@ -13,6 +13,14 @@
   <template>
     <div class="container size-2">
       <label>
+        <input id="annotations" type="checkbox" on-click="onClick" value="1" checked={{annotations}} >
+        <span>Annotations</span>
+      </label>
+      <label>
+        <input id="grid" type="checkbox" on-click="onClick" value="1" checked={{grid}} >
+        <span>Grid</span>
+      </label>
+      <label>
         <input id="mountainboard" type="checkbox" on-click="onClick" value="1"checked={{mountainboard}} >
         <span>Mountainboard</span>
       </label>
@@ -29,21 +37,35 @@
   Polymer({
     is: "bihi-context",
     ready: function() {
+      this.$.annotations.checked = !!this.annotations;
+      this.$.grid.checked = !!this.grid;
       this.$.mountainboard.checked = !!this.mountainboard;
       this.$.rider.checked = !!this.rider;
     },
     update: function() {
+      this.annotations = this.$.annotations.checked;
+      this.grid = this.$.grid.checked;
       this.mountainboard = this.$.mountainboard.checked;
       this.rider = this.$.rider.checked;
     },
     onClick: function(e) {
       this.update();
       this.fire('viz-change', {
+        annotations: this.annotations,
+        grid: this.grid,
         mountainboard: this.mountainboard,
         rider: this.rider
       });
     },
     properties: {
+      annotations: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
+      grid: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
       mountainboard: {
         type: Boolean,
         reflectToAttribute: true

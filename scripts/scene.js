@@ -28,7 +28,7 @@ EditorScene.createOrthoCamera_ = function(el, kickerObj) {
 		bb = new THREE.BoundingBoxHelper(kickerObj),
 		margin = 0.2,
 		w, h;
-	bb.update();
+	bb.update(true);
 
 	var xRange = Math.ceil(bb.box.max.x - bb.box.min.x),
 		yRange = Math.ceil(bb.box.max.y - bb.box.min.y);
@@ -80,12 +80,6 @@ EditorScene.getScene = function() {
 	var light2 = new THREE.DirectionalLight(0xffffff);
 	light2.position.set(-100, 200, -120);
 	scene.add(light2);	
-
-	// scene.add(new THREE.AxisHelper(1));
-	var gridHelper = new THREE.GridHelper(100, 1);
-	gridHelper.setColors(0xf8faff, 0x010845);
-	gridHelper.name = 'grid';
-	scene.add(gridHelper);
 
 	return scene;
 };

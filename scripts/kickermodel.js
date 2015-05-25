@@ -44,20 +44,29 @@ KickerModel.prototype.calculateArc = function(radius, alphaDeg) {
   return arc;
 }
 
-KickerModel.prototype.calculateSidePoints = function(angle, radius, config) {
-	var points = [];
-
-	var angleRad = angle * Math.PI / 180;
-	var steps = config.model3d.sides.steps;
-	var currentAngleRad, x, y,
-		extraLength = config.model3d.sides.extraLength;
-
+KickerModel.prototype.calculateSidePoints_ = function(minX, minY, angle, radius, config) {
 	// The first point is calculated outside of the loop because it must
 	// account for a minimum height of the sides, otherwise it looks too
 	// 'perfect': you can't build something that thin.
-	var minY = config.model3d.sides.minHeight;
-	var minX = Math.acos(1 - minY / radius);
-	points.push([minX, minY]); 
+	var firstPoint = [minX, minY]; 
+
+	var points = this.calculatePoints_([firstPoint], minX, minY, angle, radius, config);
+	var lastPoint = points[points.length - 1];
+	var extraLength = config.model3d.sides.extraLength;
+	points.push([lastPoint[0] + extraLength, lastPoint[1]]); 
+	points.push([lastPoint[0] + extraLength, 0]); 
+
+	return points;
+};
+
+KickerModel.prototype.calculateSurfaceSidePoints_ = function(minX, minY, angle, radius, config, thickness) {
+	return this.calculatePoints_([], minX, minY, angle, radius, config);
+};
+
+KickerModel.prototype.calculatePoints_ = function(points, minX, minY, angle, radius, config, thickness) {
+	var angleRad = angle * Math.PI / 180;
+	var steps = config.model3d.sides.steps;
+	var currentAngleRad, x, y;
 
 	for (var i = 0; i <= steps; i++) {
 		currentAngleRad = i / steps * angleRad;
@@ -70,22 +79,19 @@ KickerModel.prototype.calculateSidePoints = function(angle, radius, config) {
 			continue;
 			y = minY;
 		}
-		points.push([x,y]);
+		points.push([x - minX, y]);
 	}
-	var lastPointX = x + extraLength;
-	points.push([lastPointX, y]); 
-	points.push([lastPointX, 0]); 
 
-	// Offset by extraLength to start at x=0.
-	points.forEach(function(point) {
-		point[0] -= extraLength;
-	});
 	return points;
 };
 
 KickerModel.prototype.create3dObject = function(config, imageList, renderer) {
-	var points = this.calculateSidePoints(this.angle, this.radius, config);
-	this.representation3d = new Representation3D(this.data, points, this.length, this.angle, this.arc, this.radius, this.width, this.height, imageList, config, renderer);
+	var minY = config.model3d.sides.minHeight;
+	var minX = Math.acos(1 - minY / this.radius);
+
+	var sidePoints = this.calculateSidePoints_(minX, minY, this.angle, this.radius, config);
+	var surfacePoints = this.calculateSidePoints_(minX, minY, this.angle, this.radius, config, config.model3d.surface.thickness);
+	this.representation3d = new Representation3D(this.data, sidePoints, surfacePoints, this.length, this.angle, this.arc, this.radius, this.width, this.height, imageList, config, renderer);
 	return this.representation3d;
 };
 

@@ -8,10 +8,7 @@
 
 	TODO:
 	Annotations:
-	- remove the grid in 2d by default, add a setting for it.
-	- reduce the size of the radius.
-	- figure out what's going on with the line width logs
-	- close the sides on surface, make last edge go to the right angle.
+	- on surface, make last edge go to the right angle.
 	- send a pull request to allow https://github.com/mrdoob/three.js/blob/master/src/extras/helpers/EdgesHelper.js to take in a material object instead of hex => thicker lines.
 
 	- send another pull request to do (!!visible) instead of (visible === true)
@@ -96,7 +93,7 @@
 								<bihi-representation></bihi-representation>
 							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Context">
-								<bihi-context rider></bihi-context>
+								<bihi-context></bihi-context>
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
@@ -129,7 +126,9 @@
 				        'width': 1,
 				        'angle': 45,
 				        'repType': '2d',
-				        'mountainboard': false,
+				        'annotations': true,
+				        'grid': true,
+				        'mountainboard': true,
 				        'textured': true,
 				        'rider': false
 				    }});

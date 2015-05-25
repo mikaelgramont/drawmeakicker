@@ -29,6 +29,8 @@ KickerIOFromDOM.prototype.get = function(name) {
 			return this.repEl[name];
 		case 'textured':
 			return !!this.repEl[name];
+		case 'annotations':
+		case 'grid':
 		case 'mountainboard':
 		case 'rider':
 			return !!this.contextEl[name];

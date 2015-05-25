@@ -33,16 +33,7 @@
   Polymer({
     is: "bihi-representation",
     ready: function() {
-      // var radioEls = Polymer.dom(this.root).querySelectorAll('input[type=radio]');
-      // for(var i = 0, l = radioEls.length; i < l; i++) {
-      //   radioEls[i].checked = (radioEls[i].value == this.repType);
-      // }
-      // this.$.texturedEl.checked = this.textured;
       this.updateTextureCheckbox(this.repType);
-      // var self = this;
-      // setTimeout(function() {
-      //   console.log('bihi-representation - repType', self.repType);
-      // }, 20);
     },
     onClick: function(e) {
       var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');

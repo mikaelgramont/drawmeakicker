@@ -19,9 +19,11 @@ KickerIOFromJSON.prototype.get = function(name) {
 			return parseFloat(this.storage[name]);
 		case 'repType':
 			return this.storage[name];
-		case 'textured':
+		case 'annotations':
+		case 'grid':
 		case 'mountainboard':
 		case 'rider':
+		case 'textured':
 			return !!this.storage[name];
 		default:
 			throw new Error('Get not supported:' + name);

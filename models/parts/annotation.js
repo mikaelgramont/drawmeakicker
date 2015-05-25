@@ -1,20 +1,23 @@
-var Annotation = function(type) {
+var Annotation = function(type, options) {
 	Part.call(this);
 
-	// Convert arguments to an array, and pop 'type' off.
-	var args = Array.prototype.slice.call(arguments);
-	args.shift();
-	var mesh = null;
+	var mesh;
+
+	if (options.visibilityFunction) {
+		this.visibilityFunction_ = options.visibilityFunction;
+	} else {
+		this.visibilityFunction_ = null;
+	}
 
 	switch(type) {
 		case Annotation.types.STRAIGHT:
-			mesh = this.getStraight_.apply(this, args);
+			mesh = this.getStraight_(options);
 			break;
 		case Annotation.types.CURVED:
-			mesh = this.getCurved_.apply(this, args);
+			mesh = this.getCurved_(options);
 			break;
 		case Annotation.types.ANGLE:
-			mesh = this.getAngle_.apply(this, args);
+			mesh = this.getAngle_(options);
 			break;
 		default:
 			throw new Error('Annotation type not supported: ' + type);
@@ -25,55 +28,65 @@ var Annotation = function(type) {
 };
 Annotation.prototype = new Part();
 
-Annotation.prototype.getStraight_ = function(name, origin, length, text, textDistance, rotation, material, hasStartTip, hasEndTip, switchTextPosition) {
+Annotation.prototype.setMeshVisibilityForDisplay = function(data) {
+	var visible;
+	if (this.visibilityFunction_) {
+		visible = this.visibilityFunction_(data);
+	} else {
+		visible = data.get('annotations');
+	}
+	this.meshes['2d'].visible = visible;
+}
+
+Annotation.prototype.getStraight_ = function(o) {
 	var mainObj = new THREE.Object3D();
-	mainObj.name = name;
+	mainObj.name = o.name;
 
-	var arrowObj = new Arrow(length, material, hasStartTip, hasEndTip);
-	var textObj = new Text(text, material);
+	var arrowObj = new Arrow(o.length, o.material, o.hasStartTip, o.hasEndTip);
+	var textObj = new Text(o.text, o.material);
 
-	var verticalOffset = (switchTextPosition ? 1 : -1) * textDistance
-	textObj.mesh.position.copy(new THREE.Vector3(length / 2 + textObj.offsetX, verticalOffset, 0));
+	var verticalOffset = (o.switchTextPosition ? 1 : -1) * o.textDistance
+	textObj.mesh.position.copy(new THREE.Vector3(o.length / 2 + textObj.offsetX, verticalOffset, 0));
 
 	mainObj.add(arrowObj.mesh);
 	mainObj.add(textObj.mesh);
-	mainObj.position.copy(origin);
-	mainObj.rotation.copy(rotation);
+	mainObj.position.copy(o.origin);
+	mainObj.rotation.copy(o.rotation);
 
 	return mainObj;
 };
 
-Annotation.prototype.getCurved_ = function(name, origin, arc, angle, radius, text, distance, textDistance, material) {
+Annotation.prototype.getCurved_ = function(o) {
 	var mainObj = new THREE.Object3D();
-	mainObj.name = name;
+	mainObj.name = o.name;
 
-	var arrowObj = new CurvedArrow(arc, angle, radius, distance, material);
+	var arrowObj = new CurvedArrow(o.arc, o.angle, o.radius, o.distance, o.material);
 	var points = arrowObj.points;
 	mainObj.add(arrowObj.mesh);
 
-	var textObj = new Text(text, material);
+	var textObj = new Text(o.text, o.material);
 	mainObj.add(textObj.mesh);
-	var angleRad = angle * Math.PI / 180;
+	var angleRad = o.angle * Math.PI / 180;
 	textObj.mesh.rotation.z = angleRad / 2;
 	textObj.mesh.position.x = (points[0][0] + points[points.length - 1][0]) / 2 + textObj.offsetX /2;
 	textObj.mesh.position.y = (points[0][1] + points[points.length - 1][1]) / 2 - 0.15;
 
-	mainObj.position.copy(origin);
+	mainObj.position.copy(o.origin);
 	return mainObj;
 };
 
-Annotation.prototype.getAngle_ = function(name, origin, angle, text, textDistance, material) {
+Annotation.prototype.getAngle_ = function(o) {
 	var mainObj = new THREE.Object3D();
-	mainObj.name = name;
+	mainObj.name = o.name;
 
-	var angleObj = new Angle(origin, angle, material);
+	var angleObj = new Angle(o.origin, o.angle, o.cornerSide, o.material);
 	mainObj.add(angleObj.mesh);
 
-	var textObj = new Text(text, material);
-	textObj.mesh.position.copy(new THREE.Vector3(length / 2 + textObj.offsetX, textDistance, 0));
+	var textObj = new Text(o.text, o.material);
+	textObj.mesh.position.copy(new THREE.Vector3(o.cornerSide, o.textDistance, 0));
 	mainObj.add(textObj.mesh);
 
-	mainObj.position.copy(origin);
+	mainObj.position.copy(o.origin);
 	return mainObj;
 };
 

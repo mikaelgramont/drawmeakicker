@@ -2,7 +2,7 @@ var KickerIO = function() {
 	this.params = ['height', 'width', 'angle',];
 	this.results = ['arc', 'radius', 'length',];
 	this.rep = ['repType', 'textured'];
-	this.context = ['mountainboard', 'rider'];
+	this.context = ['annotations', 'grid', 'mountainboard', 'rider'];
 
 	this.supported = this.params.concat(this.results, this.rep, this.context);
 

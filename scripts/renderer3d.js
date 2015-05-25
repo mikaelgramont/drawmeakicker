@@ -75,6 +75,7 @@ Renderer3d.prototype.draw = function() {
 };
 
 Renderer3d.prototype.refresh = function() {
+	console.log('refresh');
 	this.kicker.refresh();
 	this.createKicker();
 	if (this.data.get('repType') == '2d') {
@@ -126,13 +127,7 @@ Renderer3d.prototype.setVisibleObjects = function() {
 		part.setMeshVisibilityForDisplay(data);
 	});
 
-	var grid = this.scene.getObjectByName('grid');
-	if (grid) {
-		var is2d = data.get('repType') != '2d';
-		grid.visible = is2d;	
-	}
-
-	this.pickCamera();
+	this.prepareCameras();
 };
 
 Renderer3d.prototype.pickCamera = function() {
