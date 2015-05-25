@@ -67,7 +67,7 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 			break;
 		} 
 
-		offset = new THREE.Vector3( - minX, 0, 0);
+		offset = new THREE.Vector3(0, 0, 0);
 		strut = new Strut(
 			strutWidth, thickness, radius, currentAngleRad, offset, this.imageList
 		);
@@ -79,7 +79,7 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 	// One at the lip.
 	thickness = config.model3d.struts.side;
 	offset = new THREE.Vector3(
-		(length - thickness / 2),
+		(length - thickness),
 		thickness,
 		0
 	);
@@ -89,7 +89,7 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 	struts.push(strut);
 
 	// One strut 2/3 of the length from entry to lip.
-	offset = new THREE.Vector3(length * 2 / 3 - minX, thickness, 0);
+	offset = new THREE.Vector3(length * 2 / 3, thickness, 0);
 	strut = new Strut(
 		strutWidth, thickness, null, null, offset, this.imageList
 	);

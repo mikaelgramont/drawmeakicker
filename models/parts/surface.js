@@ -23,22 +23,8 @@ Surface.prototype.createMesh = function(points, width) {
 
 Surface.prototype.buildGeometry = function(points, width) {
 	var shape = new THREE.Shape();
-	var thickness = config.model3d.surface.thickness;
-
-	var i;
-	var l = points.length;
-
-	// Remove the last two points we don't need
-	// (they would add a coping at the top and close the back too).
-	points.splice(l - 2);
-
-	// Duplicate the points, and offset them upwards.
-	for (l = points.length - 1, i = l; i >= 0; i--) {
-		points.push([points[i][0], points[i][1] + thickness]);
-	}
-
 	shape.moveTo(points[0][0], points[0][1]);
-	for (i = 1, l = points.length; i < l; i++) {
+	for (var i = 1, l = points.length; i < l; i++) {
 		shape.lineTo(points[i][0], points[i][1]);
 	}
 

@@ -1,7 +1,7 @@
 var config = {
 	'model3d': {
 		'sides': {
-			'steps': 20,
+			'steps': 30,
 			'thickness': 0.03,
 			'extraLength': 0.1,
 			'minHeight': 0.015
@@ -17,7 +17,7 @@ var config = {
 			'maximumDistance': 0.3
 		},
 		'surface': {
-			'thickness': 0.03
+			'thickness': 0.015
 		}
 	}
 };
