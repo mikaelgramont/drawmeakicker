@@ -1,0 +1,25 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-upload-button">
+  <style>
+    button {
+      margin: 10px;
+    }
+  </style>
+
+  <template>
+    <button id="upload" on-click="onClick">Upload</button>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-upload-button",
+    onClick: function(e) {
+      var event = new Event('renderer-upload-request');
+      document.body.dispatchEvent(event);      
+    },
+  });
+
+</script>

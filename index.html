@@ -14,10 +14,7 @@
 	- scenario 2:
 		- open page with id, go into view mode
 
-	- load data from the backend.
-	- merge those values and defaults into the init values
-	- save: send a blob to the backend, save it to disk along with parameters
-
+	Next:
 	- add a few more struts when necessary.
 	- make the extra length longer if building a quarter pipe.
 	- add character.
@@ -56,6 +53,7 @@
 		<link rel="import" href="elements/bihi-representation.html">
 		<link rel="import" href="elements/bihi-renderer3d.html">
 		<link rel="import" href="elements/bihi-results.html">
+		<link rel="import" href="elements/bihi-save-button.html">
 		<link rel="import" href="elements/bihi-upload-button.html">
 	</head>
 
@@ -109,6 +107,7 @@
 
 						<bihi-design-step caption="Save" step="3">
 							<bihi-design-fieldset legend="Image">
+								<bihi-save-button></bihi-save-button>
 								<bihi-upload-button></bihi-upload-button>
 							</bihi-design-fieldset>
 						</bihi-design-step>

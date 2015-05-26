@@ -1,4 +1,4 @@
-var Renderer3d = function(sequencer, kicker, canvas3dEl, imageList, config, canvas2dEl) {
+var Renderer3d = function(sequencer, kicker, canvas3dEl, imageList, config, canvas2dEl, mergedCanvasEl) {
 	this.sequencer = sequencer;
 
 	this.kicker = kicker;
@@ -6,6 +6,8 @@ var Renderer3d = function(sequencer, kicker, canvas3dEl, imageList, config, canv
 	this.canvasEl = canvas3dEl;
 	this.canvas2dEl = canvas2dEl;
 	this.blueprintBorderRenderer = new BlueprintBorderRenderer(canvas2dEl);
+	this.mergedCanvasEl = mergedCanvasEl;
+	this.mergedRenderer = new MergedRenderer(canvas3dEl, canvas2dEl, mergedCanvasEl);
 	this.imageList = imageList;
 	this.config = config;
 	this.parts = null;
@@ -148,6 +150,7 @@ Renderer3d.prototype.resize = function() {
 	this.threeRenderer.setSize(parent.clientWidth, parent.clientHeight, false);
 	this.prepareCameras();
 	this.blueprintBorderRenderer.resize();
+	this.mergedRenderer.resize();
 	this.sequencer.requestSingleRender();
 };
 
