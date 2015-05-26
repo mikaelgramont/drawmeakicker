@@ -79,7 +79,8 @@
       "renderer-init": "init",
       "renderer-refresh": "refresh",
       "renderer-update-viz": "updateViz",
-      "renderer-redraw": "renderOnce"
+      "renderer-redraw": "renderOnce",
+      "renderer-upload": "startUpload"
     },
     properties: {
       initialized: {
@@ -144,6 +145,16 @@
     },
     updateViz: function(e) {
       this.renderer.updateViz(e.detail);
+    },
+    startUpload: function() {
+      var canvasEl = this.renderer.canvasEl;
+      var imgData = canvasEl.toDataURL();
+
+      var xhr = new XMLHttpRequest();
+      var url = './save.php'
+      xhr.open('post', url, true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.send("img="+imgData);
     }
   });
 

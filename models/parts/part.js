@@ -23,14 +23,19 @@ Part.prototype.setMeshVisibilityForDisplay = function(data) {
 			this.meshes['3d'].visible = true;
 		}			
 	}
+
+	if (this.edges) {
+		// Make for thicker lines in 2d, it looks better.
+		this.edges.material.linewidth = representation == '2d' ? 2 : 1;
+	}
 }
 
 Part.prototype.createGhostFor = function(obj) {
 	var threshold = Math.PI,
 		ghostObj = new THREE.Object3D();
 
-	var edges = new THREE.EdgesHelper(obj, 0xf8faff, threshold);
-	ghostObj.add(edges);
+	this.edges = new THREE.EdgesHelper(obj, 0xf8faff, threshold);
+	ghostObj.add(this.edges);
 	return ghostObj;
 };
 

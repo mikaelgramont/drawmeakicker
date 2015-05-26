@@ -143,7 +143,9 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 		textDistance = distance,
 		material = new THREE.MeshBasicMaterial({color: 0xffffff}),
 		angleRad = angle * Math.PI / 180,
-		fakeRadiusSize = 2.0;
+		fakeRadiusSize = 2.0,
+		angleX = length + distance * Math.cos(angleRad) - config.model3d.sides.extraLength,
+		angleY = height + distance * Math.sin(angleRad);
 	return {
 		length: new Annotation(Annotation.types.STRAIGHT, {
 			name: 'length',
@@ -159,7 +161,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 		}),
 		width: new Annotation(Annotation.types.STRAIGHT, {
 			name: 'width',
-			origin: new THREE.Vector3(- distance, - distance, - width / 2),
+			origin: new THREE.Vector3(angleX - .02, angleY, - width / 2),
 			length: width,
 			text: this.getHumanReadableDimension_(width, 'm'),
 			textDistance: textDistance,
@@ -167,7 +169,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			material: material,
 			hasStartTip: true,
 			hasEndTip: true,
-			switchTextPosition: false,
+			switchTextPosition: true,
 			visibilityFunction: function(data) {
 				return data.get('repType') == '3d' && data.get('annotations');
 			}
@@ -209,7 +211,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 		}),
 		angle: new Annotation(Annotation.types.ANGLE, {
 			name: 'angle',
-			origin: new THREE.Vector3(length + distance * Math.cos(angleRad) - config.model3d.sides.extraLength, height + distance * Math.sin(angleRad), - width / 2),
+			origin: new THREE.Vector3(angleX, angleY, width / 2),
 			angle: angle,
 			text: this.getHumanReadableDimension_(angle, '°'),
 			cornerSide: .25,

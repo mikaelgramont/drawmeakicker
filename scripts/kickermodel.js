@@ -48,8 +48,6 @@ KickerModel.prototype.create3dObject = function(config, imageList, renderer) {
 	var sidePoints = this.calculateSidePoints_(this.angle, this.radius, config);
 	var surfacePoints = this.calculateSurfacePoints_(this.angle, this.radius, config, config.model3d.surface.thickness);
 
-	window.sidePoints = sidePoints;
-	window.surfacePoints = surfacePoints;
 	this.representation3d = new Representation3D(this.data, sidePoints, surfacePoints, this.length, this.angle, this.arc, this.radius, this.width, this.height, imageList, config, renderer);
 	return this.representation3d;
 };
@@ -68,7 +66,6 @@ KickerModel.prototype.calculateSidePoints_ = function(angle, radius, config) {
 
 	points.unshift([points[0][0], 0]);
 
-	console.info('side', points);
 	return points;
 };
 
@@ -84,7 +81,6 @@ KickerModel.prototype.calculateSurfacePoints_ = function(angle, radius, config, 
 
 		points.push([x, y]);
 	}
-	console.info('surface', points);
 
 	return points;
 };

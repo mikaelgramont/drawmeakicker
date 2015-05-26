@@ -16,9 +16,9 @@ EditorScene.createPerspectiveCamera_ = function(el) {
 	var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
 
 	camera.position.copy(new THREE.Vector3(
-		-1.953021168199046,
-		2.9067382584295327,
-		2.6965944941147135
+		-0.95,
+		2.64,
+		3.85
 	));
 	return camera;
 };
@@ -26,12 +26,12 @@ EditorScene.createPerspectiveCamera_ = function(el) {
 EditorScene.createOrthoCamera_ = function(el, kickerObj) {
 	var aspectRatio = el.clientWidth / el.clientHeight,
 		bb = new THREE.BoundingBoxHelper(kickerObj),
-		margin = 0,
+		margin = 0.1,
 		w, h;
 	bb.update(true);
 
-	var xRange = Math.ceil(bb.box.max.x - bb.box.min.x),
-		yRange = Math.ceil(bb.box.max.y - bb.box.min.y);
+	var xRange = (1 + margin) * Math.ceil(bb.box.max.x - bb.box.min.x),
+		yRange = (1 + margin) * Math.ceil(bb.box.max.y - bb.box.min.y);
 
 	// xRange += xRange % 3;
 	// yRange += yRange % 3;
@@ -102,7 +102,8 @@ EditorScene.getRenderer = function(canvasEl) {
 	var threeRenderer = new THREE.WebGLRenderer({
 		antialias: true,
 		canvas: canvasEl,
-		alpha: true
+		alpha: true,
+		preserveDrawingBuffer: true
 	});
 	return threeRenderer;
 };

@@ -1,29 +1,40 @@
 <!-- 
-	Polymer 0.8 WTFs:
-	- when outputting properties to html, can't put anything else next to a variable inside a given container
-
-	Questions:
-	- how to make a custom element inherit from a builtin element (fieldset)?
-	- is firing and catching events through the dom the way to go to communicate? Seems to work for elements that are related to each other. Should we use some kind of pubsub sitting at the top of the page for elements that are not in the same branch of the tree?
-
 	TODO:
-	- send a pull request to allow https://github.com/mrdoob/three.js/blob/master/src/extras/helpers/EdgesHelper.js to take in a material object instead of hex => thicker lines.
+	- scenario 1:
+		- start a new kicker, go into edit mode
+		- set it up
+		- download screenshots when desired
+		- saving entails:
+			- sending data, including current image
+			- generating an id
+			- persisting data to db
+			- returning the following:
+				- new url fragment for history update
+				- relevant information for open graph (page url, thumbnail url, page title)
+	- scenario 2:
+		- open page with id, go into view mode
 
-	- send another pull request to do (!!visible) instead of (visible === true)
+	- load data from the backend.
+	- merge those values and defaults into the init values
+	- save: send a blob to the backend, save it to disk along with parameters
 
+	- add a few more struts when necessary.
+	- make the extra length longer if building a quarter pipe.
 	- add character.
 	- create a better background image for the top section. Possibly add a blueprint in the bottom right corner, so that the action button can be made white against blue.
 	- Saving to the backend (height, width, angle, name, snapshot, pdf).
-	- Sharing: facebook, twitter, g+. Annotations to embed everything in the target sharing network.
+	- Sharing: facebook, twitter, g+. Open graph data to embed everything in the target sharing network.
+
+
+	Cleanup:
+	- dependencies need to be handled better.
 
 	Nice to have's
-	- board in 2d (second model part of the export), board with no textures in 3d (traverse children and add edgehelpers, or consolidate all children into one geometry).
-	- add angle, radius with arrows and angle representation to 2d view.
 	- add presets for 2d cam positions
 
 	Optimizations:
 	- cache text objects as they are super slow to generate
-	- use factories for all object creation, in order to recycle them (replace the geometry, position, scale and rotation).
+	- use factories and object pools for all object creation, in order to recycle them (replace the geometry, position, scale and rotation).
 
 	Mobile:
 	- Add a darkish background color to all containers with background images.		
@@ -45,6 +56,7 @@
 		<link rel="import" href="elements/bihi-representation.html">
 		<link rel="import" href="elements/bihi-renderer3d.html">
 		<link rel="import" href="elements/bihi-results.html">
+		<link rel="import" href="elements/bihi-upload-button.html">
 	</head>
 
 	<body>
@@ -95,7 +107,11 @@
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
-						<bihi-design-step caption="Save" step="3"></bihi-design-step>
+						<bihi-design-step caption="Save" step="3">
+							<bihi-design-fieldset legend="Image">
+								<bihi-upload-button></bihi-upload-button>
+							</bihi-design-fieldset>
+						</bihi-design-step>
 
 						<bihi-design-step caption="Share" step="4" last></bihi-design-step>
 					</bihi-accordion>
@@ -111,36 +127,19 @@
 			</footer>
 		</div>
 		<script>
-			(function() {
-				var editor = document.querySelector('.editor'),
-					start = document.getElementById('start-button'),
-					renderer = document.getElementById('renderer');
-				start.addEventListener('click', function(e) {
-					e.target.disabled = true;
-					document.body.classList.add('expanded-editor');
-					editor.scrollIntoView();
-					var event = new CustomEvent('renderer-init', {detail: {
-				        'height': 1.2,
-				        'width': 1,
-				        'angle': 45,
-				        'repType': '2d',
-				        'annotations': true,
-				        'grid': true,
-				        'mountainboard': true,
-				        'textured': true,
-				        'rider': false
-				    }});
-					renderer.dispatchEvent(event);
-				});
-				document.body.addEventListener('renderer-redraw-request', function() {
-					renderer.dispatchEvent(new Event('renderer-redraw'));
-				});
-				// Temporary for dev purposes.
-				setTimeout(function(){
-					start.dispatchEvent(new Event('click'));
-				}, 50);
-			})();
-
+			// TODO: generate these on the backend.
+			var initValues = {
+		        'height': 1.2,
+		        'width': 1,
+		        'angle': 45,
+		        'repType': '2d',
+		        'annotations': true,
+		        'grid': true,
+		        'mountainboard': false,
+		        'textured': true,
+		        'rider': false
+		    };
 		</script>
+		<script src="scripts/main.js"></script>
 	</body>
 </html>

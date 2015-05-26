@@ -75,7 +75,6 @@ Renderer3d.prototype.draw = function() {
 };
 
 Renderer3d.prototype.refresh = function() {
-	console.log('refresh');
 	this.kicker.refresh();
 	this.createKicker();
 	if (this.data.get('repType') == '2d') {
