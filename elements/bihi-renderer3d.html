@@ -31,7 +31,12 @@
 
 <script src="../scripts/box.js"></script>
 <script src="../scripts/bboxhelper.js"></script>
-<script src="../scripts/sequencer.js"></script>
+<!--
+<script src="../scripts/CanvasRenderer.js"></script>
+<script src="../scripts/SoftwareRenderer.js"></script>
+<script src="../scripts/Projector.js"></script>
+ -->
+ <script src="../scripts/sequencer.js"></script>
 <script src="../scripts/renderer3d.js"></script>
 <script src="../scripts/blueprintborderrenderer.js"></script>
 <script src="../scripts/mergedrenderer.js"></script>
@@ -88,7 +93,8 @@
       "renderer-update-viz": "updateViz",
       "renderer-redraw": "renderOnce",
       "renderer-upload": "startUpload",
-      "renderer-save": "saveImage"
+      "renderer-export": "exportImage",
+      "renderer-save": "save"
     },
     properties: {
       initialized: {
@@ -103,7 +109,7 @@
         console.log('bihi-renderer3d already initialized');
         return;
       }
-      var sequencer = new Sequencer(false),
+      var sequencer = new Sequencer(),
           canvas3dEl = Polymer.dom(this).node.querySelector('#canvas3d'),
           canvas2dEl = Polymer.dom(this).node.querySelector('#canvas2d'),
           mergedCanvasEl = Polymer.dom(this).node.querySelector('#merged-canvas'),
@@ -164,8 +170,9 @@
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       xhr.send("img="+imgData);
     },
-    saveImage: function() {
-      var imgData = this.renderer.mergedRenderer.getData();
+    exportImage: function(e) {
+      options = {};
+      var imgData = this.renderer.mergedRenderer.getData(e.detail.options);
       var filename = 'kicker.png';
 
       var lnk = document.createElement('a');
@@ -173,12 +180,11 @@
       lnk.href = imgData;
 
       var e = new Event("click");
-      // e.initMouseEvent("click", true, true, window,
-      // 0, 0, 0, 0, 0, false, false, false,
-      // false, 0, null);
-
       lnk.dispatchEvent(e);
     },
+    save: function() {
+      console.log('save', arguments);
+    }
   });
 
 </script>

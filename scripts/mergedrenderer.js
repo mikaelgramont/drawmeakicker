@@ -10,12 +10,17 @@ MergedRenderer.prototype.resize = function() {
 	this.mergedCanvasEl.height = parent.clientHeight;
 };
 
-MergedRenderer.prototype.getData = function() {
+MergedRenderer.prototype.getData = function(options) {
 	var ctx = this.mergedCanvasEl.getContext('2d');
-	ctx.fillStyle = '#3B69D5';
-	ctx.fillRect(0, 0, this.mergedCanvasEl.width, this.mergedCanvasEl.height);          
+	ctx.clearRect(0, 0, this.mergedCanvasEl.width, this.mergedCanvasEl.height);          
+	if (options.fill) {
+		ctx.fillStyle = '#3B69D5';
+		ctx.fillRect(0, 0, this.mergedCanvasEl.width, this.mergedCanvasEl.height);          
+	}
 	ctx.drawImage(this.canvas3dEl, 10, 10);
-	ctx.drawImage(this.canvas2dEl, 10, 10);
+	if (options.borders) {
+		ctx.drawImage(this.canvas2dEl, 10, 10);
+	}
 
 	return this.mergedCanvasEl.toDataURL();
 };

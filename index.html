@@ -1,5 +1,11 @@
 <!-- 
 	TODO:
+	- save button gives you a url
+	- possibility of leaving a description
+	- download image
+	=> textarea for description, text input for url, download, save button
+
+
 	- scenario 1:
 		- start a new kicker, go into edit mode
 		- set it up
@@ -13,6 +19,10 @@
 				- relevant information for open graph (page url, thumbnail url, page title)
 	- scenario 2:
 		- open page with id, go into view mode
+
+	Before launching:
+	- need a logo
+	- need some screenshots put together into a video
 
 	Next:
 	- add keyboard input for dimensions
@@ -50,12 +60,13 @@
 		<link rel="import" href="elements/bihi-design-parameter.html">   
 		<link rel="import" href="elements/bihi-design-result.html">
 		<link rel="import" href="elements/bihi-design-step.html">
+		<link rel="import" href="elements/bihi-export.html">
 		<link rel="import" href="elements/bihi-logo.html">
 		<link rel="import" href="elements/bihi-params.html">
 		<link rel="import" href="elements/bihi-representation.html">
 		<link rel="import" href="elements/bihi-renderer3d.html">
 		<link rel="import" href="elements/bihi-results.html">
-		<link rel="import" href="elements/bihi-save-button.html">
+		<link rel="import" href="elements/bihi-save.html">
 		<link rel="import" href="elements/bihi-upload-button.html">
 	</head>
 
@@ -108,9 +119,11 @@
 						</bihi-design-step>
 
 						<bihi-design-step caption="Save" step="3">
-							<bihi-design-fieldset legend="Image">
-								<bihi-save-button></bihi-save-button>
-								<bihi-upload-button></bihi-upload-button>
+							<bihi-design-fieldset legend="Export">
+								<bihi-export></bihi-export>
+							</bihi-design-fieldset>
+							<bihi-design-fieldset legend="Save">
+								<bihi-save></bihi-save>
 							</bihi-design-fieldset>
 						</bihi-design-step>
 

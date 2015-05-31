@@ -36,8 +36,12 @@
 				rendererEl.dispatchEvent(new Event('renderer-upload'));
 		});
 		document.body.addEventListener('renderer-save-request',
-			function() {
-				rendererEl.dispatchEvent(new Event('renderer-save'));
+			function(e) {
+				rendererEl.dispatchEvent(new CustomEvent('renderer-save', {detail: e.detail}));
+		});
+		document.body.addEventListener('renderer-export-request',
+			function(e) {
+				rendererEl.dispatchEvent(new CustomEvent('renderer-export', {detail: e.detail}));
 		});
 	}
 })(initValues);

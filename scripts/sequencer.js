@@ -1,6 +1,6 @@
 var Sequencer = function(debug) {
 	this.renderer = null;
-	this.debug_ = debug;
+	this.debug_ = !!debug;
 	this.updateState_ = this.STATES_.DONE;
 	this.renderingState_ = this.STATES_.DONE;
 

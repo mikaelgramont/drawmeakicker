@@ -142,6 +142,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 	var distance = 0.2,
 		textDistance = distance,
 		material = new THREE.MeshBasicMaterial({color: 0xffffff}),
+		lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 2}),
 		angleRad = angle * Math.PI / 180,
 		fakeRadiusSize = 2.0,
 		angleX = length + distance * Math.cos(angleRad) - config.model3d.sides.extraLength,
@@ -155,6 +156,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			textDistance: textDistance,
 			rotation: new THREE.Euler(0, 0, 0, 'XYZ'),
 			material: material,
+			lineMaterial: lineMaterial,
 			hasStartTip: true,
 			hasEndTip: true,
 			switchTextPosition: false
@@ -167,6 +169,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			textDistance: textDistance,
 			rotation: new THREE.Euler(0, - Math.PI / 2, 0, 'XYZ'),
 			material: material,
+			lineMaterial: lineMaterial,
 			hasStartTip: true,
 			hasEndTip: true,
 			switchTextPosition: true,
@@ -182,6 +185,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			textDistance: textDistance,
 			rotation: new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'),
 			material: material,
+			lineMaterial: lineMaterial,
 			hasStartTip: true,
 			hasEndTip: true,
 			switchTextPosition: false
@@ -194,6 +198,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			textDistance: textDistance,
 			rotation: new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'),
 			material: material,
+			lineMaterial: lineMaterial,
 			hasStartTip: true,
 			hasEndTip: false,
 			switchTextPosition: false
@@ -207,7 +212,8 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			text: this.getHumanReadableDimension_(arc, 'm'),
 			distance: distance,
 			textDistance: textDistance,
-			material: material
+			material: material,
+			lineMaterial: lineMaterial
 		}),
 		angle: new Annotation(Annotation.types.ANGLE, {
 			name: 'angle',
@@ -216,7 +222,8 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			text: this.getHumanReadableDimension_(angle, '°'),
 			cornerSide: .25,
 			textDistance: .1,
-			material: material
+			material: material,
+			lineMaterial: lineMaterial
 		})
 	};
 };

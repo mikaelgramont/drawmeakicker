@@ -42,7 +42,7 @@ Annotation.prototype.getStraight_ = function(o) {
 	var mainObj = new THREE.Object3D();
 	mainObj.name = o.name;
 
-	var arrowObj = new Arrow(o.length, o.material, o.hasStartTip, o.hasEndTip);
+	var arrowObj = new Arrow(o.length, o.lineMaterial, o.hasStartTip, o.hasEndTip);
 	var textObj = new Text(o.text, o.material);
 
 	var verticalOffset = (o.switchTextPosition ? 1 : -1) * o.textDistance
@@ -60,7 +60,7 @@ Annotation.prototype.getCurved_ = function(o) {
 	var mainObj = new THREE.Object3D();
 	mainObj.name = o.name;
 
-	var arrowObj = new CurvedArrow(o.arc, o.angle, o.radius, o.distance, o.material);
+	var arrowObj = new CurvedArrow(o.arc, o.angle, o.radius, o.distance, o.lineMaterial);
 	var points = arrowObj.points;
 	mainObj.add(arrowObj.mesh);
 
@@ -79,7 +79,7 @@ Annotation.prototype.getAngle_ = function(o) {
 	var mainObj = new THREE.Object3D();
 	mainObj.name = o.name;
 
-	var angleObj = new Angle(o.origin, o.angle, o.cornerSide, o.material);
+	var angleObj = new Angle(o.origin, o.angle, o.cornerSide, o.lineMaterial);
 	mainObj.add(angleObj.mesh);
 
 	var textObj = new Text(o.text, o.material);

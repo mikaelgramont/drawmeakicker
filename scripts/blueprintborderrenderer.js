@@ -52,7 +52,6 @@ BlueprintBorderRenderer.prototype.render = function() {
 		ctx.lineTo(width - notchLength, y);
 		ctx.stroke();
 	}
-
 }
 
 BlueprintBorderRenderer.prototype.resize = function() {

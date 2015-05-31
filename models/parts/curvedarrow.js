@@ -1,6 +1,6 @@
 var CurvedArrow = function(arc, exitAngle, radius, distance, material) {
 	var angleOffset = 5;
-	var points = this.calculatePoints(angleOffset, exitAngle - angleOffset, radius, distance);
+	var points = this.calculatePoints(angleOffset, exitAngle, radius, distance);
 
 	var mainObj = new THREE.Object3D();
 
