@@ -96,11 +96,16 @@ EditorScene.createKicker = function(kicker, config, imageList, renderer) {
 };
 
 EditorScene.getRenderer = function(canvasEl) {
-	var threeRenderer = new THREE.WebGLRenderer({
+	var options = {
 		antialias: true,
 		canvas: canvasEl,
 		alpha: true,
 		preserveDrawingBuffer: true
-	});
-	return threeRenderer;
+	};
+
+	if (!window.WebGLRenderingContext) {
+		return new THREE.CanvasRenderer(options);
+	} else {
+		return threeRenderer = new THREE.WebGLRenderer(options);
+	}
 };
