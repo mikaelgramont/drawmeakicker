@@ -25,16 +25,13 @@ EditorScene.createPerspectiveCamera_ = function(el) {
 
 EditorScene.createOrthoCamera_ = function(el, kickerObj) {
 	var aspectRatio = el.clientWidth / el.clientHeight,
-		bb = new THREE.BoundingBoxHelper(kickerObj),
+		bb = new BoundingBoxHelper(kickerObj),
 		margin = 0.1,
 		w, h;
 	bb.update(true);
 
 	var xRange = (1 + margin) * Math.ceil(bb.box.max.x - bb.box.min.x),
 		yRange = (1 + margin) * Math.ceil(bb.box.max.y - bb.box.min.y);
-
-	// xRange += xRange % 3;
-	// yRange += yRange % 3;
 
 	var xCenter = (bb.box.max.x + bb.box.min.x) / 2,
 		yCenter = (bb.box.max.y + bb.box.min.y) / 2;
