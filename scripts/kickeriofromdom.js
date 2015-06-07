@@ -1,10 +1,12 @@
-var KickerIOFromDOM = function(paramsEl, resultsEl, repEl, contextEl, initialValues) {
+var KickerIOFromDOM = function(paramsEl, resultsEl, repEl, contextEl, exportEl, saveEl, initialValues) {
 	KickerIO.call(this);
 
 	this.paramsEl = paramsEl;
 	this.resultsEl = resultsEl;
 	this.repEl = repEl;
 	this.contextEl = contextEl;
+	this.exportEl = exportEl;
+	this.saveEl = saveEl;
 
 	this.init(initialValues);
 };
@@ -27,8 +29,14 @@ KickerIOFromDOM.prototype.get = function(name) {
 			return parseFloat(this.paramsEl[name]);
 		case 'repType':
 			return this.repEl[name];
+		case 'description':
+		case 'id':
+			return this.saveEl[name];
 		case 'textured':
 			return !!this.repEl[name];
+		case 'fill':
+		case 'borders':
+			return !!this.exportEl[name];
 		case 'annotations':
 		case 'grid':
 		case 'mountainboard':
@@ -51,6 +59,10 @@ KickerIOFromDOM.prototype.set = function(name, value) {
 		targetEl = this.repEl;	
 	} else if (this.context.indexOf(name) !== -1) {
 		targetEl = this.contextEl;	
+	} else if (this.export.indexOf(name) !== -1) {
+		targetEl = this.exportEl;	
+	} else if (this.save.indexOf(name) !== -1) {
+		targetEl = this.saveEl;	
 	}
 
 	if (this.floatValues.indexOf(name) !== -1) {

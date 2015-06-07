@@ -19,9 +19,9 @@ Board.prototype.createMeshes = function() {
 		loader.load('./models/board.dae', this.onBoardLoaded.bind(this));
 	}
 
-	var x = 1,
+	var x = .5,
 		y = .1;
-		z = this.width / 2 + .7;
+		z = this.width / 2 + 1;
 	board.position.set(x, y, z);
 	board.scale.set(.5, .5, .5)
 	board.rotation.set(0, 10 * Math.PI / 64, 0);

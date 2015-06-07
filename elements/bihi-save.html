@@ -2,11 +2,16 @@
 
 <dom-module id="bihi-save">
   <style>
-    .container {
-      padding: 10px 0;
-    }
     label {
       display: block;
+      margin: 10px 0;
+    }
+    input,
+    textarea {
+      width: 100%;
+    }
+    textarea {
+      height: 4.5em;
     }
     .button-container {
       margin: 10px 0;
@@ -16,16 +21,9 @@
 
   <template>
     <div class="container size-2">
-<!--       <label>
-        <input id="fill" type="checkbox" checked>
-        <span>Background color</span>
-      </label>
-      <label>
-        <input id="borders" type="checkbox" checked>
-        <span>Borders</span>
-      </label>
- -->      <div class="button-container">
-        <button on-click="onSaveButtonClick">Save</button>
+      <textarea id="description"></textarea>
+       <div class="button-container">
+        <button>Save</button>
       </div>
     </div>
   </template>
@@ -34,15 +32,7 @@
 
 <script>
   Polymer({
-    is: "bihi-save",
-    onSaveButtonClick: function(e) {
-      var options = {
-        fill: this.$.fill.checked,
-        borders: this.$.borders.checked
-      };
-      var event = new CustomEvent('renderer-save-request', {detail: {options: options}});
-      document.body.dispatchEvent(event);      
-    }
+    is: "bihi-save"
   });
 
 </script>

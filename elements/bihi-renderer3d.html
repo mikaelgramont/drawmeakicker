@@ -3,6 +3,7 @@
 <script src="../bower_components/threejs/build/three.js"></script>
 <script src="../fonts/archer_medium_regular.typeface.js"></script>
 <script src="../scripts/config.js"></script>
+<script src="../scripts/editorstate.js"></script>
 <script src="../scripts/imagelist.js"></script>
 <script src="../scripts/utils.js"></script>
 <script src="../scripts/kickerio.js"></script>
@@ -60,6 +61,11 @@
       position: absolute;
       /* Dimensions are set in JS. */
     }
+    #canvas2d,
+    #canvas3d {
+      /* Allows for cheap scaling when resizing horizontally. */
+      width: 100%;
+    }
     #canvas3d {
       z-index: 1;
     }
@@ -88,13 +94,11 @@
   Polymer({
     is: "bihi-renderer3d",
     listeners: {
-      "renderer-init": "init",
-      "renderer-refresh": "refresh",
-      "renderer-update-viz": "updateViz",
-      "renderer-redraw": "renderOnce",
-      "renderer-upload": "startUpload",
-      "renderer-export": "exportImage",
-      "renderer-save": "save"
+      "export": "exportImage",
+      "redraw": "renderOnce",
+      "refresh": "refresh",
+      "update-viz": "updateViz",
+      "upload": "startUpload"
     },
     properties: {
       initialized: {
@@ -104,7 +108,7 @@
       renderer: {type: Object},
       blueprintBorderRenderer: {type: Object}
     },
-    init: function(e) {
+    init: function(initialValues) {
       if (this.initialized) {
         console.log('bihi-renderer3d already initialized');
         return;
@@ -118,7 +122,9 @@
             document.querySelector('bihi-results'),
             document.querySelector('bihi-representation'),
             document.querySelector('bihi-context'),
-            e.detail
+            document.querySelector('bihi-export'),
+            document.querySelector('bihi-save'),
+            initialValues
           ),
           // kickerIOFromJSON = new KickerIOFromJSON(initialValues),
           model = new KickerModel(kickerIOFromDOM),
@@ -181,9 +187,6 @@
 
       var e = new Event("click");
       lnk.dispatchEvent(e);
-    },
-    save: function() {
-      console.log('save', arguments);
     }
   });
 

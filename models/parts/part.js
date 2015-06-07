@@ -44,6 +44,6 @@ Part.prototype.getTexture = function(url) {
 };
 
 Part.prototype.requestRedraw_ = function() {
-	var event = new Event('renderer-redraw-request');
+	var event = new CustomEvent('renderer-event', {detail:{type: 'redraw'}});
 	document.body.dispatchEvent(event);
 }

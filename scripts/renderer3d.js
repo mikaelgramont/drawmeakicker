@@ -1,6 +1,5 @@
 var Renderer3d = function(sequencer, kicker, canvas3dEl, imageList, config, canvas2dEl, mergedCanvasEl) {
 	this.sequencer = sequencer;
-
 	this.kicker = kicker;
 	this.data = this.kicker.model.data;
 	this.canvasEl = canvas3dEl;
@@ -18,6 +17,14 @@ var Renderer3d = function(sequencer, kicker, canvas3dEl, imageList, config, canv
 		board: new THREE.Object3D()
 	};
 	Utils.makeAvailableForDebug('renderer3d', this);
+};
+
+Renderer3d.prototype.onStateChange = function(newState) {
+	switch(newState) {
+		case EditorState.NEW:
+			this.init();
+			break;
+	}
 };
 
 Renderer3d.prototype.init = function() {

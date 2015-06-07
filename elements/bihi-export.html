@@ -2,30 +2,27 @@
 
 <dom-module id="bihi-export">
   <style>
-    .container {
-      padding: 10px 0;
-    }
     label {
       display: block;
     }
     .button-container {
-      margin: 10px 0;
+      margin-bottom: 10px;
       text-align: right;
     }
   </style>
 
   <template>
-    <div class="container size-2">
+    <div class="size-2">
       <label>
-        <input id="fill" type="checkbox" checked>
+        <input id="fill" type="checkbox" checked={{fill}} on-click="onClick" >
         <span>Background color</span>
       </label>
       <label>
-        <input id="borders" type="checkbox" checked>
+        <input id="borders" type="checkbox" checked={{borders}} on-click="onClick" >
         <span>Borders</span>
       </label>
       <div class="button-container">
-        <button on-click="onExportButtonClick">Export image</button>
+        <button on-click="onExportButtonClick">Export</button>
       </div>
     </div>
   </template>
@@ -35,14 +32,40 @@
 <script>
   Polymer({
     is: "bihi-export",
+    ready: function() {
+      this.$.fill.checked = !!this.fill;
+      this.$.borders.checked = !!this.borders;
+    },
+    update: function() {
+      this.fill = this.$.fill.checked;
+      this.borders = this.$.borders.checked;
+    },
     onExportButtonClick: function(e) {
       var options = {
         fill: this.$.fill.checked,
         borders: this.$.borders.checked
       };
-      var event = new CustomEvent('renderer-export-request', {detail: {options: options}});
+      var event = new CustomEvent('renderer-event', {
+        detail: {
+          type: 'export',
+          options: options
+        }
+      });
       document.body.dispatchEvent(event);      
-    }
+    },
+    onClick: function(e) {
+      this.update();
+    },
+    properties: {
+      fill: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
+      borders: {
+        type: Boolean,
+        reflectToAttribute: true
+      }
+    }    
   });
 
 </script>

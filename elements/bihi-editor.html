@@ -21,13 +21,34 @@
       "parameter-change": "rendererRefresh",
       "viz-change": "updateViz"
     },
+    ready: function() {
+      this.state = new EditorState();
+    },
+    reset: function() {
+      /* TODO: make sure the markup is set correctly here:
+        - empty description
+        - reset the accordion
+        - 
+       */
+      this.state.setState(EditorState.NEW);
+    },
+    init: function(initValues) {
+      var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
+      rendererEl.init(initValues);
+      this.state.setState(EditorState.READY);
+    },
     rendererRefresh: function() {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
-      this.fire("renderer-refresh", {}, rendererEl, false);
+      this.fire("refresh", {}, rendererEl, false);
     },
     updateViz: function(e) {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
-      this.fire("renderer-update-viz", e.detail, rendererEl, false);
+      this.fire("update-viz", e.detail, rendererEl, false);
+    },
+    properties: {
+      state: {
+        type: Object
+      }
     }
   });
 </script>

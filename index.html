@@ -1,10 +1,14 @@
 <!-- 
+	State:
+	- figure out whether state events should be handled in bihi-renderer3d or renderer3d
+
 	TODO:
 	- save button gives you a url
 	- possibility of leaving a description
 	- download image
-	=> textarea for description, text input for url, download, save button
+	=> textarea for description, text input for url, save button
 
+	- not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
 
 	- scenario 1:
 		- start a new kicker, go into edit mode
@@ -46,7 +50,8 @@
 	- use factories and object pools for all object creation, in order to recycle them (replace the geometry, position, scale and rotation).
 
 	Mobile:
-	- Add a darkish background color to all containers with background images.		
+	- Add a darkish background color to all containers with background images.
+	- switch to em-based font sizes	
 -->
 <html>
 	<head>
@@ -116,13 +121,13 @@
 							<bihi-design-fieldset legend="Context">
 								<bihi-context></bihi-context>
 							</bihi-design-fieldset>
+							<bihi-design-fieldset legend="Image export">
+								<bihi-export></bihi-export>
+							</bihi-design-fieldset>
 						</bihi-design-step>
 
 						<bihi-design-step caption="Save" step="3">
-							<bihi-design-fieldset legend="Export">
-								<bihi-export></bihi-export>
-							</bihi-design-fieldset>
-							<bihi-design-fieldset legend="Save">
+							<bihi-design-fieldset legend="Description">
 								<bihi-save></bihi-save>
 							</bihi-design-fieldset>
 						</bihi-design-step>
@@ -151,7 +156,11 @@
 		        'grid': true,
 		        'mountainboard': false,
 		        'textured': true,
-		        'rider': false
+		        'rider': false,
+		        'fill': true,
+		        'borders': true,
+		        'description': '',
+		        'id': null
 		    };
 		</script>
 		<script src="scripts/main.js"></script>

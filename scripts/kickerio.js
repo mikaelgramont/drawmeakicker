@@ -3,8 +3,11 @@ var KickerIO = function() {
 	this.results = ['arc', 'radius', 'length',];
 	this.rep = ['repType', 'textured'];
 	this.context = ['annotations', 'grid', 'mountainboard', 'rider'];
+	this.export = ['fill', 'borders'];
+	this.save = ['description', 'id'];
 
-	this.supported = this.params.concat(this.results, this.rep, this.context);
+	this.supported = this.params.concat(this.results, this.rep, this.context,
+		this.export, this.save);
 
 	this.floatValues = [
 		'height', 'width', 'angle', 'arc', 'radius', 'length'

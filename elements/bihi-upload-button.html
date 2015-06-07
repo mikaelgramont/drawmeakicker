@@ -17,7 +17,7 @@
   Polymer({
     is: "bihi-upload-button",
     onClick: function(e) {
-      var event = new Event('renderer-upload-request');
+      var event = new CustomEvent('renderer-event', {detail:{type: 'upload'}});
       document.body.dispatchEvent(event);      
     },
   });

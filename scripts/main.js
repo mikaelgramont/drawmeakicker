@@ -1,47 +1,39 @@
-(function(initValues) {
+(function(initValues, autoStart) {
 	var initialized = false;
-		startEl = document.getElementById('start-button'),
-		rendererEl = document.getElementById('renderer'),
+		startEl = document.querySelector('#start-button'),
+		editorEl = document.querySelector('.editor'),
+		rendererEl = document.querySelector('#renderer'),
+	setListeners();
 
-	init();
-
-	function init() {
-		if (initialized) {
-			return;
-		}
-		initialized = true;
-
-		setListeners();
-
+	if (autoStart) {
 		// Temporary for dev purposes.
-		setTimeout(function(){
-			startEl.dispatchEvent(new Event('click'));
-		}, 50);
+		setTimeout(showEditor, 0);
 	}
 
 	function setListeners() {
-		startEl.addEventListener('click', function(e) {
-			e.target.disabled = true;
-			document.body.classList.add('expanded-editor');
-			document.querySelector('.editor').scrollIntoView();
-			rendererEl.dispatchEvent(
-				new CustomEvent('renderer-init', {detail: initValues}));
+		startEl.addEventListener('click', showEditor);
+		document.body.addEventListener('renderer-event', function(e) {
+			if (!e.detail.type) {
+				throw new Error('Unspecified renderer event type.');
+			}
+			var type = e.detail.type;
+			var detail = e.detail;
+			delete detail.type
+			rendererEl.dispatchEvent(new CustomEvent(type, {detail: detail}));
 		});
-		document.body.addEventListener('renderer-redraw-request',
-			function() {
-				rendererEl.dispatchEvent(new Event('renderer-redraw'));
-		});
-		document.body.addEventListener('renderer-upload-request',
-			function() {
-				rendererEl.dispatchEvent(new Event('renderer-upload'));
-		});
-		document.body.addEventListener('renderer-save-request',
+
+		document.body.addEventListener('editor-state-change-request',
 			function(e) {
-				rendererEl.dispatchEvent(new CustomEvent('renderer-save', {detail: e.detail}));
-		});
-		document.body.addEventListener('renderer-export-request',
-			function(e) {
-				rendererEl.dispatchEvent(new CustomEvent('renderer-export', {detail: e.detail}));
+				editorEl.dispatchEvent(new CustomEvent('editor-state-change', {detail: e.detail}));
 		});
 	}
-})(initValues);
+
+	function showEditor() {
+		startEl.disabled = true;
+		document.body.classList.add('expanded-editor');
+		document.querySelector('.editor').scrollIntoView();
+
+		editorEl.reset();
+		editorEl.init(initValues);
+	}
+})(initValues, true);

@@ -18,8 +18,12 @@ KickerIOFromJSON.prototype.get = function(name) {
 		case 'angle':
 			return parseFloat(this.storage[name]);
 		case 'repType':
+		case 'description':
+		case 'id':
 			return this.storage[name];
 		case 'annotations':
+		case 'borders':
+		case 'fill':
 		case 'grid':
 		case 'mountainboard':
 		case 'rider':
