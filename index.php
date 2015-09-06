@@ -4,7 +4,7 @@
 
 	TODO:
 	- save button gives you a url
-	- possibility of leaving a description
+	- possibility of leaving a description and a title
 	- download image
 	=> textarea for description, text input for url, save button
 
@@ -53,6 +53,28 @@
 	- Add a darkish background color to all containers with background images.
 	- switch to em-based font sizes	
 -->
+
+<?php
+	require("dbsettings.php");
+	require("kickerdao.php");
+
+	$dsn = 'mysql:host='.MYSQL_HOST.';dbname='.MYSQL_SCHEME.'';
+	$options = array(
+	    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+	); 
+
+	$dbh = new PDO($dsn, MYSQL_USER, MYSQL_PWD, $options);
+	$dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+
+	$id = isset($_GET['id']) ? $_GET['id'] : null;
+	if ($id) {
+		$kickerData = KickerDao::loadById($id, $dbh);
+	} else {
+		$kickerData = KickerDao::getDefaultData();
+	}
+	$initialValues = json_encode($kickerData);
+?>
+
 <html>
 	<head>
 		<title>Build it. Huck it.</title>
@@ -127,7 +149,7 @@
 						</bihi-design-step>
 
 						<bihi-design-step caption="Save" step="3">
-							<bihi-design-fieldset legend="Description">
+							<bihi-design-fieldset legend="Information">
 								<bihi-save></bihi-save>
 							</bihi-design-fieldset>
 						</bihi-design-step>
@@ -146,22 +168,8 @@
 			</footer>
 		</div>
 		<script>
-			// TODO: generate these on the backend.
-			var initValues = {
-		        'height': 1.2,
-		        'width': 1,
-		        'angle': 45,
-		        'repType': '2d',
-		        'annotations': true,
-		        'grid': true,
-		        'mountainboard': false,
-		        'textured': true,
-		        'rider': false,
-		        'fill': true,
-		        'borders': true,
-		        'description': '',
-		        'id': null
-		    };
+			var initValues = <?php echo $initialValues ?>;
+			var autoStart = <?php echo $id ? "true" : "false" ?>;
 		</script>
 		<script src="scripts/main.js"></script>
 	</body>

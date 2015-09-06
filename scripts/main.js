@@ -5,8 +5,10 @@
 		rendererEl = document.querySelector('#renderer'),
 	setListeners();
 
+	console.log('initValues', initValues);
+
 	if (autoStart) {
-		// Temporary for dev purposes.
+		// Skip the introduction if autoStart is true.
 		setTimeout(showEditor, 0);
 	}
 
@@ -36,4 +38,4 @@
 		editorEl.reset();
 		editorEl.init(initValues);
 	}
-})(initValues, true);
+})(initValues, autoStart);

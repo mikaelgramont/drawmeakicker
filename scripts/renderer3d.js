@@ -180,3 +180,6 @@ Renderer3d.prototype.createKicker = function() {
 	this.scene.add(this.kickerObj);
 };
 
+Renderer3d.prototype.getDataForSaving = function () {
+	return this.data.getDataForSaving();
+}

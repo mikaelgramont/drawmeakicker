@@ -97,8 +97,10 @@
       "export": "exportImage",
       "redraw": "renderOnce",
       "refresh": "refresh",
+      "save": "saveKicker",
       "update-viz": "updateViz",
-      "upload": "startUpload"
+      "upload": "startUpload",
+      "state-change": "stateChange"
     },
     properties: {
       initialized: {
@@ -176,6 +178,14 @@
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       xhr.send("img="+imgData);
     },
+    stateChange: function (e) {
+      console.log("stateChange", e);
+      if (e.detail.state == EditorState.SAVED) {
+        var saveEl = document.querySelector('bihi-save');  
+        this.fire("on-save", {}, saveEl, e.detail.state);
+      }
+      
+    },    
     exportImage: function(e) {
       options = {};
       var imgData = this.renderer.mergedRenderer.getData(e.detail.options);
@@ -187,6 +197,9 @@
 
       var e = new Event("click");
       lnk.dispatchEvent(e);
+    },
+    saveKicker: function(e) {
+      var data = this.renderer.getDataForSaving();
     }
   });
 

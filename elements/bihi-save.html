@@ -21,9 +21,12 @@
 
   <template>
     <div class="container size-2">
-      <textarea id="description"></textarea>
+      <label for="title">Title</label>
+      <input id="title" value="{{title}}">
+      <label for="description">Description</label>
+      <textarea id="description">{{description}}</textarea>
        <div class="button-container">
-        <button>Save</button>
+        <button id="saveButton" on-click="onSaveButtonClick">Save</button>
       </div>
     </div>
   </template>
@@ -32,7 +35,35 @@
 
 <script>
   Polymer({
-    is: "bihi-save"
+    is: "bihi-save",
+    listeners: {
+      "on-save": "onSave"
+    },
+    onSave: function(e) {
+      this.$.saveButton.disabled = true;
+      this.$.description.disabled = true;
+      this.$.title.disabled = true;
+    },
+    onSaveButtonClick: function(e) {
+      var options = {
+        description: "some description",
+        title: "some title"
+      };
+      // TODO: load up all relevant information into the options object
+      var event = new CustomEvent('renderer-event', {
+        detail: {
+          type: 'save',
+          options: options
+        }
+      });
+      document.body.dispatchEvent(event);            
+    },
+     properties: {
+      id: {
+        type: Number,
+        reflectToAttribute: true
+      }
+    }
+ 
   });
-
 </script>

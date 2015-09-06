@@ -16,7 +16,6 @@ EditorState.prototype.setState = function(newState, data) {
 
 	} else if (this.state_ == EditorState.READ_ONLY) {
 		allowedNewStates = [EditorState.NEW];
-
 	}
 
 	if (allowedNewStates.indexOf(newState) === -1 && this.state_) {
@@ -27,6 +26,7 @@ EditorState.prototype.setState = function(newState, data) {
 
 EditorState.prototype.setState_ = function(newState, data) {
 	this.state_ = newState;
+	console.log('new state', newState);
 	var event = new CustomEvent('editor-state-change-request', {detail: {'state': newState, data: data}});
 
 	document.body.dispatchEvent(event);

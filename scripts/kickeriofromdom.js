@@ -30,6 +30,7 @@ KickerIOFromDOM.prototype.get = function(name) {
 		case 'repType':
 			return this.repEl[name];
 		case 'description':
+		case 'title':
 		case 'id':
 			return this.saveEl[name];
 		case 'textured':
@@ -66,7 +67,7 @@ KickerIOFromDOM.prototype.set = function(name, value) {
 	}
 
 	if (this.floatValues.indexOf(name) !== -1) {
-		targetEl[name] = value.toFixed(2);
+		targetEl[name] = parseFloat(value, 10).toFixed(2);
 	} else {
 		targetEl[name] = value;
 	}

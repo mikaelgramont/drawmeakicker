@@ -4,7 +4,7 @@ var KickerIO = function() {
 	this.rep = ['repType', 'textured'];
 	this.context = ['annotations', 'grid', 'mountainboard', 'rider'];
 	this.export = ['fill', 'borders'];
-	this.save = ['description', 'id'];
+	this.save = ['description', 'title', 'id'];
 
 	this.supported = this.params.concat(this.results, this.rep, this.context,
 		this.export, this.save);
@@ -12,6 +12,9 @@ var KickerIO = function() {
 	this.floatValues = [
 		'height', 'width', 'angle', 'arc', 'radius', 'length'
 	];
+
+	this.saveValues = this.params.concat(this.save);
+
 };
 
 KickerIO.prototype.init = function() {
@@ -24,4 +27,13 @@ KickerIO.prototype.get = function(name) {
 
 KickerIO.prototype.set = function(name, value) {
 	throw new Error('KickerIO.set not implemented');
+};
+
+KickerIO.prototype.getDataForSaving = function() {
+	var data = {};
+	var get = this.get.bind(this);
+	this.saveValues.forEach(function(name) {		
+		data[name] = get(name);
+	});
+	return data;
 };
