@@ -28,6 +28,12 @@
 			function(e) {
 				editorEl.dispatchEvent(new CustomEvent('editor-state-change', {detail: e.detail}));
 		});
+
+		var alertEl = document.getElementById('alert');
+		document.body.addEventListener('alert-set-message',
+			function(e) {
+				alertEl.message = e.detail.message;
+		});
 	}
 
 	function showEditor() {

@@ -1,0 +1,46 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-alert">
+  <style>
+      #message {
+        position: fixed;
+        width: 100%;
+        z-index: 5;
+        background: red;
+        padding: .5em;
+      }
+      .hidden {
+        display: none;
+      }
+  </style>
+
+  <template>
+    <div id="message" role="alert">{{message}}</div>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-alert",
+    properties: {
+      message: {type: String, observer: "updateVisibility"},
+      alertType: {type: String},
+    },
+    updateVisibility: function(message) {
+      this.message = message;
+      if (this.message) {
+        this.setVisible();
+      } else {
+        this.setInvisible();
+      }
+    },
+    setVisible: function() {
+      document.body.classList.add("has-alert")
+      this.$.message.classList.remove("hidden");
+    },
+    setInvisible: function() {
+      document.body.classList.remove("has-alert")
+      this.$.message.classList.add("hidden");
+    }
+  });
+</script>

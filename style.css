@@ -84,6 +84,10 @@ button.deemphasized {
 header {
   margin-bottom: 15px; }
 
+.has-alert .content {
+  /* Must match the height of a single-line alert message. */
+  padding-top: 19px; }
+
 .invisible {
   visibility: hidden; }
 

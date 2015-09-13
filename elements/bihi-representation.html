@@ -52,9 +52,10 @@
     },
     onRepTypeUpdate: function() {
       this.setRadioChecked();
+      this.updateTextureCheckbox();
     },
     updateTextureCheckbox: function(repType) {
-      this.texturedDisabled = repType != '3d';
+      this.texturedDisabled = repType && repType != '3d';
     },
     properties: {
       repType: {
@@ -66,9 +67,18 @@
         type: Boolean,
         reflectToAttribute: true
       },
-      texturedDisabled: Boolean,
-      is2d: Boolean,
-      is3d: Boolean,
+      texturedDisabled: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
+      is2d: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
+      is3d: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
     }
   });
 

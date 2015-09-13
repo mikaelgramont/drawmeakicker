@@ -3,11 +3,23 @@
 	- figure out whether state events should be handled in bihi-renderer3d or renderer3d
 
 	TODO:
+	- add a message area at the top of the page for error messages.
 	- save button gives you a url
-	- possibility of leaving a description and a title
-	- download image
-	=> textarea for description, text input for url, save button
+		send: all data + text version of the image
+		success:
+			{
+				success: true,
+				ogData: {
+					fullUrl: "https://www.buildithuckit.com/?id=1",
+					image: ""
+				}
+			}
 
+		error:
+			{
+				error: true,
+				message: ""
+			}
 	- not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
 
 	- scenario 1:
@@ -53,34 +65,35 @@
 	- Add a darkish background color to all containers with background images.
 	- switch to em-based font sizes	
 -->
-
 <?php
 	require("dbsettings.php");
 	require("kickerdao.php");
-
-	$dsn = 'mysql:host='.MYSQL_HOST.';dbname='.MYSQL_SCHEME.'';
-	$options = array(
-	    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-	); 
-
-	$dbh = new PDO($dsn, MYSQL_USER, MYSQL_PWD, $options);
-	$dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-
+	
+	$error = false;
+	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
-	if ($id) {
-		$kickerData = KickerDao::loadById($id, $dbh);
-	} else {
-		$kickerData = KickerDao::getDefaultData();
-	}
-	$initialValues = json_encode($kickerData);
-?>
 
+	try {
+		$dbh = KickerDao::getDb();
+		$kickerData = KickerDao::loadById($id, $dbh);
+		$initialValues = json_encode($kickerData);
+		$title = "Build it. Huck it.";
+		if ($kickerData->title) {
+			$title = htmlspecialchars($kickerData->title) . " - " . $title;
+		}
+	} catch(Exception $e) {
+		$error = true;
+	}
+
+	$autoStart = json_encode($id && !$error);
+?>
 <html>
 	<head>
-		<title>Build it. Huck it.</title>
+		<title><?php echo $title?></title>
 		<link rel="stylesheet" href="style.css">
 		<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 		<link rel="import" href="elements/bihi-accordion.html">
+		<link rel="import" href="elements/bihi-alert.html">
 		<link rel="import" href="elements/bihi-context.html">
 		<link rel="import" href="elements/bihi-editor.html">
 		<link rel="import" href="elements/bihi-design-fieldset.html">
@@ -98,6 +111,7 @@
 	</head>
 
 	<body>
+		<bihi-alert message="bla" id="alert"></bihi-alert>
 		<div class="content">
 			<header>
 				<bihi-logo></bihi-logo>
@@ -169,7 +183,7 @@
 		</div>
 		<script>
 			var initValues = <?php echo $initialValues ?>;
-			var autoStart = <?php echo $id ? "true" : "false" ?>;
+			var autoStart = <?php echo $autoStart ?>;
 		</script>
 		<script src="scripts/main.js"></script>
 	</body>
