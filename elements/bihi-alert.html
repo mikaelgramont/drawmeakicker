@@ -2,20 +2,40 @@
 
 <dom-module id="bihi-alert">
   <style>
-      #message {
+      :host {
         position: fixed;
+        box-sizing: border-box;
         width: 100%;
-        z-index: 5;
+        z-index: 5;        
+      }
+
+      #message {
         background: red;
         padding: .5em;
+        padding-right: 100px;
       }
+
       .hidden {
         display: none;
+      }
+
+      #close {
+        position: absolute;
+        right: 10px;
+        height: 19px;
+        padding: 0px 3px;
+        line-height: 15px;
+        font-size: 15px;
+        font-weight: bold;
+        font-family: monospace;        
       }
   </style>
 
   <template>
-    <div id="message" role="alert">{{message}}</div>
+    <div id="message" role="alert">
+      <span>{{message}}</span>
+      <button id="close" on-click="close" aria-label="Close this message.">X</button>
+    </div>
   </template>
 </dom-module>
 
@@ -25,6 +45,9 @@
     properties: {
       message: {type: String, observer: "updateVisibility"},
       alertType: {type: String},
+    },
+    close: function() {
+      this.message = "";
     },
     updateVisibility: function(message) {
       this.message = message;
