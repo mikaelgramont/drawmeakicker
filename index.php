@@ -58,28 +58,30 @@
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$title = SITE_TITLE;
 
-	try {
-		$dbh = KickerDao::getDb();
-		$kickerData = KickerDao::loadById($id, $dbh);
-		if ($id) {
-			$ogData = OpenGraph::getKickerData($kickerData);
+	if ($id) {
+		try {
+			$dbh = KickerDao::getDb();
+			$kickerData = KickerDao::loadById($id, $dbh);
+		} catch(PDOException $e) {
+			$error = true;
+			$message = "We are having database issues. Sorry for the inconvenience.";
+		} catch(KickerException $e) {
+			$error = true;
+			$message = $e->getMessage();
+		} catch(Exception $e) {
+			$error = true;
+			$message = "Unknown exception";
+			// TODO: log errors to a file.
 		}
-		$initialValues = json_encode($kickerData);
-		if ($kickerData->title) {
-			$title = htmlspecialchars($kickerData->title) . " - " . $title;
-		}
-	} catch(PDOException $e) {
-		$error = true;
-		$message = "We are having database issues. Sorry for the inconvenience.";
-	} catch(KickerException $e) {
-		$error = true;
-		$message = $e->getMessage();
-	} catch(Exception $e) {
-		$error = true;
-		$message = "Unknown exception";
-		// TODO: log errors to a file.
+		$ogData = OpenGraph::getKickerData($kickerData);
+	} else {
+		$kickerData = self::getDefaultData();
 	}
 
+	$initialValues = json_encode($kickerData);
+	if ($kickerData->title) {
+		$title = htmlspecialchars($kickerData->title) . " - " . $title;
+	}
 	if ($error) {
 		$initValues = KickerDao::getDefaultData();
 	}
