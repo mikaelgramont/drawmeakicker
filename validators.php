@@ -62,3 +62,12 @@ class TextValidator extends Validator {
 		return (htmlspecialchars($this->_data) == $this->_data);
 	}
 }
+
+class PngValidator extends Validator {
+	protected $_errorMessage = " not valid text.";
+	
+	public function isValid() {
+		$pattern = "/^data\:image\/png\;base64(.*)/";
+		return preg_match($pattern, $this->_data);
+	}
+}

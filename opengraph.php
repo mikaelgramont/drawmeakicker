@@ -11,6 +11,8 @@ class OpenGraph {
 
 		$ogData["og:url"] = SITE_URL . "/?id=".$data->id;
 
+		$ogData["og:image"] = SITE_URL . "/" . DEFAULT_OG_IMAGE;
+
 		return $ogData;
 	}
 
