@@ -4,3 +4,4 @@ bower_components
 _tmp
 .settings
 dbsettings.php
+constants.php

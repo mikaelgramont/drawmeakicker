@@ -10,7 +10,7 @@ class OpenGraph {
 		$ogData["og:description"] = $description;
 
 		$ogData["og:url"] = "http://www.local.dev/?id=".$data->id;
-		
+
 		return $ogData;
 	}
 
@@ -23,6 +23,6 @@ class OpenGraph {
 	}
 
 	protected static function _renderProperty($name, $value) {
-		return '<meta property="'.$name.'" content="'.htmlspecialchars($value).'" />"';
+		return '<meta property="'.$name.'" content="'.htmlspecialchars($value).'" />';
 	}
 }
