@@ -6,8 +6,12 @@ class OpenGraph {
 		$title = $data->title ? $data->title : SITE_TITLE;
 		$ogData["og:title"] = $title;
 
-		$description = $data->description ? $data->description : OG_DESCRIPTION;
-		$ogData["og:description"] = $description;
+		if ($data->description) {
+			$description = $data->description . "<br>". OG_DESCRIPTION;
+		} else {
+			$description = OG_DESCRIPTION;
+		}
+		$ogData["og:description"] = $description ;
 
 		$ogData["og:url"] = SITE_URL . "/?id=".$data->id;
 
