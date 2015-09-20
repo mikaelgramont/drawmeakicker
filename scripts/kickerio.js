@@ -17,7 +17,8 @@ var KickerIO = function() {
 		this.save,
 		this.rep,
 		this.context,
-		this.save
+		this.save,
+		this.export
 	);
 
 };

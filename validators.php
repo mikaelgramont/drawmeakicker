@@ -8,10 +8,10 @@ abstract class Validator {
 		$this->_data = $data;
 	}
 
-	public abstract function isValid()
+	public abstract function isValid();
 
 	public function getErrorMessage() {
-		return $this->_errorMessage();
+		return $this->_errorMessage;
 	}
 }
 
@@ -19,7 +19,7 @@ class FloatValidator extends Validator {
 	protected $_errorMessage = " not a floating point value.";
 
 	public function isValid() {
-		return is_float($this->_data + 0);
+		return is_float($this->_data + 0) || is_integer($this->_data + 0);
 	}
 }
 
@@ -28,6 +28,14 @@ class IntValidator extends Validator {
 
 	public function isValid() {
 		return(ctype_digit(strval($this->_data)));
+	}
+}
+
+class NullValidator extends Validator {
+	protected $_errorMessage = " not null.";
+
+	public function isValid() {
+		return is_null($this->_data) || $this->_data == "null";
 	}
 }
 

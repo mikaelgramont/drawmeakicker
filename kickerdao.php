@@ -1,12 +1,11 @@
 <?php
 require("validators.php");
 
-
 class KickerDao {
 	protected static $_table = 'kickers';
 
 	protected static $_dataValidatorClasses = array(
-		'id' => 'IntValidator',
+		'id' => 'NullValidator', // Kind of dumb, but oh well.
 		'height' => 'FloatValidator',
 		'width' => 'FloatValidator',
 		'angle' => 'IntValidator',
@@ -22,22 +21,15 @@ class KickerDao {
 		'title' => 'TextValidator'
 	);
 
-	public static function validateCreationInput($data) {
-		$errors = array();
-		$allowedInputs = array_keys(self::$_dataValidatorClasses);
-		foreach ($data as $k => $v) {
-			if (!in_array($k, $allowedInputs)) {
-				$errors[] = $k . " not an allowed input";
-				continue;
-			}
-			$validatorClass = self::$_dataValidatorClasses[$k];
-			$validator = new $validatorClass($v);
-			if (!$validator->isValid()) {
-				$errors[] = $k . $validator->getErrorMessage();
-				continue;
-			}
-		}		
-	}
+	protected static $_convertBoolean = array(
+		'annotations',
+		'grid',
+		'mountainboard',
+		'textured',
+		'rider',
+		'fill',
+		'borders'
+	);
 
 	public static function getDb() {
 		$dsn = 'mysql:host='.MYSQL_HOST.';dbname='.MYSQL_SCHEME.'';
@@ -92,16 +84,62 @@ class KickerDao {
 	}
 
 	public static function create($data, $dbh) {
-		$stmt = $dbh->prepare("INSERT INTO " . self::$_table . " ");
-		$stmt->bindParam(':id', $id);
-		$stmt->execute();
-		$row = $stmt->fetch();
-
-		if (!$row) {
-			throw new Exception("Kicker not found.");
+		list($errors) = self::_validateCreationInput($data);
+		if ($errors) {
+			return array($errors, null);
 		}
 
+		$columns = "height,width,angle,title,description,repType,annotations,grid,mountainboard,textured,rider,fill,borders";
+		$columnArr = explode(",", $columns);
+		$paramsArr = array();
+		foreach ($columnArr as $column) {
+			$paramsArr[$column] = ":".$column;
+		}
+		$params = implode(",", $paramsArr);
+
+		$insert  = "INSERT INTO " . self::$_table . " (".$columns.") VALUES (".$params.")";
+		
+		$stmt = $dbh->prepare($insert);
+		foreach ($paramsArr as $column => $prefixed) {			
+			if (in_array($column, self::$_convertBoolean)) {
+				// echo "found ".$column." in array";
+				$value = $data[$column] ? "1" : "0";
+			} else {
+				// echo "did not find ".$column." in array";
+				$value = $data[$column];
+			}
+			$stmt->bindParam($prefixed, $value);
+		}
+		$success = $stmt->execute();
+		if ($success) {
+			$lastId = $dbh->lastInsertId();	
+		} else {
+			$lastId = null;
+			$errors[] = "Could not save the kicker.";
+		}
+
+		return array($errors, $lastId);
 	}
+
+	protected static function _validateCreationInput($data) {
+		$errors = array();
+		$allowedInputs = array_keys(self::$_dataValidatorClasses);
+		foreach ($data as $k => $v) {
+			if (!in_array($k, $allowedInputs)) {
+				$errors[] = $k . " not an allowed input";
+				continue;
+			}
+			$validatorClass = self::$_dataValidatorClasses[$k];
+			$validator = new $validatorClass($v);
+			if (!$validator->isValid()) {
+				$errors[] = $k . $validator->getErrorMessage();
+				continue;
+			}
+		}
+
+		return array($errors);
+	}
+
 }
 
 class KickerException extends Exception {}
