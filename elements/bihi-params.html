@@ -21,7 +21,17 @@
     onParamChange: function(e) {
       this[e.target.id] = e.detail;
     },
+    onDisableChange: function(newValue) {
+      this.$.height.disabled = newValue;
+      this.$.width.disabled = newValue;
+      this.$.angle.disabled = newValue;
+    },
     properties: {
+      disabled: {
+        type: Boolean,
+        reflectToAttribute: true,
+        observer: "onDisableChange"
+      },
       width: {
         type: Number,
         reflectToAttribute: true

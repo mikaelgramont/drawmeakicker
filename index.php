@@ -1,25 +1,4 @@
 <!-- 
-	State:
-	- figure out whether state events should be handled in bihi-renderer3d or renderer3d
-
-	TODO:
-	- add a message area at the top of the page for error messages.
-	- save button gives you a url
-		send: all data + text version of the image
-		success:
-			{
-				success: true,
-				ogData: {
-					fullUrl: "https://www.buildithuckit.com/?id=1",
-					image: ""
-				}
-			}
-
-		error:
-			{
-				error: true,
-				message: ""
-			}
 	- not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
 
 	- scenario 1:
@@ -53,6 +32,7 @@
 
 	Cleanup:
 	- dependencies need to be handled better.
+	- files need to be bundled.
 
 	Nice to have's
 	- add presets for 2d cam positions
@@ -66,19 +46,25 @@
 	- switch to em-based font sizes	
 -->
 <?php
+	require("constants.php");
 	require("dbsettings.php");
 	require("kickerdao.php");
+	require("opengraph.php");
 	
 	$error = false;
 	$message = "";
+	$ogData = null;
 	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 
 	try {
 		$dbh = KickerDao::getDb();
 		$kickerData = KickerDao::loadById($id, $dbh);
+		if ($id) {
+			$ogData = OpenGraph::getKickerData($kickerData);
+		}
 		$initialValues = json_encode($kickerData);
-		$title = "Build it. Huck it.";
+		$title = SITE_TITLE;
 		if ($kickerData->title) {
 			$title = htmlspecialchars($kickerData->title) . " - " . $title;
 		}
@@ -120,6 +106,11 @@
 		<link rel="import" href="elements/bihi-results.html">
 		<link rel="import" href="elements/bihi-save.html">
 		<link rel="import" href="elements/bihi-upload-button.html">
+		<?php
+			if ($ogData) {
+				echo OpenGraph::renderProperties($ogData);
+			}
+		?>
 	</head>
 
 	<body>
@@ -143,7 +134,7 @@
 						</div>
 						<div class="top-section-content grid-element">
 							<div class="video-aspect-ratio-wrapper">
-								<iframe src="https://www.youtube.com/embed/rE5O35mUvBg" frameborder="0" allowfullscreen></iframe>
+								<iframe src="https://www.youtube.com/embed/<?php echo VIDEO_ID; ?>" frameborder="0" allowfullscreen></iframe>
 							</div>
 						</div>
 					</div>
@@ -155,7 +146,7 @@
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 						<bihi-design-step caption="Design" step="1" active first>
 							<bihi-design-fieldset legend="Parameters">
-								<bihi-params></bihi-params>
+								<bihi-params <?php if ($id) echo "disabled"?>></bihi-params>
 							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Results">
 								<bihi-results></bihi-results>

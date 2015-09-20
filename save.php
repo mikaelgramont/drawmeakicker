@@ -1,6 +1,8 @@
 <?php
+require("constants.php");
 require("dbsettings.php");
 require("kickerdao.php");
+require("opengraph.php");
 
 $kickerData = null;
 try {
@@ -9,6 +11,7 @@ try {
 	$status = $id ? "success" : "error";
 	if ($id) {
 		$kickerData = KickerDao::loadById($id, $dbh);
+		$ogData = OpenGraph::getKickerData($kickerData);
 	}
 } catch (Exception $e) {
 	$status = "error";
@@ -21,6 +24,7 @@ if ($errors) {
 	$response->errors = $errors;
 } else {
 	$response->data = $kickerData;
+	$response->ogData = $ogData;
 }
 
 echo json_encode($response);

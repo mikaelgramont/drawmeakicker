@@ -15,6 +15,9 @@
         width: 100%;
         margin: 5px 0;
       }
+      input[disabled] {
+        display: none;
+      }
   </style>
 
   <template>
@@ -23,7 +26,7 @@
         <span>{{caption}}</span>:
         <span class="value">{{value}}</span><span class="unit">{{unit}}</span>
       </span>
-      <input id="width" type="range" min="{{min}}" max="{{max}}"
+      <input id="slider" type="range" min="{{min}}" max="{{max}}"
         step="{{step}}" value="{{value}}" on-change="onInputChange">
     </label>
   </template>
@@ -35,11 +38,15 @@
     is: "bihi-design-parameter",
     properties: {
       caption: {type: String},
+      disabled: {type: Boolean, reflectToAttribute: true, observer: "onDisableChange"},
       max: {type: Number},
       min: {type: Number},
       step: {type: Number},
       unit: {type: String},
       value: {type: Number, reflectToAttribute: true}
+    },
+    onDisableChange: function(newValue) {
+      this.$.slider.disabled = newValue;
     },
     onInputChange: function(e) {
       // Update the actual property.
