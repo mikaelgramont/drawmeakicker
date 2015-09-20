@@ -75,7 +75,7 @@
 		}
 		$ogData = OpenGraph::getKickerData($kickerData);
 	} else {
-		$kickerData = self::getDefaultData();
+		$kickerData = KickerDao::getDefaultData();
 	}
 
 	$initialValues = json_encode($kickerData);
