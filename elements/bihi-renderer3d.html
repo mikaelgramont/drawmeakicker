@@ -97,10 +97,10 @@
       "export": "exportImage",
       "redraw": "renderOnce",
       "refresh": "refresh",
-      "save": "saveKicker",
       "update-viz": "updateViz",
       "upload": "startUpload",
-      "state-change": "stateChange"
+      "request-data-for-save": "requestDataForSave",
+      "state-change": "stateChange",
     },
     properties: {
       initialized: {
@@ -186,6 +186,11 @@
       }
       
     },    
+    requestDataForSave: function (e) {
+      var saveCallback = e.detail.saveCallback;
+      var data = this.renderer.getDataForSaving();
+      saveCallback(data);
+    },    
     exportImage: function(e) {
       options = {};
       var imgData = this.renderer.mergedRenderer.getData(e.detail.options);
@@ -197,9 +202,6 @@
 
       var e = new Event("click");
       lnk.dispatchEvent(e);
-    },
-    saveKicker: function(e) {
-      var data = this.renderer.getDataForSaving();
     }
   });
 

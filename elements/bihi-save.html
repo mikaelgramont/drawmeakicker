@@ -22,9 +22,9 @@
   <template>
     <div class="container size-2">
       <label for="title">Title</label>
-      <input id="title" value="{{title}}">
+      <input id="title" value="{{title}}" on-keyup="update">
       <label for="description">Description</label>
-      <textarea id="description">{{description}}</textarea>
+      <textarea id="description" on-keyup="update">{{description}}</textarea>
        <div class="button-container">
         <button id="saveButton" on-click="onSaveButtonClick">Save</button>
       </div>
@@ -40,24 +40,16 @@
     for (var k in data) {
       formData.append(k, data[k]);
     }
-    console.log("formData", formData);
 
-    // Return a new promise.
     return new Promise(function(resolve, reject) {
-      // Do the usual XHR stuff
       var req = new XMLHttpRequest();
       req.open('POST', url);
 
       req.onload = function() {
-        // This is called even on 404 etc
-        // so check the status
         if (req.status == 200) {
-          // Resolve the promise with the response text
           resolve(req.response);
         }
         else {
-          // Otherwise reject with the status text
-          // which will hopefully be a meaningful error
           reject(Error(req.statusText));
         }
       };
@@ -78,35 +70,46 @@
     listeners: {
       "on-save": "onSave"
     },
+    update: function() {
+      this.title = this.$.title.value;
+      this.description = this.$.description.value;
+    },
     onSave: function(e) {
       this.$.saveButton.disabled = true;
       this.$.description.disabled = true;
       this.$.title.disabled = true;
     },
     onSaveButtonClick: function(e) {
-      // TODO: load up all relevant information into the options object
-      var options = {
-        description: "some description",
-        title: "some title"
-      };
+      var saveCallback = Polymer.dom(this).node.proceedToSave;
+      document.body.dispatchEvent(new CustomEvent('renderer-event', {
+        detail: {
+          type: 'request-data-for-save',
+          saveCallback: saveCallback
+        }
+      }));
+    },
+    proceedToSave: function(data) {
+      console.log("proceedToSave", data);
 
-      post('./save.php', options).then(function(response) {
+      post('./save.php', data).then(function(response) {
         return JSON.parse(response);
       }).then(function(json) {
-        console.log("Yey JSON!", json);
+        //console.log("proceedToSave got back the following from the server", json);
+        // TODO: change state, update graph data, 
+        return 'a';
       });
-
-      var event = new CustomEvent('renderer-event', {
-        detail: {
-          type: 'save',
-          options: options
-        }
-      });
-      document.body.dispatchEvent(event);            
     },
      properties: {
       id: {
         type: Number,
+        reflectToAttribute: true
+      },
+      title: {
+        type: String,
+        reflectToAttribute: true
+      },
+      description: {
+        type: String,
         reflectToAttribute: true
       }
     }

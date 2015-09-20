@@ -1,4 +1,6 @@
 <?php
+require("validators.php");
+
 /*
 define('UPLOAD_DIR', 'uploads/');
 
@@ -19,6 +21,24 @@ $params = new stdClass();
 foreach ($_POST as $k => $v) {
 	$params->$k = $v;
 }
+
+/*
+TODO:
+- validate each input
+- if error, say so
+- if ok, try to save
+	- if error, say so
+	- if ok, proceed
+- build data to return: id, graph data
+*/
+
+
+
+
+
+
+
+
 
 $response = new stdClass();
 $success = true;

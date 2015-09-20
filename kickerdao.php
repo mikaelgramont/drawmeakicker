@@ -1,14 +1,43 @@
 <?php
-class KickerException extends Exception {
+require("validators.php");
 
-}
-
-class NotFoundKickerException extends KickerException {
-
-}
 
 class KickerDao {
 	protected static $_table = 'kickers';
+
+	protected static $_dataValidatorClasses = array(
+		'id' => 'IntValidator',
+		'height' => 'FloatValidator',
+		'width' => 'FloatValidator',
+		'angle' => 'IntValidator',
+		'repType' => 'RepTypeValidator',
+		'annotations' => 'BooleanValidator',
+		'grid' => 'BooleanValidator',
+		'mountainboard' => 'BooleanValidator',
+		'textured' => 'BooleanValidator',
+		'rider' => 'BooleanValidator',
+		'fill' => 'BooleanValidator',
+		'borders' => 'BooleanValidator',
+		'description' => 'TextValidator',
+		'title' => 'TextValidator'
+	);
+
+	public static function validateCreationInput($data) {
+		$errors = array();
+		$allowedInputs = array_keys(self::$_dataValidatorClasses);
+		foreach ($data as $k => $v) {
+			if (!in_array($k, $allowedInputs)) {
+				$errors[] = $k . " not an allowed input";
+				continue;
+			}
+			$validatorClass = self::$_dataValidatorClasses[$k];
+			$validator = new $validatorClass($v);
+			if (!$validator->isValid()) {
+				$errors[] = $k . $validator->getErrorMessage();
+				continue;
+			}
+		}		
+	}
 
 	public static function getDb() {
 		$dsn = 'mysql:host='.MYSQL_HOST.';dbname='.MYSQL_SCHEME.'';
@@ -74,3 +103,8 @@ class KickerDao {
 
 	}
 }
+
+class KickerException extends Exception {}
+
+class NotFoundKickerException extends KickerException {}
+

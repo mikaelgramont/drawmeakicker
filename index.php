@@ -90,7 +90,8 @@
 		$message = $e->getMessage();
 	} catch(Exception $e) {
 		$error = true;
-		$message = "Unknown exception - " .get_class($e);
+		$message = "Unknown exception";
+		// TODO: log errors to a file.
 	}
 
 	if ($error) {

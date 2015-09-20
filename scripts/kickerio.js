@@ -13,7 +13,12 @@ var KickerIO = function() {
 		'height', 'width', 'angle', 'arc', 'radius', 'length'
 	];
 
-	this.saveValues = this.params.concat(this.save);
+	this.saveValues = this.params.concat(
+		this.save,
+		this.rep,
+		this.context,
+		this.save
+	);
 
 };
 
