@@ -83,10 +83,19 @@ class KickerDao {
         return $data;
 	}
 
-	public static function create($data, $dbh) {
-		list($errors) = self::_validateCreationInput($data);
+	public static function create($dataRaw, $dbh) {
+		list($errors) = self::_validateCreationInput($dataRaw);
 		if ($errors) {
 			return array($errors, null);
+		}
+
+		$data = array();
+		foreach ($dataRaw as $k => $v) {
+			if (in_array($k, self::$_convertBoolean)) {
+				$data[$k] = $v ? "1" : "0";
+			} else {
+				$data[$k] = $v;
+			}
 		}
 
 		$columns = "height,width,angle,title,description,repType,annotations,grid,mountainboard,textured,rider,fill,borders";
@@ -100,15 +109,8 @@ class KickerDao {
 		$insert  = "INSERT INTO " . self::$_table . " (".$columns.") VALUES (".$params.")";
 		
 		$stmt = $dbh->prepare($insert);
-		foreach ($paramsArr as $column => $prefixed) {			
-			if (in_array($column, self::$_convertBoolean)) {
-				// echo "found ".$column." in array";
-				$value = $data[$column] ? "1" : "0";
-			} else {
-				// echo "did not find ".$column." in array";
-				$value = $data[$column];
-			}
-			$stmt->bindParam($prefixed, $value);
+		foreach ($paramsArr as $column => $prefixed) {
+			$stmt->bindParam($prefixed, $data[$column]);
 		}
 		$success = $stmt->execute();
 		if ($success) {

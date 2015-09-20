@@ -89,14 +89,11 @@
       }));
     },
     proceedToSave: function(data) {
-      console.log("proceedToSave", data);
-
       post('./save.php', data).then(function(response) {
         return JSON.parse(response);
       }).then(function(json) {
-        //console.log("proceedToSave got back the following from the server", json);
-        // TODO: change state, update graph data, 
-        return 'a';
+        console.log("proceedToSave got back the following from the server", json);
+        // TODO: change state, update graph data, update history
       });
     },
      properties: {
