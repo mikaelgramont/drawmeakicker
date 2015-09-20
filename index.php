@@ -56,6 +56,7 @@
 	$ogData = null;
 	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
+	$title = SITE_TITLE;
 
 	try {
 		$dbh = KickerDao::getDb();
@@ -64,7 +65,6 @@
 			$ogData = OpenGraph::getKickerData($kickerData);
 		}
 		$initialValues = json_encode($kickerData);
-		$title = SITE_TITLE;
 		if ($kickerData->title) {
 			$title = htmlspecialchars($kickerData->title) . " - " . $title;
 		}
