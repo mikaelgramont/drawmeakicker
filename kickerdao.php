@@ -1,4 +1,12 @@
 <?php
+class KickerException extends Exception {
+
+}
+
+class NotFoundKickerException extends KickerException {
+
+}
+
 class KickerDao {
 	protected static $_table = 'kickers';
 
@@ -15,7 +23,7 @@ class KickerDao {
 
 	public static function loadById($id, $dbh) {
 		if (!$id) {
-			return self::_getDefaultData();
+			return self::getDefaultData();
 		}
 
 		$stmt = $dbh->prepare("SELECT * FROM " . self::$_table . " WHERE id = :id");
@@ -24,13 +32,13 @@ class KickerDao {
 		$row = $stmt->fetch();
 
 		if (!$row) {
-			throw new Exception("Kicker not found.");
+			throw new NotFoundKickerException("Kicker ".$id." not found.");
 		}
 
 		return $row;
 	}
 
-	protected static function _getDefaultData() {
+	public static function getDefaultData() {
 		$data = new stdClass;
         $data->height = 1.2;
         $data->width = 1;
@@ -54,7 +62,15 @@ class KickerDao {
         return $data;
 	}
 
-	public static function create($data) {
+	public static function create($data, $dbh) {
+		$stmt = $dbh->prepare("INSERT INTO " . self::$_table . " ");
+		$stmt->bindParam(':id', $id);
+		$stmt->execute();
+		$row = $stmt->fetch();
+
+		if (!$row) {
+			throw new Exception("Kicker not found.");
+		}
 
 	}
 }

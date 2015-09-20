@@ -70,6 +70,7 @@
 	require("kickerdao.php");
 	
 	$error = false;
+	$message = "";
 	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 
@@ -81,10 +82,20 @@
 		if ($kickerData->title) {
 			$title = htmlspecialchars($kickerData->title) . " - " . $title;
 		}
+	} catch(PDOException $e) {
+		$error = true;
+		$message = "We are having database issues. Sorry for the inconvenience.";
+	} catch(KickerException $e) {
+		$error = true;
+		$message = $e->getMessage();
 	} catch(Exception $e) {
 		$error = true;
+		$message = "Unknown exception - " .get_class($e);
 	}
 
+	if ($error) {
+		$initValues = KickerDao::getDefaultData();
+	}
 	$autoStart = json_encode($id && !$error);
 ?>
 <html>
@@ -111,7 +122,7 @@
 	</head>
 
 	<body>
-		<bihi-alert message="bla" id="alert"></bihi-alert>
+		<bihi-alert message="<?php echo $message ?>" id="alert"></bihi-alert>
 		<div class="content">
 			<header>
 				<bihi-logo></bihi-logo>
