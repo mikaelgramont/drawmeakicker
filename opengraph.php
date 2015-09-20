@@ -9,7 +9,7 @@ class OpenGraph {
 		$description = $data->description ? $data->description : OG_DESCRIPTION;
 		$ogData["og:description"] = $description;
 
-		$ogData["og:url"] = "http://www.local.dev/?id=".$data->id;
+		$ogData["og:url"] = SITE_URL . "/?id=".$data->id;
 
 		return $ogData;
 	}
