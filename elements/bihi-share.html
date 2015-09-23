@@ -1,0 +1,64 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-share">
+  <style>
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    input,
+    textarea {
+      width: 100%;
+    }
+    textarea {
+      height: 4.5em;
+    }
+    .button-container {
+      margin: 10px 0;
+      text-align: right;
+    }
+  </style>
+
+  <template>
+     <div class="button-container">
+      <p>{{description}}</p>
+      <button id="shareButton" on-click="onButtonClick">{{button}}</button>
+    </div>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-share",
+    ready: function() {
+      console.log("share component", this.type, this.button, this.url);
+    },
+    onButtonClick: function(e) {
+      if (!this.shareWindow || this.shareWindow.closed) {
+        this.shareWindow = window.open(this.url);
+      } else {
+        this.shareWindow.focus();
+      }
+    },
+    properties: {
+      button: {
+        type: String
+      },
+      description: {
+        type: String
+      },
+      type: {
+        type: String
+      },
+      url: {
+        type: String
+      },
+      shareWindow: {
+        type: Object
+      }
+
+    }    
+  });
+
+</script>

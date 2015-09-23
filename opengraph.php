@@ -7,7 +7,7 @@ class OpenGraph {
 		$ogData["og:title"] = $title;
 
 		if ($data->description) {
-			$description = $data->description . "<br>". OG_DESCRIPTION;
+			$description = $data->description . " - ". OG_DESCRIPTION;
 		} else {
 			$description = OG_DESCRIPTION;
 		}

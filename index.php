@@ -1,5 +1,13 @@
 <!-- 
-	- not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
+	- update url on save feedback
+	- display error if save unsuccessful.
+	- add share buttons for twitter and facebook.
+	- add a reset button
+	- add a ft/m toggle.
+	- add google analytics, and update share urls to have the utm stuff.
+	- use a node server to do https/http2
+	- mess with console.time to get a sense for how slow things are to load on 3g
+
 
 	- scenario 1:
 		- start a new kicker, go into edit mode
@@ -20,13 +28,12 @@
 	- need some screenshots put together into a video
 
 	Next:
-	- add keyboard input for dimensions
 	- add a few more struts when necessary.
 	- make the extra length longer if building a quarter pipe.
 	- add character.
 	- create a better background image for the top section. Possibly add a blueprint in the bottom right corner, so that the action button can be made white against blue.
-	- Saving to the backend (height, width, angle, name, snapshot, pdf).
-	- Sharing: facebook, twitter, g+. Open graph data to embed everything in the target sharing network.
+	- not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
+
 
 	- write a different boundingbox helper for 2d
 
@@ -50,6 +57,7 @@
 	require("dbsettings.php");
 	require("kickerdao.php");
 	require("opengraph.php");
+	require("share.php");
 	
 	$error = false;
 	$message = "";
@@ -107,6 +115,7 @@
 		<link rel="import" href="elements/bihi-renderer3d.html">
 		<link rel="import" href="elements/bihi-results.html">
 		<link rel="import" href="elements/bihi-save.html">
+		<link rel="import" href="elements/bihi-share.html">
 		<link rel="import" href="elements/bihi-upload-button.html">
 		<?php
 			if ($ogData) {
@@ -173,7 +182,14 @@
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
-						<bihi-design-step caption="Share" step="4" last></bihi-design-step>
+						<bihi-design-step caption="Share" step="4" last>
+							<bihi-design-fieldset legend="Facebook">
+								<bihi-share type="facebook" description="Share this kicker with your friends." button="Share" url="<?php echo Share::facebook($ogData["og:url"]) ?>"></bihi-share>
+							</bihi-design-fieldset>
+							<bihi-design-fieldset legend="Twitter">
+								<bihi-share type="twitter" description="Tweet about this kicker." button="Tweet" url="<?php echo Share::twitter($ogData["og:url"]) ?>"></bihi-share>
+							</bihi-design-fieldset>
+						</bihi-design-step>
 					</bihi-accordion>
 					<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>
 				</bihi-editor>
