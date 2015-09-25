@@ -24,15 +24,39 @@
       "step-next-click": "onStepNextClick",
       "step-title-click": "onStepTitleClick"
     },
-    onStepBackClick: function(e) {
-      if (this.currentStep > 1) {
-        this.goToStep(this.currentStep - 1);
+    findPreviousActiveStep: function(currentStep) {
+      if (currentStep == 0) {
+        return null;
+      }
+      var tentativePreviousStepId = currentStep - 1;
+      var stepEl = this.steps[tentativePreviousStepId];
+      if (stepEl.classList.contains('hidden')) {
+        return this.findPreviousActiveStep(tentativePreviousStepId);
+      } else {
+        return tentativePreviousStepId;
       }
     },
-    onStepNextClick: function(e) {
-      if (this.currentStep < this.steps.length) {
-        this.goToStep(this.currentStep + 1);
+    findNextActiveStep: function(currentStep) {
+      if (currentStep == this.steps.length - 1) {
+        return null;
       }
+      var tentativeNextStepId = currentStep + 1;
+      var stepEl = this.steps[tentativeNextStepId];
+      if (stepEl.classList.contains('hidden')) {
+        return this.findNextActiveStep(tentativeNextStepId);
+      } else {
+        return tentativeNextStepId;
+      }
+    },
+    onStepBackClick: function(e) {
+      var previousStepId = this.findPreviousActiveStep(this.currentStep);
+      console.log("back should go to", previousStepId);
+      this.goToStep(previousStepId);
+    },
+    onStepNextClick: function(e) {
+      var nextStepId = this.findNextActiveStep(this.currentStep);
+      console.log("next should go to", nextStepId);
+      this.goToStep(nextStepId);
     },
     onStepTitleClick: function(e) {
       var clickedStep = e.detail.step;
@@ -45,8 +69,7 @@
       // From here on, we need to notify all steps that they might need to change.
       for (var i = 0; i < this.steps.length; i++) {
          var step = this.steps[i];
-         // Careful, we're storing readable step ids, not indices.
-         if (i + 1 == destinationStep) {
+         if (i == destinationStep) {
             // Need to select this.
             this.fire('step-select', {}, step, true);
         } else {
@@ -58,10 +81,10 @@
     },
     properties: {
       currentStep: {type: Number},
-      stepChildren: {type: Object} // Actually a nodeList
+      steps: {type: Object} // Actually a nodeList
     },
     ready: function() {
-      this.currentStep = 1;
+      this.currentStep = 0;
       this.steps = Polymer.dom(this).querySelectorAll('bihi-design-step');
     }
   });

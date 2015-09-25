@@ -43,7 +43,7 @@
 
   <template>
     <div role="tab" class="title inverted size-3" on-click="onTitleClick">
-      <span>{{step}}</span> - <span>{{caption}}</span>
+      <span>{{displayStep}}</span> - <span>{{caption}}</span>
     </div>
     <div role="tabpanel" class="body">
       <div class="body-content">
@@ -103,7 +103,8 @@
       first: {type: Boolean},
       caption: {type: String},
       last: {type: Boolean},
-      step: {type: Number}
+      step: {type: Number},
+      displayStep: {type: Number}
     }
   });
 </script>

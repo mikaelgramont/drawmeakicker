@@ -88,6 +88,9 @@ header {
   /* Must match the height of a single-line alert message. */
   padding-top: 19px; }
 
+.hidden {
+  display: none; }
+
 .invisible {
   visibility: hidden; }
 

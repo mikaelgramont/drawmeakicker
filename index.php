@@ -155,7 +155,7 @@
 			<div class="main" role="main">
 				<bihi-editor class="editor">
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
-						<bihi-design-step caption="Design" step="1" active first>
+						<bihi-design-step caption="Design" step="0" display-step="1" active first>
 							<bihi-design-fieldset legend="Parameters">
 								<bihi-params <?php if ($id) echo "disabled"?>></bihi-params>
 							</bihi-design-fieldset>
@@ -164,7 +164,7 @@
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
-						<bihi-design-step caption="Visualize" step="2">
+						<bihi-design-step caption="Visualize" step="1" display-step="2">
 							<bihi-design-fieldset legend="Representation">
 								<bihi-representation></bihi-representation>
 							</bihi-design-fieldset>
@@ -176,13 +176,17 @@
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
-						<bihi-design-step caption="Save" step="3">
+						<bihi-design-step caption="BS" step="2" display-step="3" class="hidden">
+							Some bullshit
+						</bihi-design-step>
+
+						<bihi-design-step caption="Save" step="3" display-step="3">
 							<bihi-design-fieldset legend="Information">
 								<bihi-save></bihi-save>
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
-						<bihi-design-step caption="Share" step="4" last>
+						<bihi-design-step caption="Share" step="4" last display-step="4">
 							<bihi-design-fieldset legend="Facebook">
 								<bihi-share type="facebook" description="Share this kicker with your friends." button="Share" url="<?php echo Share::facebook($ogData["og:url"]) ?>"></bihi-share>
 							</bihi-design-fieldset>
