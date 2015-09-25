@@ -1,7 +1,6 @@
 <!-- 
 	- update url on save feedback
 	- display error if save unsuccessful.
-	- add share buttons for twitter and facebook.
 	- add a reset button
 	- add a ft/m toggle.
 	- add google analytics, and update share urls to have the utm stuff.
@@ -176,24 +175,23 @@
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
-						<bihi-design-step caption="BS" step="2" display-step="3" class="hidden">
-							Some bullshit
-						</bihi-design-step>
-
-						<bihi-design-step caption="Save" step="3" display-step="3">
+						<bihi-design-step caption="Save" step="2" display-step="3"<?php if($id) { ?> class="hidden"<?php }?>>
 							<bihi-design-fieldset legend="Information">
 								<bihi-save></bihi-save>
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
-						<bihi-design-step caption="Share" step="4" last display-step="4">
-							<bihi-design-fieldset legend="Facebook">
-								<bihi-share type="facebook" description="Share this kicker with your friends." button="Share" url="<?php echo Share::facebook($ogData["og:url"]) ?>"></bihi-share>
+						<bihi-design-step caption="Share" step="3" display-step="3"<?php if(!$id) { ?> class="hidden"<?php }?>>
+							<bihi-design-fieldset legend="Notes">
+								<p><?php echo htmlspecialchars($kickerData->title) ?></p>
+								<p><?php echo htmlspecialchars($kickerData->description) ?></p>
 							</bihi-design-fieldset>
-							<bihi-design-fieldset legend="Twitter">
-								<bihi-share type="twitter" description="Tweet about this kicker." button="Tweet" url="<?php echo Share::twitter($ogData["og:url"]) ?>"></bihi-share>
+							<bihi-design-fieldset legend="Share with friends">
+								<bihi-share twitter-label="Twitter" facebook-label="Facebook" twitter-url="<?php echo Share::twitter($ogData["og:url"], $ogData["og:title"], $ogData["og:description"]) ?>" facebook-url="<?php echo Share::facebook($ogData["og:url"]) ?>">
+								</bihi-share>
 							</bihi-design-fieldset>
 						</bihi-design-step>
+
 					</bihi-accordion>
 					<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>
 				</bihi-editor>

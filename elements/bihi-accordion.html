@@ -24,6 +24,43 @@
       "step-next-click": "onStepNextClick",
       "step-title-click": "onStepTitleClick"
     },
+    setStepVisibility: function(stepId, visible) {
+      this.steps[stepId].classList.toggle('hidden', !visible);
+    },
+    updateFirstLast: function() {
+      this.steps.forEach(function(step) {
+        step.removeAttribute("first");
+        step.removeAttribute("last");
+      });
+      var firstId = this.findFirstActiveStep();
+      if (firstId != null) {
+        this.steps[firstId].setAttribute("first", "true");
+      }
+      var lastId = this.findLastActiveStep();
+      if (lastId != null) {
+        this.steps[lastId].setAttribute("last", "true");
+      }
+    },
+    findFirstActiveStep: function() {
+      var current = 0;
+      while(current < this.steps.length) {
+        if (!this.steps[current].classList.contains('hidden')) {
+          return current;
+        }
+        current += 1;
+      }
+      return null;
+    },
+    findLastActiveStep: function() {
+      var current = this.steps.length - 1;
+      while(current > 0 ) {
+        if (!this.steps[current].classList.contains('hidden')) {
+          return current;
+        }
+        current -= 1;
+      }
+      return null;
+    },
     findPreviousActiveStep: function(currentStep) {
       if (currentStep == 0) {
         return null;
@@ -50,12 +87,10 @@
     },
     onStepBackClick: function(e) {
       var previousStepId = this.findPreviousActiveStep(this.currentStep);
-      console.log("back should go to", previousStepId);
       this.goToStep(previousStepId);
     },
     onStepNextClick: function(e) {
       var nextStepId = this.findNextActiveStep(this.currentStep);
-      console.log("next should go to", nextStepId);
       this.goToStep(nextStepId);
     },
     onStepTitleClick: function(e) {
@@ -86,6 +121,7 @@
     ready: function() {
       this.currentStep = 0;
       this.steps = Polymer.dom(this).querySelectorAll('bihi-design-step');
+      this.updateFirstLast();
     }
   });
 </script>

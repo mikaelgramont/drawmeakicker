@@ -43,10 +43,6 @@ class KickerDao {
 	}
 
 	public static function loadById($id, $dbh) {
-		if (!$id) {
-			return self::getDefaultData();
-		}
-
 		$stmt = $dbh->prepare("SELECT * FROM " . self::$_table . " WHERE id = :id");
 		$stmt->bindParam(':id', $id);
 		$stmt->execute();

@@ -2,27 +2,14 @@
 
 <dom-module id="bihi-share">
   <style>
-    label {
-      display: block;
+    .container {
       margin: 10px 0;
-    }
-    input,
-    textarea {
-      width: 100%;
-    }
-    textarea {
-      height: 4.5em;
-    }
-    .button-container {
-      margin: 10px 0;
-      text-align: right;
     }
   </style>
-
   <template>
-     <div class="button-container">
-      <p>{{description}}</p>
-      <button id="shareButton" on-click="onButtonClick">{{button}}</button>
+    <div class="container">
+      <button on-click="onTwitterClick">{{twitterLabel}}</button>
+      <button on-click="onFacebookClick">{{facebookLabel}}</button>
     </div>
   </template>
 
@@ -32,26 +19,32 @@
   Polymer({
     is: "bihi-share",
     ready: function() {
-      console.log("share component", this.type, this.button, this.url);
     },
-    onButtonClick: function(e) {
+    onTwitterClick: function(e) {
       if (!this.shareWindow || this.shareWindow.closed) {
-        this.shareWindow = window.open(this.url);
+        this.shareWindow = window.open(this.twitterUrl);
+      } else {
+        this.shareWindow.focus();
+      }
+    },
+    onFacebookClick: function(e) {
+      if (!this.shareWindow || this.shareWindow.closed) {
+        this.shareWindow = window.open(this.facebookUrl);
       } else {
         this.shareWindow.focus();
       }
     },
     properties: {
-      button: {
+      twitterLabel: {
         type: String
       },
-      description: {
+      facebookLabel: {
         type: String
       },
-      type: {
+      twitterUrl: {
         type: String
       },
-      url: {
+      facebookUrl: {
         type: String
       },
       shareWindow: {
