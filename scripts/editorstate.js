@@ -25,9 +25,10 @@ EditorState.prototype.setState = function(newState, data) {
 };
 
 EditorState.prototype.setState_ = function(newState, data) {
+	var previousState = this.state_;
 	this.state_ = newState;
 	console.log('new state', newState);
-	var event = new CustomEvent('editor-state-change-request', {detail: {'state': newState, data: data}});
+	var event = new CustomEvent('editor-state-change-request', {detail: {'state': newState, 'previousState': previousState, data: data}});
 
 	document.body.dispatchEvent(event);
 }

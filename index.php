@@ -1,8 +1,4 @@
 <!-- 
-	- update url on save
-	- switch visible tabs
-
-
 	- display error if save unsuccessful.
 	- add a reset button
 	- add a ft/m toggle.
@@ -181,16 +177,16 @@
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
-						<bihi-design-step caption="Save" step="2" display-step="3"<?php if($id) { ?> class="hidden"<?php }?>>
+						<bihi-design-step id="save-step" caption="Save" step="2" display-step="3"<?php if($id) { ?> class="hidden"<?php }?>>
 							<bihi-design-fieldset legend="Information">
 								<bihi-save></bihi-save>
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
-						<bihi-design-step caption="Share" step="3" display-step="3"<?php if(!$id) { ?> class="hidden"<?php }?>>
+						<bihi-design-step id="share-step" caption="Share" step="3" display-step="3"<?php if(!$id) { ?> class="hidden"<?php }?>>
 							<bihi-design-fieldset legend="Notes">
-								<p><?php echo htmlspecialchars($kickerData->title) ?></p>
-								<p><?php echo htmlspecialchars($kickerData->description) ?></p>
+								<p id="share-title"><?php echo htmlspecialchars($kickerData->title) ?></p>
+								<p id="share-description"><?php echo htmlspecialchars($kickerData->description) ?></p>
 							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Share with friends">
 								<bihi-share twitter-label="Twitter" facebook-label="Facebook" twitter-url="<?php if ($ogData) echo Share::twitter($ogData["og:url"], $ogData["og:title"], $ogData["og:description"]); ?>" facebook-url="<?php if ($ogData) echo Share::facebook($ogData["og:url"]); ?>">

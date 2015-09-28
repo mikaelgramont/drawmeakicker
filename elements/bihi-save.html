@@ -92,8 +92,12 @@
       post('./save.php', data).then(function(response) {
         return JSON.parse(response);
       }).then(function(json) {
-        console.log("proceedToSave got back the following from the server", json);
-        // TODO: change state, update graph data, update history
+        document.body.dispatchEvent(new CustomEvent('editor-state-change-request', {
+          detail: {
+            state: EditorState.SAVED,
+            data: json.data
+          }
+        }));
       });
     },
      properties: {

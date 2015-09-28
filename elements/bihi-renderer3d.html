@@ -101,6 +101,7 @@
       "upload": "startUpload",
       "request-data-for-save": "requestDataForSave",
       "state-change": "stateChange",
+      "save-successful": "onSaveSuccess",
     },
     properties: {
       initialized: {
@@ -178,7 +179,7 @@
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       xhr.send("img="+imgData);
     },
-    stateChange: function (e) {
+    stateChange: function(e) {
       console.log("stateChange", e);
       if (e.detail.state == EditorState.SAVED) {
         var saveEl = document.querySelector('bihi-save');  
@@ -186,11 +187,14 @@
       }
       
     },    
-    requestDataForSave: function (e) {
+    requestDataForSave: function(e) {
       var saveCallback = e.detail.saveCallback;
       var data = this.renderer.getDataForSaving();
       saveCallback(data);
-    },    
+    },
+    onSaveSuccess: function(e) {
+      
+    },
     exportImage: function(e) {
       options = {};
       var imgData = this.renderer.mergedRenderer.getData(e.detail.options);

@@ -37,7 +37,7 @@
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
       rendererEl.init(initValues);
       if (initValues.id) {
-        this.state.setState(EditorState.SAVED);
+        this.state.setState(EditorState.READ_ONLY);
       } else {
         this.state.setState(EditorState.READY);
       }
@@ -49,6 +49,32 @@
     stateChange: function (e) {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
       this.fire("state-change", {state: e.detail.state}, rendererEl, false);
+
+      if (e.detail.state == EditorState.READ_ONLY &&
+          e.detail.previousState != EditorState.READ_ONLY) {
+        // The user loaded an existing kicker.
+        // Do nothing for now.
+      }
+
+      if (e.detail.state == EditorState.SAVED) {
+        // The user just saved a new kicker.
+
+        // Update url. There's a possibility of a self-XSS attack with title and description here. Whatever.
+        var data = e.detail.data;
+        history.replaceState({}, data.title, window.location.href + '?id=' + data.id);
+
+        document.getElementById('share-title').innerText = data.title;
+        document.getElementById('share-description').innerText = data.description;
+
+        // Hide save tab, show share tab.
+        var accordionEl = document.getElementsByClassName('renderer-accordion')[0];
+        accordionEl.goToStep(3);
+
+        document.getElementById('save-step').classList.add('hidden');
+        document.getElementById('share-step').classList.remove('hidden');
+        accordionEl.updateFirstLast();
+
+      }
     },
     updateViz: function(e) {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");

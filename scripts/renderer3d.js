@@ -71,7 +71,6 @@ Renderer3d.prototype.stopRendering = function() {
 
 Renderer3d.prototype.update = function() {
 	// TODO: perform physics updates here.
-	 // this.camera.rotation.y += 0.005;
 	 if (this.orbitControls.enabled && this.orbitControls.autorotate) {
 	 	this.orbitControls.update();
 	 }
