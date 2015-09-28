@@ -1,5 +1,8 @@
 <!-- 
-	- update url on save feedback
+	- update url on save
+	- switch visible tabs
+
+
 	- display error if save unsuccessful.
 	- add a reset button
 	- add a ft/m toggle.
@@ -51,6 +54,7 @@
 	- Add a darkish background color to all containers with background images.
 	- switch to em-based font sizes	
 -->
+
 <?php
 	require("constants.php");
 	require("dbsettings.php");
@@ -58,6 +62,7 @@
 	require("opengraph.php");
 	require("share.php");
 	
+	$kickerData = null;
 	$error = false;
 	$message = "";
 	$ogData = null;
@@ -80,11 +85,12 @@
 			$message = "Unknown exception";
 			// TODO: log errors to a file.
 		}
-		$ogData = OpenGraph::getKickerData($kickerData);
-	} else {
-		$kickerData = KickerDao::getDefaultData();
 	}
 
+	if (!$kickerData) {
+		$kickerData = KickerDao::getDefaultData();
+	}
+	$ogData = OpenGraph::getKickerData($kickerData);
 	$initialValues = json_encode($kickerData);
 	if ($kickerData->title) {
 		$title = htmlspecialchars($kickerData->title) . " - " . $title;
@@ -187,7 +193,7 @@
 								<p><?php echo htmlspecialchars($kickerData->description) ?></p>
 							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Share with friends">
-								<bihi-share twitter-label="Twitter" facebook-label="Facebook" twitter-url="<?php echo Share::twitter($ogData["og:url"], $ogData["og:title"], $ogData["og:description"]) ?>" facebook-url="<?php echo Share::facebook($ogData["og:url"]) ?>">
+								<bihi-share twitter-label="Twitter" facebook-label="Facebook" twitter-url="<?php if ($ogData) echo Share::twitter($ogData["og:url"], $ogData["og:title"], $ogData["og:description"]); ?>" facebook-url="<?php if ($ogData) echo Share::facebook($ogData["og:url"]); ?>">
 								</bihi-share>
 							</bihi-design-fieldset>
 						</bihi-design-step>
