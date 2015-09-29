@@ -164,12 +164,12 @@
 							<bihi-design-fieldset legend="Results">
 								<bihi-results></bihi-results>
 							</bihi-design-fieldset>
-						</bihi-design-step>
-
-						<bihi-design-step caption="Visualize" step="1" display-step="2">
 							<bihi-design-fieldset legend="Representation">
 								<bihi-representation></bihi-representation>
 							</bihi-design-fieldset>
+						</bihi-design-step>
+
+						<bihi-design-step caption="Visualize" step="1" display-step="2">
 							<bihi-design-fieldset legend="Context">
 								<bihi-context></bihi-context>
 							</bihi-design-fieldset>
