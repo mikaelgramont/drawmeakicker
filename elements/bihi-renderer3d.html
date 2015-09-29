@@ -110,7 +110,7 @@
       renderer: {type: Object},
       blueprintBorderRenderer: {type: Object}
     },
-    init: function(initialValues) {
+    init: function(initialValues, units) {
       if (this.initialized) {
         console.log('bihi-renderer3d already initialized');
         return;
@@ -132,6 +132,7 @@
           model = new KickerModel(kickerIOFromDOM),
           kicker = new Kicker(model),
           imageList = new ImageList();
+      config.units = units;
       this.renderer = new Renderer3d(sequencer, kicker, canvas3dEl, imageList, config, canvas2dEl, mergedCanvasEl);
       sequencer.renderer = this.renderer;
       var start = this.start.bind(this);

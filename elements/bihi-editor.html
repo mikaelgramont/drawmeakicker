@@ -33,9 +33,9 @@
        */
       this.state.setState(EditorState.NEW);
     },
-    init: function(initValues) {
+    init: function(initValues, units) {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
-      rendererEl.init(initValues);
+      rendererEl.init(initValues, units);
       if (initValues.id) {
         this.state.setState(EditorState.READ_ONLY);
       } else {

@@ -19,5 +19,10 @@ var config = {
 		'surface': {
 			'thickness': 0.015
 		}
-	}
+	},
+	'units': null,
+
+	'UNIT_METERS': 'm',
+	'UNIT_FEET': 'ft',
+	'UNIT_DEGREES': '°'
 };

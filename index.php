@@ -1,6 +1,9 @@
 <!-- 
+	- add a ft/m toggle:
+		fire an event on unit change, similar to parameter-change
+		update the parameters and results as well.
+
 	- add a reset button
-	- add a ft/m toggle.
 	- add google analytics, and update share urls to have the utm stuff.
 	- use a node server to do https/http2
 	- mess with console.time to get a sense for how slow things are to load on 3g
@@ -64,6 +67,7 @@
 	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$title = SITE_TITLE;
+	$units = 'ft';
 
 	if ($id) {
 		try {
@@ -94,6 +98,7 @@
 		$initValues = KickerDao::getDefaultData();
 	}
 	$autoStart = json_encode($id && !$error);
+
 ?>
 <html>
 	<head>
@@ -200,8 +205,8 @@
 						<div class="toolbar blueprint">
 							<div class="units">
 								Units:
-								<label><input type="radio" name="units" id="unit-meters" value="1" checked /> meters</label>
-								<label><input type="radio" name="units" id="unit-feet" value="1" /> feet</label>
+								<label><input type="radio" name="units" id="unit-meters" value="1" <?php if ($units == "m") echo "checked" ?>/> meters</label>
+								<label><input type="radio" name="units" id="unit-feet" value="1" <?php if ($units == "ft") echo "checked" ?>/> feet</label>
 							</div>
 							<div class="toolbar-buttons">
 								<button id="duplicate-button" class="small">Duplicate</button>
@@ -223,6 +228,7 @@
 		<script>
 			var initValues = <?php echo $initialValues ?>;
 			var autoStart = <?php echo $autoStart ?>;
+			var units = "<?php echo $units ?>";
 		</script>
 		<script src="scripts/main.js"></script>
 	</body>

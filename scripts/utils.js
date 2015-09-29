@@ -90,3 +90,12 @@ Utils.createBoxBodyFromMesh = function(mesh, mass) {
 	var boxBody = new CANNON.RigidBody(mass, box);
 	return boxBody;
 };
+
+Utils.metersToDumb = function(length) {
+	var ONE_FOOT = 0.3048;
+	var ONE_INCH = 0.0253;
+
+	var feet = Math.floor(length / ONE_FOOT);
+	var inches = Math.floor((length % ONE_FOOT) / ONE_INCH);
+	return feet + "ft" + inches;
+}

@@ -1,4 +1,4 @@
-(function(initValues, autoStart) {
+(function(initValues, autoStart, units) {
 	var initialized = false;
 		startEl = document.querySelector('#start-button'),
 		editorEl = document.querySelector('.editor'),
@@ -42,6 +42,6 @@
 		document.querySelector('.editor').scrollIntoView();
 
 		editorEl.reset();
-		editorEl.init(initValues);
+		editorEl.init(initValues, units);
 	}
-})(initValues, autoStart);
+})(initValues, autoStart, units);

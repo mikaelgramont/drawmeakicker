@@ -17,7 +17,7 @@ var Representation3D = function(data, sidePoints, surfaceSidePoints, length, ang
 	// Make a copy of the points, and drop the "coping" ones.
 	var curvePoints = sidePoints.slice(0);
 	curvePoints.splice(curvePoints.length - 2);
-	var annotations = this.buildAnnotations(length, width, radius, height, arc, angle, curvePoints);
+	var annotations = this.buildAnnotations(length, width, radius, height, arc, angle, curvePoints, config);
 	for (key in annotations) {
 		this.parts[key] = annotations[key];
 	}
@@ -138,7 +138,7 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 	return slats;
 };
 
-Representation3D.prototype.buildAnnotations = function(length, width, radius, height, arc, angle, points) {
+Representation3D.prototype.buildAnnotations = function(length, width, radius, height, arc, angle, points, config) {
 	var distance = 0.2,
 		textDistance = distance,
 		material = new THREE.MeshBasicMaterial({color: 0xffffff}),
@@ -152,7 +152,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			name: 'length',
 			origin: new THREE.Vector3(0, - distance, width / 2),
 			length: length,
-			text: this.getHumanReadableDimension_(length, 'm'),
+			text: this.getHumanReadableDimension_(length, config.units),
 			textDistance: textDistance,
 			rotation: new THREE.Euler(0, 0, 0, 'XYZ'),
 			material: material,
@@ -165,7 +165,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			name: 'width',
 			origin: new THREE.Vector3(angleX - .02, angleY, - width / 2),
 			length: width,
-			text: this.getHumanReadableDimension_(width, 'm'),
+			text: this.getHumanReadableDimension_(width, config.units),
 			textDistance: textDistance,
 			rotation: new THREE.Euler(0, - Math.PI / 2, 0, 'XYZ'),
 			material: material,
@@ -181,7 +181,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			name: 'height',
 			origin: new THREE.Vector3(length + distance, 0, width / 2),
 			length: height,
-			text: this.getHumanReadableDimension_(height, 'm'),
+			text: this.getHumanReadableDimension_(height, config.units),
 			textDistance: textDistance,
 			rotation: new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'),
 			material: material,
@@ -194,7 +194,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			name: 'radius',
 			origin: new THREE.Vector3(0, distance, - width / 2),
 			length: fakeRadiusSize - distance,
-			text: this.getHumanReadableDimension_(radius, 'm'),
+			text: this.getHumanReadableDimension_(radius, config.units),
 			textDistance: textDistance,
 			rotation: new THREE.Euler(0, 0, Math.PI / 2, 'XYZ'),
 			material: material,
@@ -209,7 +209,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			arc: arc,
 			angle: angle,
 			radius: radius,
-			text: this.getHumanReadableDimension_(arc, 'm'),
+			text: this.getHumanReadableDimension_(arc, config.units),
 			distance: distance,
 			textDistance: textDistance,
 			material: material,
@@ -219,7 +219,7 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 			name: 'angle',
 			origin: new THREE.Vector3(angleX, angleY, width / 2),
 			angle: angle,
-			text: this.getHumanReadableDimension_(angle, '°'),
+			text: this.getHumanReadableDimension_(angle, config.UNIT_DEGREES),
 			cornerSide: .25,
 			textDistance: .1,
 			material: material,
@@ -229,7 +229,18 @@ Representation3D.prototype.buildAnnotations = function(length, width, radius, he
 };
 
 Representation3D.prototype.getHumanReadableDimension_ = function(dimension, unit) {
-	return dimension.toFixed(2) + unit;
+	if (unit == config.UNIT_METERS) {
+		return dimension.toFixed(2) + 'm';	
+	}
+	if (unit == config.UNIT_DEGREES) {
+		return dimension.toFixed(0) + '°';	
+	}
+	
+	if (unit == config.UNIT_FEET) {
+		return Utils.metersToDumb(dimension);	
+	}
+
+	throw new Error("Unit '" + unit + "' not supported");
 };
 
 Representation3D.prototype.buildBoard = function(length, width, height) {
