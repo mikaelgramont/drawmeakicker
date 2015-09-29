@@ -197,7 +197,17 @@
 
 					</bihi-accordion>
 					<div class="renderer-container">
-						<div class="toolbar">Toolbar</div>
+						<div class="toolbar blueprint">
+							<div class="units">
+								Units:
+								<label><input type="radio" name="units" id="unit-meters" value="1" checked /> meters</label>
+								<label><input type="radio" name="units" id="unit-feet" value="1" /> feet</label>
+							</div>
+							<div class="toolbar-buttons">
+								<button id="duplicate-button" class="small">Duplicate</button>
+								<button id="reset-button" class="small">Reset</button>
+							</div>
+						</div>
 						<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>
 					</div>
 				</bihi-editor>

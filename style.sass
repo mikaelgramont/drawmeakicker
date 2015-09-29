@@ -15,7 +15,7 @@ $default-shadow-width: 3px
 $default-box-shadow: $default-shadow-width $default-shadow-width 1px rgba(0,0,0,.25)
 
 $main-vertical-offset: -50px
-$editor-height: 640px
+$editor-height: 700px
 $bg-blur: 3px
 $content-max-width: 1280px
 
@@ -91,6 +91,11 @@ button.deemphasized
 	background: transparent
 	color: $color-text
 	border-color: transparent
+
+button.small,
+button.small:hover,
+button.small:focus
+	padding: 5px
 
 header
 	margin-bottom: $margin-default
@@ -179,7 +184,16 @@ h2,
 .toolbar
 	margin-bottom: $gutter-width
 	padding: 10px
-	background: $color-light-blue
+	display: flex
+	justify-content: space-between
+	align-content: center
+
+.units
+	/* Same height as small buttons. */
+	line-height: 31px
+
+#duplicate-button
+	margin-right: 5px
 
 .top-section-container
 	max-width: $content-max-width
