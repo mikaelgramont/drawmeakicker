@@ -1,5 +1,4 @@
 <!-- 
-	- display error if save unsuccessful.
 	- add a reset button
 	- add a ft/m toggle.
 	- add google analytics, and update share urls to have the utm stuff.
@@ -146,7 +145,9 @@
 						</div>
 						<div class="top-section-content grid-element">
 							<div class="video-aspect-ratio-wrapper">
+								<?php if (VIDEO_ID) { ?>
 								<iframe src="https://www.youtube.com/embed/<?php echo VIDEO_ID; ?>" frameborder="0" allowfullscreen></iframe>
+								<?php } ?>
 							</div>
 						</div>
 					</div>

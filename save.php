@@ -6,7 +6,7 @@ require("kickerdao.php");
 require("opengraph.php");
 
 $kickerData = null;
-try {
+try {	
 	$dbh = KickerDao::getDb();
 	list($errors, $id) = KickerDao::create($_POST, $dbh);
 	$status = $id ? "success" : "error";
@@ -15,7 +15,7 @@ try {
 	}
 } catch (Exception $e) {
 	$status = "error";
-	$errors = array("exception");
+	$errors = array("An error occured, we were unable to save the kicker. Please try again later.");
 }
 
 $response = new stdClass();

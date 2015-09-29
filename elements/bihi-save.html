@@ -48,8 +48,7 @@
       req.onload = function() {
         if (req.status == 200) {
           resolve(req.response);
-        }
-        else {
+        } else {
           reject(Error(req.statusText));
         }
       };
@@ -92,12 +91,19 @@
       post('./save.php', data).then(function(response) {
         return JSON.parse(response);
       }).then(function(json) {
-        document.body.dispatchEvent(new CustomEvent('editor-state-change-request', {
-          detail: {
-            state: EditorState.SAVED,
-            data: json.data
-          }
-        }));
+        if (json.status == "error") {
+          // Display the error message from the server.
+          var detail = {"message": json.errors[0]};
+          var e = new CustomEvent("alert-set-message", {detail: detail});
+          document.body.dispatchEvent(e);
+        } else {
+          document.body.dispatchEvent(new CustomEvent('editor-state-change-request', {
+            detail: {
+              state: EditorState.SAVED,
+              data: json.data
+            }
+          }));
+        }
       });
     },
      properties: {
