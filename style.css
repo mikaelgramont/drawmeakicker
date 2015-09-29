@@ -84,10 +84,6 @@ button.deemphasized {
 header {
   margin-bottom: 15px; }
 
-.has-alert .content {
-  /* Must match the height of a single-line alert message. */
-  padding-top: 19px; }
-
 .hidden {
   display: none; }
 
@@ -162,6 +158,17 @@ h2,
 
 .renderer-accordion {
   width: 280px; }
+
+.renderer-container {
+  margin-left: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column; }
+
+.toolbar {
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #3B69D5; }
 
 .top-section-container {
   max-width: 1280px;

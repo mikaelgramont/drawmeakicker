@@ -196,7 +196,10 @@
 						</bihi-design-step>
 
 					</bihi-accordion>
-					<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>
+					<div class="renderer-container">
+						<div class="toolbar">Toolbar</div>
+						<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>
+					</div>
 				</bihi-editor>
 			</div>
 			<footer>
