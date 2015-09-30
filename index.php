@@ -1,9 +1,5 @@
 <!-- 
-	- add a ft/m toggle:
-		fire an event on unit change, similar to parameter-change
-		update the parameters and results as well.
-
-	- add a reset button
+	- reset button: goes back to default values
 	- add google analytics, and update share urls to have the utm stuff.
 	- use a node server to do https/http2
 	- mess with console.time to get a sense for how slow things are to load on 3g
@@ -67,7 +63,15 @@
 	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$title = SITE_TITLE;
-	$units = 'ft';
+
+	$units = 'm';
+	if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+		$isUS = (strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'en-US') === 0);
+		$isCA = (strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'en-CA') === 0);
+		if ($isUS || $isCA) {
+			$units = 'ft';
+		}
+	}
 
 	if ($id) {
 		try {
