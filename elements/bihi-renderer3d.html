@@ -101,6 +101,7 @@
       "request-data-for-save": "requestDataForSave",
       "state-change": "stateChange",
       "save-successful": "onSaveSuccess",
+      "update-units": "updateUnits"
     },
     properties: {
       initialized: {
@@ -206,6 +207,9 @@
 
       var e = new Event("click");
       lnk.dispatchEvent(e);
+    },
+    updateUnits: function(e) {
+      this.renderer.setUnits(e.detail.units);
     }
   });
 

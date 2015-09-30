@@ -7,6 +7,7 @@ var Representation3D = function(data, sidePoints, surfaceSidePoints, length, ang
 	this.sidePoints = sidePoints;
 	this.surfaceSidePoints = surfaceSidePoints;
 	this.renderer = renderer;
+	this.config = config;
 	this.parts.grid = this.buildGrid();
 	this.parts.sideR = this.buildSide(this.sidePoints, offset, imageList);
 	this.parts.sideL = this.buildSide(this.sidePoints, offset.negate(), imageList);
@@ -17,7 +18,7 @@ var Representation3D = function(data, sidePoints, surfaceSidePoints, length, ang
 	// Make a copy of the points, and drop the "coping" ones.
 	var curvePoints = sidePoints.slice(0);
 	curvePoints.splice(curvePoints.length - 2);
-	var annotations = this.buildAnnotations(length, width, radius, height, arc, angle, curvePoints, config);
+	var annotations = this.buildAnnotations(length, width, radius, height, arc, angle, curvePoints);
 	for (key in annotations) {
 		this.parts[key] = annotations[key];
 	}
@@ -39,6 +40,7 @@ Representation3D.prototype.buildSide = function(points, offset, imageList) {
 };
 
 Representation3D.prototype.buildStruts = function(length, width, angle, arc, radius) {
+	var config = this.config;
 	var struts = [];
 	var strutWidth = width;
 	var strutsCount = Math.ceil(arc / config.model3d.struts.maximumDistance);
@@ -99,12 +101,13 @@ Representation3D.prototype.buildStruts = function(length, width, angle, arc, rad
 };
 
 Representation3D.prototype.buildSurface = function(points, width) {
-	var surfaceWidth = width + 2 * config.model3d.sides.thickness / 60;
+	var surfaceWidth = width + 2 * this.config.model3d.sides.thickness / 60;
 	var surface = new Surface(points, surfaceWidth, this.imageList);
 	return surface;	
 };
 
 Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
+	var config = this.config;
 	var defaultLength = config.model3d.slats.defaultLength;
 	var thickness = config.model3d.slats.thickness;
 
@@ -138,8 +141,9 @@ Representation3D.prototype.buildSlats = function(width, angle, arc, radius) {
 	return slats;
 };
 
-Representation3D.prototype.buildAnnotations = function(length, width, radius, height, arc, angle, points, config) {
-	var distance = 0.2,
+Representation3D.prototype.buildAnnotations = function(length, width, radius, height, arc, angle, points) {
+	var config = this.config,
+		distance = 0.2,
 		textDistance = distance,
 		material = new THREE.MeshBasicMaterial({color: 0xffffff}),
 		lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 2}),
@@ -246,4 +250,8 @@ Representation3D.prototype.getHumanReadableDimension_ = function(dimension, unit
 Representation3D.prototype.buildBoard = function(length, width, height) {
 	var board = new Board(length, width, height, this.renderer);
 	return board;
+};
+
+Representation3D.prototype.setConfig = function(config) {
+	this.config = config;
 };

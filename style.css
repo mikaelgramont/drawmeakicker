@@ -177,10 +177,6 @@ h2,
   justify-content: space-between;
   align-content: center; }
 
-.units {
-  /* Same height as small buttons. */
-  line-height: 31px; }
-
 #duplicate-button {
   margin-right: 5px; }
 

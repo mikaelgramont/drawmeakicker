@@ -1,0 +1,50 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-units">
+	<style>
+	:host {
+		/* Same height as small buttons. */
+		line-height: 31px;
+	}
+	</style>
+	<template>
+		Units:
+		<label><input type="radio" on-click="pickUnits" data-units="m" name="units" id="unit-meters" checked={{metersChecked}} value="1" /> meters</label>
+		<label><input type="radio" on-click="pickUnits" data-units="ft" name="units" id="unit-feet" checked={{feetChecked}} value="1" /> feet</label>
+	</template>
+</dom-module>
+
+<script>
+Polymer({
+    is: "bihi-units",
+    properties: {
+    	units: {
+    		type: String
+    	},
+    	metersChecked: {
+    		type: Boolean
+    	},
+    	feetChecked: {
+    		type: Boolean
+    	}
+    },
+    ready: function() {
+    	this.update();
+    },
+    update: function() {
+    	if (this.units == 'm') {
+    		this.metersChecked = true;
+    		this.feetChecked = false;
+    	} else {
+    		this.metersChecked = false;
+    		this.feetChecked = true;
+    	}
+    },
+    pickUnits: function(e) {
+    	var units = e.currentTarget.getAttribute('data-units');
+    	document.body.dispatchEvent(
+    		new CustomEvent('units-change-request', {detail: {'units': units}})
+    	);
+    }
+});	
+</script>

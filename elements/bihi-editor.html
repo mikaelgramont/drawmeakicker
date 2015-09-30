@@ -19,6 +19,7 @@
     is: "bihi-editor",
     listeners: {
       "parameter-change": "rendererRefresh",
+      "units-change": "updateUnits",
       "viz-change": "updateViz",
       "editor-state-change": "stateChange",
     },
@@ -79,6 +80,9 @@
     updateViz: function(e) {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
       this.fire("update-viz", e.detail, rendererEl, false);
+    },
+    updateUnits: function(e) {
+      this.fire("update-units", e.detail, rendererEl, false);
     },
     properties: {
       state: {

@@ -67,7 +67,7 @@
 	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$title = SITE_TITLE;
-	$units = 'ft';
+	$units = 'm';
 
 	if ($id) {
 		try {
@@ -121,6 +121,7 @@
 		<link rel="import" href="elements/bihi-results.html">
 		<link rel="import" href="elements/bihi-save.html">
 		<link rel="import" href="elements/bihi-share.html">
+		<link rel="import" href="elements/bihi-units.html">
 		<link rel="import" href="elements/bihi-upload-button.html">
 		<?php
 			if ($ogData) {
@@ -203,11 +204,7 @@
 					</bihi-accordion>
 					<div class="renderer-container">
 						<div class="toolbar blueprint">
-							<div class="units">
-								Units:
-								<label><input type="radio" name="units" id="unit-meters" value="1" <?php if ($units == "m") echo "checked" ?>/> meters</label>
-								<label><input type="radio" name="units" id="unit-feet" value="1" <?php if ($units == "ft") echo "checked" ?>/> feet</label>
-							</div>
+							<bihi-units units="<?php echo $units; ?>"></bihi-units>
 							<div class="toolbar-buttons">
 								<button id="duplicate-button" class="small">Duplicate</button>
 								<button id="reset-button" class="small">Reset</button>

@@ -181,4 +181,10 @@ Renderer3d.prototype.createKicker = function() {
 
 Renderer3d.prototype.getDataForSaving = function () {
 	return this.data.getDataForSaving();
-}
+};
+
+Renderer3d.prototype.setUnits = function (units) {
+	this.config.units = units;
+	this.kicker.getRepresentation3d().setConfig(this.config);
+	this.refresh();
+};
