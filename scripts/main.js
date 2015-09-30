@@ -3,6 +3,8 @@
 		startEl = document.querySelector('#start-button'),
 		editorEl = document.querySelector('.editor'),
 		rendererEl = document.querySelector('#renderer'),
+		paramsEl = document.querySelector('#params'),
+		resultsEl = document.querySelector('#results'),
 	setListeners();
 
 	console.log('initValues', initValues);
@@ -31,7 +33,10 @@
 
 		document.body.addEventListener('units-change-request',
 			function(e) {
-				editorEl.dispatchEvent(new CustomEvent('units-change', {detail: e.detail}));
+				var event = new CustomEvent('units-change', {detail: e.detail})
+				editorEl.dispatchEvent(event);
+				paramsEl.dispatchEvent(event);
+				resultsEl.dispatchEvent(event);
 		});
 
 		var alertEl = document.getElementById('alert');

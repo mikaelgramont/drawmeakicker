@@ -14,7 +14,7 @@
   <template>
     <span class="caption size-2">
       <span>{{caption}}</span>:
-      <span class="value">{{value}}</span><span class="unit">{{unit}}</span>
+      <span>{{displayValue}}</span>
     </span>
   </template>
 
@@ -23,10 +23,21 @@
 <script>
   Polymer({
     is: "bihi-design-result",
+    ready: function() {
+      this.updateDisplay();
+    },
+    updateDisplay: function() {
+      if (this.units == 'ft') {
+        this.displayValue = Utils.metersToDumb(this.value);      
+      } else {
+        this.displayValue = this.value + this.units;
+      }
+    },
     properties: {
       caption: {type: String},
-      unit: {type: String},
-      value: {type: Number}
+      displayValue: {type: String},
+      units: {type: String, observer: "updateDisplay"},
+      value: {type: Number, observer: "updateDisplay"}
     }    
   });
 </script>

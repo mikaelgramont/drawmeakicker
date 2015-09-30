@@ -67,7 +67,7 @@
 	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$title = SITE_TITLE;
-	$units = 'm';
+	$units = 'ft';
 
 	if ($id) {
 		try {
@@ -165,10 +165,10 @@
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 						<bihi-design-step caption="Design" step="0" display-step="1" active first>
 							<bihi-design-fieldset legend="Parameters">
-								<bihi-params <?php if ($id) echo "disabled"?>></bihi-params>
+								<bihi-params id="params" units="<?php echo $units; ?>" <?php if ($id) echo "disabled"?>></bihi-params>
 							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Results">
-								<bihi-results></bihi-results>
+								<bihi-results id="results" units="<?php echo $units; ?>"></bihi-results>
 							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Representation">
 								<bihi-representation></bihi-representation>

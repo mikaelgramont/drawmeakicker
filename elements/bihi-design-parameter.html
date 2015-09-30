@@ -24,7 +24,7 @@
     <label>
       <span class="caption size-2">
         <span>{{caption}}</span>:
-        <span class="value">{{value}}</span><span class="unit">{{unit}}</span>
+        <span>{{displayValue}}</span>
       </span>
       <input id="slider" type="range" min="{{min}}" max="{{max}}"
         step="{{step}}" value="{{value}}" on-change="onInputChange">
@@ -38,12 +38,23 @@
     is: "bihi-design-parameter",
     properties: {
       caption: {type: String},
+      units: {type: String, observer: "updateDisplay"},
       disabled: {type: Boolean, reflectToAttribute: true, observer: "onDisableChange"},
+      displayValue: {type: String},
       max: {type: Number},
       min: {type: Number},
       step: {type: Number},
-      unit: {type: String},
-      value: {type: Number, reflectToAttribute: true}
+      value: {type: Number, reflectToAttribute: true, observer: "updateDisplay"}
+    },
+    ready: function() {
+      this.updateDisplay();
+    },
+    updateDisplay: function() {
+      if (this.units == 'ft') {
+        this.displayValue = Utils.metersToDumb(this.value);      
+      } else {
+        this.displayValue = this.value + this.units;
+      }
     },
     onDisableChange: function(newValue) {
       this.$.slider.disabled = newValue;
@@ -51,6 +62,7 @@
     onInputChange: function(e) {
       // Update the actual property.
       this.value = e.target.value;
+      this.updateDisplay();
       this.fire("parameter-change", this.value);
     }
   });

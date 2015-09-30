@@ -5,9 +5,9 @@
   </style>
 
   <template>
-    <bihi-design-result id="radius" caption="Radius" unit="m" value="{{radius}}"></bihi-design-result>
-    <bihi-design-result id="length" caption="Base length" unit="m" value="{{length}}"></bihi-design-result>
-    <bihi-design-result id="arc" caption="Surface length" unit="m" value="{{arc}}"></bihi-design-result>
+    <bihi-design-result id="radius" caption="Radius" units="{{units}}" value="{{radius}}"></bihi-design-result>
+    <bihi-design-result id="length" caption="Base length" units="{{units}}" value="{{length}}"></bihi-design-result>
+    <bihi-design-result id="arc" caption="Surface length" units="{{units}}" value="{{arc}}"></bihi-design-result>
   </template>
 
 </dom-module>
@@ -15,6 +15,12 @@
 <script>
   Polymer({
     is: "bihi-results",
+    listeners: {
+      "units-change": "updateUnits"
+    },
+    updateUnits: function(e) {
+      this.units = e.detail.units;
+    },    
     properties: {
       radius: {
         type: Number,
@@ -28,6 +34,9 @@
         type: Number,
         reflectToAttribute: true
       },
+      units: {
+        type: String
+      }
     }
   });
 

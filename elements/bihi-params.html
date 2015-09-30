@@ -5,9 +5,9 @@
   </style>
 
   <template>
-    <bihi-design-parameter id="height" caption="Height" value="{{height}}" min="0.5" max="3" step="0.1" unit="m"></bihi-design-parameter>
-    <bihi-design-parameter id="width" caption="Width" value="{{width}}" min=".5" max="4" step="0.1" unit="m"></bihi-design-parameter>
-    <bihi-design-parameter id="angle" caption="Exit angle" value="{{angle}}" min="30" max="89.9" step="1" unit="&deg;"></bihi-design-parameter>  
+    <bihi-design-parameter id="height" caption="Height" value="{{height}}" min="0.5" max="3" step="0.1" units="{{units}}"></bihi-design-parameter>
+    <bihi-design-parameter id="width" caption="Width" value="{{width}}" min=".5" max="4" step="0.1" units="{{units}}"></bihi-design-parameter>
+    <bihi-design-parameter id="angle" caption="Exit angle" value="{{angle}}" min="30" max="89.9" step="1" units="&deg;"></bihi-design-parameter>  
   </template>
 
 </dom-module>
@@ -16,7 +16,8 @@
   Polymer({
     is: "bihi-params",
     listeners: {
-      "parameter-change": "onParamChange"
+      "parameter-change": "onParamChange",
+      "units-change": "updateUnits"
     },
     onParamChange: function(e) {
       this[e.target.id] = e.detail;
@@ -25,6 +26,9 @@
       this.$.height.disabled = newValue;
       this.$.width.disabled = newValue;
       this.$.angle.disabled = newValue;
+    },
+    updateUnits: function(e) {
+      this.units = e.detail.units;
     },
     properties: {
       disabled: {
@@ -43,6 +47,9 @@
       angle: {
         type: Number,
         reflectToAttribute: true
+      },
+      units: {
+        type: String
       }
     }
   });
