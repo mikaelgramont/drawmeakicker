@@ -1,5 +1,7 @@
 <!-- 
-	- reset button: goes back to default values
+	- reset button: goes back to default values, update url
+	- duplicate button: change state to new, keep values, update url
+
 	- add google analytics, and update share urls to have the utm stuff.
 	- use a node server to do https/http2
 	- mess with console.time to get a sense for how slow things are to load on 3g
@@ -125,6 +127,7 @@
 		<link rel="import" href="elements/bihi-results.html">
 		<link rel="import" href="elements/bihi-save.html">
 		<link rel="import" href="elements/bihi-share.html">
+		<link rel="import" href="elements/bihi-toolbarbuttons.html">
 		<link rel="import" href="elements/bihi-units.html">
 		<link rel="import" href="elements/bihi-upload-button.html">
 		<?php
@@ -209,10 +212,7 @@
 					<div class="renderer-container">
 						<div class="toolbar blueprint">
 							<bihi-units units="<?php echo $units; ?>"></bihi-units>
-							<div class="toolbar-buttons">
-								<button id="duplicate-button" class="small">Duplicate</button>
-								<button id="reset-button" class="small">Reset</button>
-							</div>
+							<bihi-toolbarbuttons></bihi-toolbarbuttons>
 						</div>
 						<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>
 					</div>
@@ -230,6 +230,8 @@
 			var initValues = <?php echo $initialValues ?>;
 			var autoStart = <?php echo $autoStart ?>;
 			var units = "<?php echo $units ?>";
+			var defaultTitle = "<?php echo SITE_TITLE ?>";
+			var defaultDescription = "<?php echo OG_DESCRIPTION ?>";
 		</script>
 		<script src="scripts/main.js"></script>
 	</body>

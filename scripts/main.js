@@ -26,9 +26,14 @@
 			rendererEl.dispatchEvent(new CustomEvent(type, {detail: detail}));
 		});
 
-		document.body.addEventListener('editor-state-change-request',
+		document.body.addEventListener('published-state-change',
 			function(e) {
-				editorEl.dispatchEvent(new CustomEvent('editor-state-change', {detail: e.detail}));
+				editorEl.dispatchEvent(new CustomEvent('editor-react-to-state-change', {detail: e.detail}));
+		});
+
+		document.body.addEventListener('requested-state-change',
+			function(e) {
+				editorEl.dispatchEvent(new CustomEvent('editor-apply-state-change', {detail: e.detail}));
 		});
 
 		document.body.addEventListener('units-change-request',

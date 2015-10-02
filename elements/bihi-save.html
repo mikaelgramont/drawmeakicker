@@ -97,7 +97,7 @@
           var e = new CustomEvent("alert-set-message", {detail: detail});
           document.body.dispatchEvent(e);
         } else {
-          document.body.dispatchEvent(new CustomEvent('editor-state-change-request', {
+          document.body.dispatchEvent(new CustomEvent('requested-state-change', {
             detail: {
               state: EditorState.SAVED,
               data: json.data

@@ -15,11 +15,12 @@ EditorState.prototype.setState = function(newState, data) {
 		allowedNewStates = [EditorState.NEW, EditorState.READ_ONLY];
 
 	} else if (this.state_ == EditorState.READ_ONLY) {
-		allowedNewStates = [EditorState.NEW];
+		allowedNewStates = [EditorState.NEW, EditorState.READY];
 	}
 
 	if (allowedNewStates.indexOf(newState) === -1 && this.state_) {
-		throw new Error('Transition to state from state "' + this.state_ + '" to "' + newState + '" not allowed.');
+		throw new Error('Transition to state from state "' +
+			this.state_ + '" to "' + newState + '" not allowed.');
 	}
 	this.setState_(newState, data);
 };
@@ -28,7 +29,8 @@ EditorState.prototype.setState_ = function(newState, data) {
 	var previousState = this.state_;
 	this.state_ = newState;
 	console.log('new state', newState);
-	var event = new CustomEvent('editor-state-change-request', {detail: {'state': newState, 'previousState': previousState, data: data}});
+	var event = new CustomEvent('published-state-change',
+		{detail: {'state': newState, 'previousState': previousState, data: data}});
 
 	document.body.dispatchEvent(event);
 }

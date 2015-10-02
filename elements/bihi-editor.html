@@ -21,7 +21,8 @@
       "parameter-change": "rendererRefresh",
       "units-change": "updateUnits",
       "viz-change": "updateViz",
-      "editor-state-change": "stateChange",
+      "editor-react-to-state-change": "onStateChange",
+      "editor-apply-state-change": "applyStateChange"
     },
     ready: function() {
       this.state = new EditorState();
@@ -47,14 +48,40 @@
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
       this.fire("refresh", {}, rendererEl, false);
     },
-    stateChange: function (e) {
+    applyStateChange: function(e) {
+      console.log("applyStateChange", e.detail.state);
+      this.state.setState(e.detail.state, e.detail.data);
+    },
+    onStateChange: function (e) {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
       this.fire("state-change", {state: e.detail.state}, rendererEl, false);
+
+      var saveEl = document.getElementById('save-step');
+      var shareEl = document.getElementById('share-step');
+
+      var titleEl = document.getElementById('share-title');
+      var descEl = document.getElementById('share-title');
+
+      var accordionEl = document.getElementsByClassName('renderer-accordion')[0];
 
       if (e.detail.state == EditorState.READ_ONLY &&
           e.detail.previousState != EditorState.READ_ONLY) {
         // The user loaded an existing kicker.
         // Do nothing for now.
+      }
+
+      if (e.detail.state == EditorState.READY &&
+          e.detail.previousState == EditorState.READ_ONLY) {
+        // The user is duplicating a kicker
+        console.log("duplicating");
+        history.replaceState({}, defaultTitle, window.location.href.split('?')[0]);     
+
+        titleEl.innerText = defaultTitle;
+        descEl.innerText = defaultDescription;
+
+        saveEl.classList.remove('hidden');
+        shareEl.classList.add('hidden');
+        accordionEl.updateFirstLast();
       }
 
       if (e.detail.state == EditorState.SAVED) {
@@ -64,19 +91,16 @@
         var data = e.detail.data;
         history.replaceState({}, data.title, window.location.href + '?id=' + data.id);
 
-        document.getElementById('share-title').innerText = data.title;
-        document.getElementById('share-description').innerText = data.description;
+        titleEl.innerText = data.title;
+        descEl.innerText = data.description;
 
         // Hide save tab, show share tab.
-        var accordionEl = document.getElementsByClassName('renderer-accordion')[0];
         accordionEl.goToStep(3);
-
-        document.getElementById('save-step').classList.add('hidden');
-        document.getElementById('share-step').classList.remove('hidden');
+        saveEl.classList.add('hidden');
+        shareEl.classList.remove('hidden');
         accordionEl.updateFirstLast();
-
       }
-    },
+      },
     updateViz: function(e) {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
       this.fire("update-viz", e.detail, rendererEl, false);

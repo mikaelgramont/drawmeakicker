@@ -1,0 +1,29 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="bihi-toolbarbuttons">
+	<style>
+		button:first-child {
+			margin-right: 5px;
+		}
+	</style>
+	<template>
+		<button on-click="doDuplicate" class="small">Duplicate</button>
+		<button on-click="doReset" class="small">Reset</button>	
+	</template>
+</dom-module>
+
+<script>
+Polymer({
+    is: "bihi-toolbarbuttons",
+    ready: function() {
+    },
+    clearUrl: function() {
+    },
+    doReset: function() {
+    },
+    doDuplicate: function() {
+    	this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);
+    	// find the editor object and set state on it
+    }
+});	
+</script>
