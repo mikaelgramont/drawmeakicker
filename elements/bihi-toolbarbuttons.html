@@ -7,7 +7,7 @@
 		}
 	</style>
 	<template>
-		<button on-click="doDuplicate" class="small">Duplicate</button>
+		<button id="duplicate" on-click="doDuplicate" class="small">Duplicate</button>
 		<button on-click="doReset" class="small">Reset</button>	
 	</template>
 </dom-module>
@@ -15,15 +15,17 @@
 <script>
 Polymer({
     is: "bihi-toolbarbuttons",
-    ready: function() {
+    listeners: {
+    	"update": "onUpdate"
     },
-    clearUrl: function() {
+    onUpdate: function(e) {
+    	this.$.duplicate.classList.toggle('hidden', e.detail.state != EditorState.SAVED);
     },
     doReset: function() {
+    	this.fire("requested-state-change", {state: EditorState.NEW}, document.body, false);
     },
     doDuplicate: function() {
     	this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);
-    	// find the editor object and set state on it
     }
 });	
 </script>

@@ -1,6 +1,5 @@
 <!-- 
-	- reset button: goes back to default values, update url
-	- duplicate button: change state to new, keep values, update url
+	- looks like saving doesn't enable the share tab anymore
 
 	- add google analytics, and update share urls to have the utm stuff.
 	- use a node server to do https/http2
@@ -212,7 +211,7 @@
 					<div class="renderer-container">
 						<div class="toolbar blueprint">
 							<bihi-units units="<?php echo $units; ?>"></bihi-units>
-							<bihi-toolbarbuttons></bihi-toolbarbuttons>
+							<bihi-toolbarbuttons id="buttons"></bihi-toolbarbuttons>
 						</div>
 						<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>
 					</div>

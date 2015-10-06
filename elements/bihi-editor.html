@@ -26,18 +26,20 @@
     },
     ready: function() {
       this.state = new EditorState();
-    },
-    reset: function() {
-      /* TODO: make sure the markup is set correctly here:
-        - empty description
-        - reset the accordion
-        - 
-       */
-      this.state.setState(EditorState.NEW);
+      this.rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
+      this.saveEl = document.getElementById('save-step');
+      this.shareEl = document.getElementById('share-step');
+      this.titleEl = document.getElementById('share-title');
+      this.descEl = document.getElementById('share-description');
+      this.paramsEl = document.getElementById('params');
+      this.toolbarButtonsEl = document.getElementById('buttons');
+      this.accordionEl = document.getElementsByClassName('renderer-accordion')[0];
     },
     init: function(initValues, units) {
-      var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
-      rendererEl.init(initValues, units);
+      this.defaultInitialValues = initValues;
+      this.units = units;
+
+      this.rendererEl.init(initValues, units);
       if (initValues.id) {
         this.state.setState(EditorState.READ_ONLY);
       } else {
@@ -45,78 +47,71 @@
       }
     },
     rendererRefresh: function() {
-      var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
-      this.fire("refresh", {}, rendererEl, false);
+      this.fire("refresh", {}, this.rendererEl, false);
     },
     applyStateChange: function(e) {
       console.log("applyStateChange", e.detail.state);
       this.state.setState(e.detail.state, e.detail.data);
     },
     onStateChange: function (e) {
-      var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
-      this.fire("state-change", {state: e.detail.state}, rendererEl, false);
-
-      var saveEl = document.getElementById('save-step');
-      var shareEl = document.getElementById('share-step');
-
-      var titleEl = document.getElementById('share-title');
-      var descEl = document.getElementById('share-description');
-
-      var accordionEl = document.getElementsByClassName('renderer-accordion')[0];
+      this.fire("state-change", {state: e.detail.state}, this.rendererEl, false);
 
       if (e.detail.state == EditorState.READ_ONLY &&
           e.detail.previousState != EditorState.READ_ONLY) {
         // The user loaded an existing kicker.
         // Do nothing for now.
-      }
-
-      if (e.detail.state == EditorState.SAVED) {
+      } else if (e.detail.state == EditorState.READY &&
+          e.detail.previousState == EditorState.READ_ONLY) {
+        // The user is duplicating a kicker
+        this.reset();
+      } else if (e.detail.state == EditorState.NEW &&
+          e.detail.previousState != EditorState.NEW) {
+        // The user pressed reset.
+        this.reset();
+        this.rendererEl.init(initValues, units);
+      } else if (e.detail.state == EditorState.SAVED) {
         // The user just saved a new kicker.
 
         // Update url. There's a possibility of a self-XSS attack with title and description here. Whatever.
         var data = e.detail.data;
         history.replaceState({}, data.title, window.location.href + '?id=' + data.id);
 
-        titleEl.innerText = data.title;
-        descEl.innerText = data.description;
+        this.titleEl.innerText = data.title;
+        this.descEl.innerText = data.description;
 
         // Hide save tab, show share tab.
-        accordionEl.goToStep(3);
-        saveEl.classList.add('hidden');
-        shareEl.classList.remove('hidden');
-        accordionEl.updateFirstLast();
+        this.accordionEl.goToStep(3);
+        this.saveEl.classList.add('hidden');
+        this.shareEl.classList.remove('hidden');
+        this.accordionEl.updateFirstLast();
       }
 
-      if (e.detail.state == EditorState.READY &&
-          e.detail.previousState == EditorState.READ_ONLY) {
-        // The user is duplicating a kicker
-        console.log("duplicating");
-        history.replaceState({}, defaultTitle, window.location.href.split('?')[0]);     
+      // Tell the toolbar to reflect the new state.
+      this.fire("update", {state: e.detail.state}, this.toolbarButtonsEl, false);
+    },
+    reset: function() {
+        history.replaceState({}, defaultTitle, window.location.href.split('?')[0]);      
+        this.titleEl.innerText = defaultTitle;
+        this.descEl.innerText = defaultDescription;
 
-        titleEl.innerText = defaultTitle;
-        descEl.innerText = defaultDescription;
+        this.saveEl.classList.remove('hidden');
+        this.shareEl.classList.add('hidden');
+        this.accordionEl.updateFirstLast();
 
-        saveEl.classList.remove('hidden');
-        shareEl.classList.add('hidden');
-        accordionEl.updateFirstLast();
-
-        document.getElementById('params').removeAttribute('disabled');
-      }
-
-      if (e.detail.state == EditorState.READY &&
-          e.detail.previousState != EditorState.READY) {
-        console.log("reset");
-      }      
+        this.paramsEl.removeAttribute('disabled');
     },
     updateViz: function(e) {
-      var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
-      this.fire("update-viz", e.detail, rendererEl, false);
+      this.fire("update-viz", e.detail, this.rendererEl, false);
     },
     updateUnits: function(e) {
-      this.fire("update-units", e.detail, rendererEl, false);
+      this.units = e.detail.units;
+      this.fire("update-units", e.detail, this.rendererEl, false);
     },
     properties: {
       state: {
+        type: Object
+      },
+      defaultInitialValues: {
         type: Object
       }
     }
