@@ -41,5 +41,9 @@ KickerIO.prototype.getDataForSaving = function() {
 	this.saveValues.forEach(function(name) {		
 		data[name] = get(name);
 	});
+	if (data['id']) {
+		// This will be present if the kicker was already saved.
+		delete(data['id']);
+	}
 	return data;
 };

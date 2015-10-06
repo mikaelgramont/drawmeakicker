@@ -60,7 +60,7 @@
       var shareEl = document.getElementById('share-step');
 
       var titleEl = document.getElementById('share-title');
-      var descEl = document.getElementById('share-title');
+      var descEl = document.getElementById('share-description');
 
       var accordionEl = document.getElementsByClassName('renderer-accordion')[0];
 
@@ -68,20 +68,6 @@
           e.detail.previousState != EditorState.READ_ONLY) {
         // The user loaded an existing kicker.
         // Do nothing for now.
-      }
-
-      if (e.detail.state == EditorState.READY &&
-          e.detail.previousState == EditorState.READ_ONLY) {
-        // The user is duplicating a kicker
-        console.log("duplicating");
-        history.replaceState({}, defaultTitle, window.location.href.split('?')[0]);     
-
-        titleEl.innerText = defaultTitle;
-        descEl.innerText = defaultDescription;
-
-        saveEl.classList.remove('hidden');
-        shareEl.classList.add('hidden');
-        accordionEl.updateFirstLast();
       }
 
       if (e.detail.state == EditorState.SAVED) {
@@ -100,7 +86,28 @@
         shareEl.classList.remove('hidden');
         accordionEl.updateFirstLast();
       }
-      },
+
+      if (e.detail.state == EditorState.READY &&
+          e.detail.previousState == EditorState.READ_ONLY) {
+        // The user is duplicating a kicker
+        console.log("duplicating");
+        history.replaceState({}, defaultTitle, window.location.href.split('?')[0]);     
+
+        titleEl.innerText = defaultTitle;
+        descEl.innerText = defaultDescription;
+
+        saveEl.classList.remove('hidden');
+        shareEl.classList.add('hidden');
+        accordionEl.updateFirstLast();
+
+        document.getElementById('params').removeAttribute('disabled');
+      }
+
+      if (e.detail.state == EditorState.READY &&
+          e.detail.previousState != EditorState.READY) {
+        console.log("reset");
+      }      
+    },
     updateViz: function(e) {
       var rendererEl = Polymer.dom(this).node.querySelector("bihi-renderer3d");
       this.fire("update-viz", e.detail, rendererEl, false);
