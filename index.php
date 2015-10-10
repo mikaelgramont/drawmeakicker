@@ -2,7 +2,8 @@
 	Before launching:
 	- dependencies need to be handled better.
 	- files need to be bundled.
-	- need a logo
+	- need a logo, move the markup into index.php and styles.css
+  - make sure toolbar doesn't show when imports haven't loaded.
 	- need some screenshots put together into a video
 	- add google analytics, and update share urls to have the utm stuff.
 	- use a node server to do https/http2
@@ -43,6 +44,13 @@
 	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$title = SITE_TITLE;
+  
+  function getBuildFileName($name, $extension) {
+    if (DEV) {
+      return $name.'-dev.'.$extension;
+    }
+    return $name.'.'.$extension;
+  }
 
 	$units = 'm';
 	if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -88,26 +96,6 @@
 	<head>
 		<title><?php echo $title?></title>
 		<link rel="stylesheet" href="style.css">
-		<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-		<link rel="import" href="elements/bihi-accordion.html">
-		<link rel="import" href="elements/bihi-alert.html">
-		<link rel="import" href="elements/bihi-context.html">
-		<link rel="import" href="elements/bihi-editor.html">
-		<link rel="import" href="elements/bihi-design-fieldset.html">
-		<link rel="import" href="elements/bihi-design-parameter.html">   
-		<link rel="import" href="elements/bihi-design-result.html">
-		<link rel="import" href="elements/bihi-design-step.html">
-		<link rel="import" href="elements/bihi-export.html">
-		<link rel="import" href="elements/bihi-logo.html">
-		<link rel="import" href="elements/bihi-params.html">
-		<link rel="import" href="elements/bihi-representation.html">
-		<link rel="import" href="elements/bihi-renderer3d.html">
-		<link rel="import" href="elements/bihi-results.html">
-		<link rel="import" href="elements/bihi-save.html">
-		<link rel="import" href="elements/bihi-share.html">
-		<link rel="import" href="elements/bihi-toolbarbuttons.html">
-		<link rel="import" href="elements/bihi-units.html">
-		<link rel="import" href="elements/bihi-upload-button.html">
 		<?php
 			if ($ogData) {
 				echo OpenGraph::renderProperties($ogData);
@@ -210,6 +198,20 @@
 			var units = "<?php echo $units ?>";
 			var defaultTitle = "<?php echo SITE_TITLE ?>";
 			var defaultDescription = "<?php echo OG_DESCRIPTION ?>";
+      document.addEventListener("DOMContentLoaded", function(event) {
+        var files = [
+          '<?php echo getBuildFileName('scripts', 'html')?>',
+          '<?php echo getBuildFileName('imports', 'html')?>'
+        ];
+        console.log("DOM fully loaded and parsed, will load", files);
+        var head = document.getElementsByTagName('head')[0];
+        files.forEach(function(file) {
+          var el = document.createElement('link');
+          el.setAttribute('rel', 'import');
+          el.setAttribute('href', file);
+          head.appendChild(el);
+        });
+      });
 		</script>
 		<script src="scripts/main.js"></script>
 	</body>
