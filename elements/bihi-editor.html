@@ -61,13 +61,13 @@
         // The user loaded an existing kicker.
         // Do nothing for now.
       } else if (e.detail.state == EditorState.READY &&
-          e.detail.previousState == EditorState.READ_ONLY) {
+          (e.detail.previousState == EditorState.SAVED || e.detail.previousState == EditorState.READ_ONLY)) {
         // The user is duplicating a kicker
-        this.reset();
+        this.reset(true);
       } else if (e.detail.state == EditorState.NEW &&
           e.detail.previousState != EditorState.NEW) {
         // The user pressed reset.
-        this.reset();
+        this.reset(true);
         this.rendererEl.init(initValues, units);
       } else if (e.detail.state == EditorState.SAVED) {
         // The user just saved a new kicker.
@@ -89,8 +89,10 @@
       // Tell the toolbar to reflect the new state.
       this.fire("update", {state: e.detail.state}, this.toolbarButtonsEl, false);
     },
-    reset: function() {
-        history.replaceState({}, defaultTitle, window.location.href.split('?')[0]);      
+    reset: function(clearUrl) {
+        if (clearUrl) {
+          history.replaceState({}, defaultTitle, window.location.href.split('?')[0]);      
+        }
         this.titleEl.innerText = defaultTitle;
         this.descEl.innerText = defaultDescription;
 

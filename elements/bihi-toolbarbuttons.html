@@ -19,7 +19,8 @@ Polymer({
     	"update": "onUpdate"
     },
     onUpdate: function(e) {
-    	this.$.duplicate.classList.toggle('hidden', e.detail.state != EditorState.SAVED);
+    	this.$.duplicate.classList.toggle('hidden',
+    		[EditorState.READ_ONLY, EditorState.SAVED].indexOf(e.detail.state) === -1);
     },
     doReset: function() {
     	this.fire("requested-state-change", {state: EditorState.NEW}, document.body, false);

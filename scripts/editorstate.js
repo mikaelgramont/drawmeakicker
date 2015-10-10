@@ -12,7 +12,7 @@ EditorState.prototype.setState = function(newState, data) {
 		allowedNewStates = [EditorState.NEW, EditorState.SAVED];
 
 	} else if (this.state_ == EditorState.SAVED) {
-		allowedNewStates = [EditorState.NEW, EditorState.READ_ONLY];
+		allowedNewStates = [EditorState.NEW, EditorState.READY, EditorState.READ_ONLY];
 
 	} else if (this.state_ == EditorState.READ_ONLY) {
 		allowedNewStates = [EditorState.NEW, EditorState.READY];
@@ -28,7 +28,7 @@ EditorState.prototype.setState = function(newState, data) {
 EditorState.prototype.setState_ = function(newState, data) {
 	var previousState = this.state_;
 	this.state_ = newState;
-	console.log('new state', newState);
+	console.log('New state:', newState);
 	var event = new CustomEvent('published-state-change',
 		{detail: {'state': newState, 'previousState': previousState, data: data}});
 
@@ -40,13 +40,13 @@ EditorState.prototype.getState = function() {
 }
 
 // Basic state on page load.
-EditorState.NEW = 0;
+EditorState.NEW = 'new';
 
 // State once the editor is initialized and interactive.
-EditorState.READY = 1;
+EditorState.READY = 'ready';
 
 // State after the user has pressed save at least once.
-EditorState.SAVED = 2;
+EditorState.SAVED = 'saved';
 
 // State when the user loaded an existing url.
-EditorState.READ_ONLY = 3;
+EditorState.READ_ONLY = 'read-only';

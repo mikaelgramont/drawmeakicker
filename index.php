@@ -1,44 +1,23 @@
 <!-- 
-	- looks like saving doesn't enable the share tab anymore
-
+	Before launching:
+	- dependencies need to be handled better.
+	- files need to be bundled.
+	- need a logo
+	- need some screenshots put together into a video
 	- add google analytics, and update share urls to have the utm stuff.
 	- use a node server to do https/http2
 	- mess with console.time to get a sense for how slow things are to load on 3g
+	- not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
 
-
-	- scenario 1:
-		- start a new kicker, go into edit mode
-		- set it up
-		- download screenshots when desired
-		- saving entails:
-			- sending data, including current image
-			- generating an id
-			- persisting data to db
-			- returning the following:
-				- new url fragment for history update
-				- relevant information for open graph (page url, thumbnail url, page title)
-	- scenario 2:
-		- open page with id, go into view mode
-
-	Before launching:
-	- need a logo
-	- need some screenshots put together into a video
+	After launching:
+	- responsiveness, no zooming on mobile
 
 	Next:
 	- add a few more struts when necessary.
 	- make the extra length longer if building a quarter pipe.
 	- add character.
 	- create a better background image for the top section. Possibly add a blueprint in the bottom right corner, so that the action button can be made white against blue.
-	- not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
-
-
 	- write a different boundingbox helper for 2d
-
-	Cleanup:
-	- dependencies need to be handled better.
-	- files need to be bundled.
-
-	Nice to have's
 	- add presets for 2d cam positions
 
 	Optimizations:
