@@ -6,7 +6,7 @@ EditorState.prototype.setState = function(newState, data) {
 	data = data || {};
 	var allowedNewStates = [];
 	if (this.state_ == EditorState.NEW) {
-		allowedNewStates = [EditorState.READY];
+		allowedNewStates = [EditorState.NEW, EditorState.READY];
 
 	} else if (this.state_ == EditorState.READY) {
 		allowedNewStates = [EditorState.NEW, EditorState.SAVED];

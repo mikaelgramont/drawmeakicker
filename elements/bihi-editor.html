@@ -68,7 +68,7 @@
           e.detail.previousState != EditorState.NEW) {
         // The user pressed reset.
         this.reset(true);
-        this.rendererEl.init(initValues, units);
+        this.rendererEl.init(initValues, units, true);
       } else if (e.detail.state == EditorState.SAVED) {
         // The user just saved a new kicker.
 
