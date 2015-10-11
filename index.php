@@ -1,7 +1,6 @@
 <!-- 
 	Before launching:
-  - bug: load, reset, save => transition
-  - make sure toolbar doesn't show when imports haven't loaded.
+  - bug: load, reset, save => transition  
 	- need some screenshots put together into a video
 	- add google analytics, and update share urls to have the utm stuff.
 	- use a node server to do https/http2

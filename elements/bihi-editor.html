@@ -34,6 +34,7 @@
       this.paramsEl = document.getElementById('params');
       this.toolbarButtonsEl = document.getElementById('buttons');
       this.accordionEl = document.getElementsByClassName('renderer-accordion')[0];
+      this.loaded = true;
     },
     init: function(initValues, units) {
       this.defaultInitialValues = initValues;
@@ -115,6 +116,10 @@
       },
       defaultInitialValues: {
         type: Object
+      },
+      loaded: {
+        type: Boolean,
+        reflectToAttribute: true
       }
     }
   });

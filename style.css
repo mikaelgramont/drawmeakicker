@@ -159,6 +159,11 @@ h2,
   position: relative;
   top: -50px;
   overflow: hidden; }
+  .editor .toolbar {
+    display: none; }
+
+.editor[loaded] .toolbar {
+  display: block; }
 
 .expanded-editor .editor {
   /* Can't use 100% because for some reason that translates to 1oo% of the viewport */

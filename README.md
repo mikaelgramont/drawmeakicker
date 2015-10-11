@@ -25,4 +25,5 @@ Developing locally is done by setting the DEV constant to true in the constants.
 To update those bundles, run:
 
 `vulcanize scripts-dev.html > scripts.html`
+
 `vulcanize imports-dev.html > imports.html`
