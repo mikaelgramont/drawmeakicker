@@ -2,7 +2,7 @@
 // Set to false to load bundled production files
 // true to load individual files.
 define('DEV', false);
-define('DEFAULT_OG_IMAGE', 'default-kicker.png');
+define('DEFAULT_OG_IMAGE', 'images/default-kicker.png');
 define('UPLOAD_DIR', 'uploads/');
 define("SITE_TITLE", "Draw me a kicker!");
 define("SITE_TITLE_HTML", "&ldquo;Draw me a kicker!&rdquo;");
