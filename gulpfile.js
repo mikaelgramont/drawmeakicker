@@ -16,15 +16,15 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('.'))
         .pipe(rename({suffix: '.min'}))
         .pipe(minifycss())
-        .pipe(gulp.dest('.'))
+        .pipe(gulp.dest('./public'))
         .pipe(notify({ message: 'CSS updated' }));
 })
 
 // Imports
 gulp.task('imports', function () {
-    return gulp.src('imports.html')
+    return gulp.src('public/imports.html')
         .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('.'))
+        .pipe(gulp.dest('./public'))
         .pipe(vulcanize())
         .pipe(notify({ message: 'Imports vulcanized' }));
 });
@@ -73,10 +73,10 @@ gulp.task('scripts', function () {
             'scripts/renderer3d.js',
             'scripts/blueprintborderrenderer.js',
             'scripts/mergedrenderer.js'        
-        ])
+        ], {base: 'public'})
         .pipe(concat('scripts.min.js'))
         .pipe(uglify({compress:''}))
-        .pipe(gulp.dest('.'))
+        .pipe(gulp.dest('./public'))
         .pipe(notify({ message: 'Scripts concatenated and uglified'}));
 });
 

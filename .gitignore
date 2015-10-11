@@ -3,6 +3,6 @@ bower_components
 .sass-cache
 _tmp
 .settings
-dbsettings.php
-constants.php
+php/dbsettings.php
+php/constants.php
 node_modules/

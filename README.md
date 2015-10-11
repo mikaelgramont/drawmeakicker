@@ -6,14 +6,14 @@ The app's goal is to help build ramps (aka jumps, aka kickers) for mountainboard
 
 The target audience is the type of people who have experience with launching off of these things, and who want to build a new one. They'll have an idea of how tall they want the jump, and what kind of exit angle they'll want. Some people like flatter, mellow jumps that are good for distance jumps, others will prefer steeper, floaty jumps that are good for tricks.
 
-![](https://raw.githubusercontent.com/mikaelgramont/buildithuckit/master/default-kicker.png)
+![](https://raw.githubusercontent.com/mikaelgramont/buildithuckit/master/public/default-kicker.png)
 
 ##Install
-Copy constants.conf.php to constants.php and adjust SITE_URL.
+Copy `php/constants.conf.php` to `php/constants.php` and adjust `SITE_URL` to match the deployment site domain and path.
 
-Copy dbsettings.conf.php to dbsettings.php and set the MySQL parameters to match the host's.
+Copy `php/dbsettings.conf.php` to `php/dbsettings.php` and set the MySQL parameters to match the host's.
 
-Run the bihi_kickers.sql file through MySQL to create the necessary table (you'll need this for saving and loading kickers, but the rest of the app is all client-side, so you'll be mostly fine without it).
+Run the `bihi_kickers.sql` file through MySQL to create the necessary table (you'll need this for saving and loading kickers, but the rest of the app is all client-side, so you'll be mostly fine without it).
 
 ## Building
 The client-side app is built on Polymer, which makes heavy use of custom elements, which all live in separate files (prefixed with bihi-). In order to avoid slowing things down on HTTP/1.1 connections, we can use [vulcanizer](https://github.com/polymer/vulcanize) to concatenate them all into one.
