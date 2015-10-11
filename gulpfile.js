@@ -24,8 +24,8 @@ gulp.task('styles', function() {
 gulp.task('imports', function () {
     return gulp.src('public/imports.html')
         .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('./public'))
         .pipe(vulcanize())
+        .pipe(gulp.dest('./public'))
         .pipe(notify({ message: 'Imports vulcanized' }));
 });
 
