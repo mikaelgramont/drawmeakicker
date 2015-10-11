@@ -34,49 +34,49 @@ gulp.task('imports', function () {
 // node (here) and PHP (for dev purposes)
 gulp.task('scripts', function () {
     return gulp.src([
-            'scripts/config.js',
-            'scripts/editorstate.js',
-            'scripts/imagelist.js',
-            'scripts/utils.js',
-            'scripts/kickerio.js',
-            'scripts/kickeriofromdom.js',
-            'scripts/kickeriofromjson.js',
-            'scripts/kickermodel.js',
-            'scripts/kicker.js',
-            'scripts/ColladaLoader.js', 
-            'scripts/THREEx.GeometryUtils.js', 
-            'scripts/representation3d.js',
-            'scripts/scene.js',
-            'scripts/orbitcontrols.js',
+            'public/scripts/config.js',
+            'public/scripts/editorstate.js',
+            'public/scripts/imagelist.js',
+            'public/scripts/utils.js',
+            'public/scripts/kickerio.js',
+            'public/scripts/kickeriofromdom.js',
+            'public/scripts/kickeriofromjson.js',
+            'public/scripts/kickermodel.js',
+            'public/scripts/kicker.js',
+            'public/scripts/ColladaLoader.js', 
+            'public/scripts/THREEx.GeometryUtils.js', 
+            'public/scripts/representation3d.js',
+            'public/scripts/scene.js',
+            'public/scripts/orbitcontrols.js',
 
-            'models/parts/part.js',
-            'models/parts/angle.js',
-            'models/parts/annotation.js',
-            'models/parts/arrow.js',
-            'models/parts/board.js',
-            'models/parts/curvedarrow.js',
-            'models/parts/grid.js',
-            'models/parts/side.js',
-            'models/parts/slat.js',
-            'models/parts/strut.js',
-            'models/parts/surface.js',
-            'models/parts/text.js',
+            'public/models/parts/part.js',
+            'public/models/parts/angle.js',
+            'public/models/parts/annotation.js',
+            'public/models/parts/arrow.js',
+            'public/models/parts/board.js',
+            'public/models/parts/curvedarrow.js',
+            'public/models/parts/grid.js',
+            'public/models/parts/side.js',
+            'public/models/parts/slat.js',
+            'public/models/parts/strut.js',
+            'public/models/parts/surface.js',
+            'public/models/parts/text.js',
 
-            'scripts/box.js',
-            'scripts/bboxhelper.js',
+            'public/scripts/box.js',
+            'public/scripts/bboxhelper.js',
 
-            'scripts/CanvasRenderer.js',
-            'scripts/SoftwareRenderer.js',
-            'scripts/Projector.js',
+            'public/scripts/CanvasRenderer.js',
+            'public/scripts/SoftwareRenderer.js',
+            'public/scripts/Projector.js',
              
-            'scripts/sequencer.js',
-            'scripts/renderer3d.js',
-            'scripts/blueprintborderrenderer.js',
-            'scripts/mergedrenderer.js'        
-        ], {base: 'public'})
+            'public/scripts/sequencer.js',
+            'public/scripts/renderer3d.js',
+            'public/scripts/blueprintborderrenderer.js',
+            'public/scripts/mergedrenderer.js'        
+        ])
         .pipe(concat('scripts.min.js'))
-        .pipe(uglify({compress:''}))
-        .pipe(gulp.dest('./public'))
+        .pipe(uglify())
+        .pipe(gulp.dest('public/'))
         .pipe(notify({ message: 'Scripts concatenated and uglified'}));
 });
 
