@@ -1,33 +1,3 @@
-<!-- 
-	Before launching:
-  - list scripts in a json file
-
-	- need some screenshots put together into a video
-	- add google analytics, and update share urls to have the utm stuff.
-	- use a node server to do https/http2
-	- mess with console.time to get a sense for how slow things are to load on 3g
-	- not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
-
-	After launching:
-	- responsiveness, no zooming on mobile
-
-	Next:
-	- add a few more struts when necessary.
-	- make the extra length longer if building a quarter pipe.
-	- add character.
-	- create a better background image for the top section. Possibly add a blueprint in the bottom right corner, so that the action button can be made white against blue.
-	- write a different boundingbox helper for 2d
-	- add presets for 2d cam positions
-
-	Optimizations:
-	- cache text objects as they are super slow to generate
-	- use factories and object pools for all object creation, in order to recycle them (replace the geometry, position, scale and rotation).
-
-	Mobile:
-	- Add a darkish background color to all containers with background images.
-	- switch to em-based font sizes	
--->
-
 <?php
 	require("constants.php");
 	require("dbsettings.php");
