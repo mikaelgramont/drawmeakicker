@@ -35,8 +35,9 @@
 						el.setAttribute('href', fileInfo[1]);
 					} else {
 						el = document.createElement('script');
-						el.setAttribute('src', fileInfo[1]);						
+						el.setAttribute('src', fileInfo[1]);
 					}
+					el.setAttribute('charset', 'utf-8');
 					el.addEventListener('load', function(e) {
 						resolve();
 					});
