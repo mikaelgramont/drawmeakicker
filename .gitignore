@@ -5,3 +5,4 @@ _tmp
 .settings
 dbsettings.php
 constants.php
+node_modules/

@@ -1,6 +1,8 @@
 <!-- 
 	Before launching:
-  - bug: load, reset, save => transition  
+  - bug: load, reset, save => transition
+  - bug: kicker is editable on load
+  - need to use promises to load stuff
 	- need some screenshots put together into a video
 	- add google analytics, and update share urls to have the utm stuff.
 	- use a node server to do https/http2
@@ -42,11 +44,12 @@
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$title = SITE_TITLE;
   
-  function getBuildFileName($name, $extension) {
+  function getBuildFile($file) {
     if (DEV) {
-      return $name.'-dev.'.$extension;
+      return $file;
     }
-    return $name.'.'.$extension;
+    list($name, $extension) = explode('.', $file);
+    return $name.'.min.'.$extension;
   }
 
 	$units = 'm';
@@ -92,7 +95,7 @@
 <html>
 	<head>
 		<title><?php echo $title?></title>
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="style.min.css">
 		<?php
 			if ($ogData) {
 				echo OpenGraph::renderProperties($ogData);
@@ -199,9 +202,11 @@
         units: "<?php echo $units ?>",
         defaultTitle: "<?php echo SITE_TITLE ?>",
         defaultDescription: "<?php echo OG_DESCRIPTION ?>",
+        three: 'bower_components/threejs/build/three.js',
         files: [
-          '<?php echo getBuildFileName('scripts', 'html')?>',
-          '<?php echo getBuildFileName('imports', 'html')?>'
+          ['script', 'fonts/archer_medium_regular.typeface.js'],
+          ['link', '<?php echo getBuildFile('scripts.html')?>'],
+          ['link', '<?php echo getBuildFile('imports.html')?>']
         ]
       };
 		</script>

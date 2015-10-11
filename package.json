@@ -1,0 +1,26 @@
+{
+  "name": "buildithuckit",
+  "version": "1.0.0",
+  "description": "A Polymer+WebGL project to help design kickers.",
+  "main": "index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikaelgramont/buildithuckit.git"
+  },
+  "keywords": [
+    "Polymer",
+    "WebGL"
+  ],
+  "author": "Mikael Gramont",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mikaelgramont/buildithuckit/issues"
+  },
+  "homepage": "https://github.com/mikaelgramont/buildithuckit#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  }
+}

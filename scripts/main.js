@@ -1,28 +1,61 @@
-(function(initValues, autoStart, units, files) {
-	document.addEventListener("DOMContentLoaded", function(event) {
-		var head = document.getElementsByTagName('head')[0];
-		files.forEach(function(file) {
-			var el = document.createElement('link');
-			el.setAttribute('rel', 'import');
-			el.setAttribute('href', file);
-			head.appendChild(el);
-		});
-	});
-
+(function(initValues, autoStart, units, three, files) {
 	var initialized = false;
 		startEl = document.querySelector('#start-button'),
 		editorEl = document.querySelector('.editor'),
 		rendererEl = document.querySelector('#renderer'),
 		paramsEl = document.querySelector('#params'),
-		resultsEl = document.querySelector('#results'),
-	setListeners();
+		resultsEl = document.querySelector('#results');
+	//console.log('initValues', initValues);
 
-	console.log('initValues', initValues);
+	// Wait for the DOM to be ready before we start downloading three.js.
+	// Once it's loaded, fetch fonts, scripts and Polymer components (one file each).
+	// Once both have loaded, then look into possibly starting the editor.
+	var loaderPromises = [];
+	document.addEventListener("DOMContentLoaded", function(event) {
+		var head = document.getElementsByTagName('head')[0];
+		var threePromise = new Promise(function(resolve, reject) {
+			var el = document.createElement('script');
+			el.setAttribute('src', three);
+			el.addEventListener('load', function(e) {
+				resolve();
+			});
+			el.addEventListener('error', function(e) {
+				reject();
+			});
+			head.appendChild(el);
 
-	if (autoStart) {
-		// Skip the introduction if autoStart is true.
-		setTimeout(showEditor, 0);
-	}
+		});
+		threePromise.then(function() {
+			files.forEach(function(fileInfo) {
+				loaderPromises.push(new Promise(function(resolve, reject) {
+					var el;
+					if (fileInfo[0] == 'link') {
+						el = document.createElement('link');
+						el.setAttribute('rel', 'import');
+						el.setAttribute('href', fileInfo[1]);
+					} else {
+						el = document.createElement('script');
+						el.setAttribute('src', fileInfo[1]);						
+					}
+					el.addEventListener('load', function(e) {
+						resolve();
+					});
+					el.addEventListener('error', function(e) {
+						reject();
+					});
+					head.appendChild(el);
+				}));
+			});
+			Promise.all(loaderPromises).then(function() {
+				setListeners();
+				if (autoStart) {
+					// Skip the introduction if autoStart is true.
+					showEditor();
+				}
+
+			});
+		});
+	});
 
 	function setListeners() {
 		startEl.addEventListener('click', showEditor);
@@ -65,8 +98,7 @@
 		startEl.disabled = true;
 		document.body.classList.add('expanded-editor');
 		document.querySelector('.editor').scrollIntoView();
-
 		editorEl.reset();
-		editorEl.init(initValues, units);
+		editorEl.init(initValues, units);		
 	}
-})(BIHI.initValues, BIHI.autoStart, BIHI.units, BIHI.files);
+})(BIHI.initValues, BIHI.autoStart, BIHI.units, BIHI.three, BIHI.files);
