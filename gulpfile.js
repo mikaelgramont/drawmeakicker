@@ -16,7 +16,7 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('.'))
         .pipe(rename({suffix: '.min'}))
         .pipe(minifycss())
-        .pipe(gulp.dest('./public'))
+        .pipe(gulp.dest('./public/styles'))
         .pipe(notify({ message: 'CSS updated' }));
 })
 
@@ -76,7 +76,7 @@ gulp.task('scripts', function () {
         ])
         .pipe(concat('scripts.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('public/'))
+        .pipe(gulp.dest('public/scripts'))
         .pipe(notify({ message: 'Scripts concatenated and uglified'}));
 });
 

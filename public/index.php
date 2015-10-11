@@ -14,13 +14,13 @@
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$title = SITE_TITLE;
   
-  function getBuildFile($file) {
-    if (DEV) {
-      return $file;
-    }
-    list($name, $extension) = explode('.', $file);
-    return $name.'.min.'.$extension;
-  }
+	function getBuildFile($file) {
+		if (DEV) {
+		  return $file;
+		}
+		list($name, $extension) = explode('.', $file);
+		return $name.'.min.'.$extension;
+	}
 
 	$units = 'm';
 	if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -65,7 +65,7 @@
 <html>
 	<head>
 		<title><?php echo $title?></title>
-		<link rel="stylesheet" href="style.min.css">
+		<link rel="stylesheet" href="styles/style.min.css">
 		<?php
 			if ($ogData) {
 				echo OpenGraph::renderProperties($ogData);
@@ -172,14 +172,14 @@
         units: "<?php echo $units ?>",
         defaultTitle: "<?php echo SITE_TITLE ?>",
         defaultDescription: "<?php echo OG_DESCRIPTION ?>",
-        three: '<?php echo getBuildFile('bower_components/threejs/build/three.js')?>',
+        three: '<?php echo getBuildFile('components/threejs/build/three.js')?>',
         files: [
           ['script', 'fonts/archer_medium_regular.typeface.js'],
-          <?php if (DEV) { ?>
-          ['link', 'scripts.html'],
-          <?php } else { ?>
-          ['script', 'scripts.min.js'],
-          <?php } ?>
+<?php if (DEV) { ?>
+          ['link', 'scripts/scripts.html'],
+<?php } else { ?>
+          ['script', 'scripts/scripts.min.js'],
+<?php } ?>
           ['link', '<?php echo getBuildFile('imports.html')?>']
         ]
       };

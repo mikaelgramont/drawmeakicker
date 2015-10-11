@@ -1,4 +1,6 @@
 Before launching:
+- update logo, find a domain name.
+	dessinemoiunkick.com drawmeakicker.com
 - add google analytics, and update share urls to have the utm stuff.
 
 After launching:
@@ -6,6 +8,7 @@ After launching:
 - mess with console.time to get a sense for how slow things are to load on 3g
 - not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
 - responsiveness, no zooming on mobile
+- use chunking to respond super fast if no data is loaded.
 
 Next:
 - add a few more struts when necessary.
