@@ -1,8 +1,7 @@
 <!-- 
 	Before launching:
-  - bug: load, reset, save => transition
-  - bug: kicker is editable on load
-  - need to use promises to load stuff
+  - list scripts in a json file
+
 	- need some screenshots put together into a video
 	- add google analytics, and update share urls to have the utm stuff.
 	- use a node server to do https/http2
@@ -167,7 +166,7 @@
 						</bihi-design-step>
 
 						<bihi-design-step id="share-step" caption="Share" step="3" display-step="3"<?php if(!$id) { ?> class="hidden"<?php }?>>
-							<bihi-design-fieldset legend="Notes">
+							<bihi-design-fieldset legend="Notes" class="share-notes">
 								<p id="share-title"><?php echo htmlspecialchars($kickerData->title) ?></p>
 								<p id="share-description"><?php echo htmlspecialchars($kickerData->description) ?></p>
 							</bihi-design-fieldset>
@@ -202,10 +201,14 @@
         units: "<?php echo $units ?>",
         defaultTitle: "<?php echo SITE_TITLE ?>",
         defaultDescription: "<?php echo OG_DESCRIPTION ?>",
-        three: 'bower_components/threejs/build/three.js',
+        three: '<?php echo getBuildFile('bower_components/threejs/build/three.js')?>',
         files: [
           ['script', 'fonts/archer_medium_regular.typeface.js'],
-          ['link', '<?php echo getBuildFile('scripts.html')?>'],
+          <?php if (DEV) { ?>
+          ['link', 'scripts.html'],
+          <?php } else { ?>
+          ['script', 'scripts.min.js'],
+          <?php } ?>
           ['link', '<?php echo getBuildFile('imports.html')?>']
         ]
       };

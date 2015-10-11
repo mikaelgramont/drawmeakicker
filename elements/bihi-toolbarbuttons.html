@@ -24,6 +24,10 @@ Polymer({
     },
     doReset: function() {
     	this.fire("requested-state-change", {state: EditorState.NEW}, document.body, false);
+        setTimeout(function() {
+            // Once we've reset everything, move to the ready state.
+            this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);
+        }.bind(this), 0);
     },
     doDuplicate: function() {
     	this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);

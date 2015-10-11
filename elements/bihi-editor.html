@@ -57,19 +57,28 @@
     onStateChange: function (e) {
       this.fire("state-change", {state: e.detail.state}, this.rendererEl, false);
 
-      if (e.detail.state == EditorState.READ_ONLY &&
-          e.detail.previousState != EditorState.READ_ONLY) {
+      if (e.detail.state == EditorState.READ_ONLY) {
         // The user loaded an existing kicker.
-        // Do nothing for now.
+        // Make sure the editor is disabled.
+        this.paramsEl.setAttribute('disabled', true);
+        this.accordionEl.goToStep(0);
+        this.showShare();
+
       } else if (e.detail.state == EditorState.READY &&
           (e.detail.previousState == EditorState.SAVED || e.detail.previousState == EditorState.READ_ONLY)) {
         // The user is duplicating a kicker
         this.reset(true);
+        this.accordionEl.goToStep(0);
+        this.showSave();
+
       } else if (e.detail.state == EditorState.NEW &&
           e.detail.previousState != EditorState.NEW) {
         // The user pressed reset.
         this.reset(true);
         this.rendererEl.init(this.defaultInitialValues, this.units, true);
+        this.accordionEl.goToStep(0);
+        this.showSave();
+
       } else if (e.detail.state == EditorState.SAVED) {
         // The user just saved a new kicker.
 
@@ -80,27 +89,34 @@
         this.titleEl.innerText = data.title;
         this.descEl.innerText = data.description;
 
-        // Hide save tab, show share tab.
         this.accordionEl.goToStep(3);
-        this.saveEl.classList.add('hidden');
-        this.shareEl.classList.remove('hidden');
-        this.accordionEl.updateFirstLast();
+        this.showShare();
       }
 
       // Tell the toolbar to reflect the new state.
       this.fire("update", {state: e.detail.state}, this.toolbarButtonsEl, false);
     },
+
+    showShare: function() {
+        // Hide save tab, show share tab.
+        this.saveEl.classList.add('hidden');
+        this.shareEl.classList.remove('hidden');
+        this.accordionEl.updateFirstLast();      
+    },
+
+    showSave: function(step) {
+        // Show save tab, hide share tab.
+        this.saveEl.classList.remove('hidden');
+        this.shareEl.classList.add('hidden');
+        this.accordionEl.updateFirstLast();
+    },
+
     reset: function(clearUrl) {
         if (clearUrl) {
           history.replaceState({}, BIHI.defaultTitle, window.location.href.split('?')[0]);      
         }
         this.titleEl.innerText = BIHI.defaultTitle;
         this.descEl.innerText = BIHI.defaultDescription;
-
-        this.saveEl.classList.remove('hidden');
-        this.shareEl.classList.add('hidden');
-        this.accordionEl.updateFirstLast();
-
         this.paramsEl.removeAttribute('disabled');
     },
     updateViz: function(e) {

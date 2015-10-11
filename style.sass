@@ -171,11 +171,6 @@ h2,
 	top: $main-vertical-offset
 	overflow: hidden
 
-	.toolbar
-		display: none
-
-.editor[loaded] .toolbar
-	display: block
 
 .expanded-editor .editor
 	/* Can't use 100% because for some reason that translates to 100% of the viewport */
@@ -194,9 +189,12 @@ h2,
 .toolbar
 	margin-bottom: $gutter-width
 	padding: 10px
-	display: flex
+	display: none
 	justify-content: space-between
 	align-content: center
+
+.editor[loaded] .toolbar
+	display: flex
 
 .top-section-container
 	max-width: $content-max-width
@@ -244,3 +242,9 @@ footer
 
 .representation-container
 	padding: 0 10px
+
+.share-notes
+	display: none
+
+.editor[loaded] .share-notes
+	display: block	
