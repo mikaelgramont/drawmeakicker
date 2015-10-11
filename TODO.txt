@@ -1,5 +1,4 @@
 Before launching:
-- need some screenshots put together into a video
 - add google analytics, and update share urls to have the utm stuff.
 
 After launching:

@@ -51,7 +51,6 @@
       this.fire("refresh", {}, this.rendererEl, false);
     },
     applyStateChange: function(e) {
-      console.log("applyStateChange", e.detail.state);
       this.state.setState(e.detail.state, e.detail.data);
     },
     onStateChange: function (e) {

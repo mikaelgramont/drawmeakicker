@@ -72,7 +72,7 @@
     },
     init: function(initialValues, units, forceInit) {
       if (this.initialized && !forceInit) {
-        console.log('bihi-renderer3d already initialized, exiting. Pass forceInit=True to bypass this.');
+        throw new Error('bihi-renderer3d already initialized, exiting. Pass forceInit=True to bypass this.');
         return;
       }
       var sequencer = new Sequencer(),
@@ -140,7 +140,6 @@
       xhr.send("img="+imgData);
     },
     stateChange: function(e) {
-      console.log("stateChange", e);
       if (e.detail.state == EditorState.SAVED) {
         var saveEl = document.querySelector('bihi-save');  
         this.fire("on-save", {}, saveEl, e.detail.state);

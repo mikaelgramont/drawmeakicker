@@ -9,6 +9,8 @@ The target audience is the type of people who have experience with launching off
 ![](https://raw.githubusercontent.com/mikaelgramont/buildithuckit/master/public/default-kicker.png)
 
 ##Install
+Install all bower dependencies.
+
 Copy `php/constants.conf.php` to `php/constants.php` and adjust `SITE_URL` to match the deployment site domain and path.
 
 Copy `php/dbsettings.conf.php` to `php/dbsettings.php` and set the MySQL parameters to match the host's.
