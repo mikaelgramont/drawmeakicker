@@ -78,20 +78,18 @@
 		<div class="content">
 			<header>
         <div role="banner" class="logo size-4">
-          <span class="logo-one">Build it.</span>
-          <span class="logo-two">Huck it.</span>
+          <?php echo SITE_TITLE_HTML ?>
         </div>
 			</header>
 
 			<div class="top-section-container">
 				<section class="top-section">
 					<h2 class="top-section-header">
-						Design your next ramp.
-						No math involved.
+						Ramp design the easy way.
 					</h2>
 					<div class="top-section-body">
 						<div class="top-section-content grid-element size-2">
-							<p>Thinking of building a new kicker but lacking the math skills to design it precisely? We got you covered.</p>
+							<p>If you're thinking of building a kicker and you have some idea of what you want, but are not sure about the exact dimensions, we can help.</p>
 							<p>The nerds here have done the math for you, so you can focus on the fun part: deciding how big you want to go!</p>
 							<button id="start-button" class="action">Get Started</button>
 						</div>
@@ -159,9 +157,7 @@
 			</div>
 			<footer>
 				<ul>
-					<li>Twitter</li>
-					<li>Facebook</li>
-					<li>Contact</li>
+					<li><a href="<?php echo TWITTER_LINK ?>">Twitter</a></li>
 				</ul>
 			</footer>
 		</div>
