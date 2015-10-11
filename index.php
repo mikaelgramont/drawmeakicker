@@ -1,8 +1,6 @@
 <!-- 
 	Before launching:
-	- dependencies need to be handled better.
-	- files need to be bundled.
-	- need a logo, move the markup into index.php and styles.css
+  - bug: load, reset, save => transition
   - make sure toolbar doesn't show when imports haven't loaded.
 	- need some screenshots put together into a video
 	- add google analytics, and update share urls to have the utm stuff.
@@ -107,7 +105,10 @@
 		<bihi-alert message="<?php echo $message ?>" id="alert"></bihi-alert>
 		<div class="content">
 			<header>
-				<bihi-logo></bihi-logo>
+        <div role="banner" class="logo size-4">
+          <span class="logo-one">Build it.</span>
+          <span class="logo-two">Huck it.</span>
+        </div>
 			</header>
 
 			<div class="top-section-container">
@@ -193,25 +194,17 @@
 			</footer>
 		</div>
 		<script>
-			var initValues = <?php echo $initialValues ?>;
-			var autoStart = <?php echo $autoStart ?>;
-			var units = "<?php echo $units ?>";
-			var defaultTitle = "<?php echo SITE_TITLE ?>";
-			var defaultDescription = "<?php echo OG_DESCRIPTION ?>";
-      document.addEventListener("DOMContentLoaded", function(event) {
-        var files = [
+			var BIHI = {
+        initValues: <?php echo $initialValues ?>,
+        autoStart: <?php echo $autoStart ?>,
+        units: "<?php echo $units ?>",
+        defaultTitle: "<?php echo SITE_TITLE ?>",
+        defaultDescription: "<?php echo OG_DESCRIPTION ?>",
+        files: [
           '<?php echo getBuildFileName('scripts', 'html')?>',
           '<?php echo getBuildFileName('imports', 'html')?>'
-        ];
-        console.log("DOM fully loaded and parsed, will load", files);
-        var head = document.getElementsByTagName('head')[0];
-        files.forEach(function(file) {
-          var el = document.createElement('link');
-          el.setAttribute('rel', 'import');
-          el.setAttribute('href', file);
-          head.appendChild(el);
-        });
-      });
+        ]
+      };
 		</script>
 		<script src="scripts/main.js"></script>
 	</body>

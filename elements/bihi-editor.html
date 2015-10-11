@@ -68,7 +68,7 @@
           e.detail.previousState != EditorState.NEW) {
         // The user pressed reset.
         this.reset(true);
-        this.rendererEl.init(initValues, units, true);
+        this.rendererEl.init(this.defaultInitialValues, this.units, true);
       } else if (e.detail.state == EditorState.SAVED) {
         // The user just saved a new kicker.
 
@@ -91,10 +91,10 @@
     },
     reset: function(clearUrl) {
         if (clearUrl) {
-          history.replaceState({}, defaultTitle, window.location.href.split('?')[0]);      
+          history.replaceState({}, BIHI.defaultTitle, window.location.href.split('?')[0]);      
         }
-        this.titleEl.innerText = defaultTitle;
-        this.descEl.innerText = defaultDescription;
+        this.titleEl.innerText = BIHI.defaultTitle;
+        this.descEl.innerText = BIHI.defaultDescription;
 
         this.saveEl.classList.remove('hidden');
         this.shareEl.classList.add('hidden');

@@ -1,4 +1,14 @@
-(function(initValues, autoStart, units) {
+(function(initValues, autoStart, units, files) {
+	document.addEventListener("DOMContentLoaded", function(event) {
+		var head = document.getElementsByTagName('head')[0];
+		files.forEach(function(file) {
+			var el = document.createElement('link');
+			el.setAttribute('rel', 'import');
+			el.setAttribute('href', file);
+			head.appendChild(el);
+		});
+	});
+
 	var initialized = false;
 		startEl = document.querySelector('#start-button'),
 		editorEl = document.querySelector('.editor'),
@@ -59,4 +69,4 @@
 		editorEl.reset();
 		editorEl.init(initValues, units);
 	}
-})(initValues, autoStart, units);
+})(BIHI.initValues, BIHI.autoStart, BIHI.units, BIHI.files);

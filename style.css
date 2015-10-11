@@ -89,6 +89,10 @@ button.small:focus {
 header {
   margin-bottom: 15px; }
 
+header .logo {
+  padding: 15px;
+  background: #151100; }
+
 .hidden {
   display: none; }
 
@@ -176,9 +180,6 @@ h2,
   display: flex;
   justify-content: space-between;
   align-content: center; }
-
-#duplicate-button {
-  margin-right: 5px; }
 
 .top-section-container {
   max-width: 1280px;
