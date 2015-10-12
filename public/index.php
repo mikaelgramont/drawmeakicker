@@ -1,3 +1,4 @@
+<!-- Check out the repo at https://github.com/mikaelgramont/drawmeakicker - Mika -->
 <?php
 	set_include_path(__DIR__.'/../php');
 	require("constants.php");
