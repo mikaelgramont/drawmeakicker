@@ -73,6 +73,7 @@
 				echo OpenGraph::renderProperties($ogData);
 			}
 		?>
+		<script src="components/webcomponentsjs/webcomponents.min.js"></script>
 	</head>
 
 	<body>
