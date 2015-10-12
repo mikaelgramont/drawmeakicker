@@ -6,7 +6,7 @@ The app's goal is to help build ramps (aka jumps, aka kickers) for mountainboard
 
 The target audience is the type of people who have experience with launching off of these things, and who want to build a new one. They'll have an idea of how tall they want the jump, and what kind of exit angle they'll want. Some people like flatter, mellow jumps that are good for distance jumps, others will prefer steeper, floaty jumps that are good for tricks.
 
-![](https://raw.githubusercontent.com/mikaelgramont/drawmeakicker/master/public/default-kicker.png)
+![](https://raw.githubusercontent.com/mikaelgramont/drawmeakicker/master/public/images/default-kicker.png)
 
 ##Install
 Install all bower dependencies.
