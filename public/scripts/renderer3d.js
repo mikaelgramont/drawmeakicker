@@ -12,6 +12,7 @@ var Renderer3d = function(sequencer, kicker, canvas3dEl, imageList, config, canv
 	this.parts = null;
 	this.rafId = null;
 	this.drawCounter = 0;
+	this.VRstate = false;
 	// Placeholder empty objects:
 	this.models = {
 		board: new THREE.Object3D()
@@ -39,10 +40,27 @@ Renderer3d.prototype.init = function() {
 	this.createCameras();
 
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
+	this.stereoRenderer = new THREE.StereoEffect(this.threeRenderer);
+	this.onVRStateUpdate();
+
 	this.setVisibleObjects();
 	this.resize();
 
 	this.sequencer.start();
+};
+
+Renderer3d.prototype.setVRState = function(state) {
+	this.VRstate = state;
+	this.onVRStateUpdate();
+};
+
+Renderer3d.prototype.onVRStateUpdate = function() {
+	// This is needed because THREE.StereoEffect does renderer.autoClear = false for some reason.
+	if (!this.VRstate) {
+		this.threeRenderer.autoClear = true;
+	} else {
+		this.threeRenderer.autoClear = false;
+	}
 };
 
 Renderer3d.prototype.replaceModel = function(name, model) {
@@ -78,7 +96,11 @@ Renderer3d.prototype.update = function() {
 };
 
 Renderer3d.prototype.draw = function() {
-	this.threeRenderer.render(this.scene, this.camera);
+	if (this.VRstate) {
+		this.stereoRenderer.render(this.scene, this.camera);	
+	} else {
+		this.threeRenderer.render(this.scene, this.camera);
+	}
 	this.blueprintBorderRenderer.render();
 };
 
@@ -154,6 +176,12 @@ Renderer3d.prototype.pickCamera = function() {
 Renderer3d.prototype.resize = function() {
 	var parent = this.canvasEl.parentElement;
 	this.threeRenderer.setSize(parent.clientWidth, parent.clientHeight, false);
+	this.stereoRenderer.setSize(parent.clientWidth, parent.clientHeight, false);
+	// StereoEffect's default separation is in cm, we're in M
+    // Actual cardboard eye separation is 2.5in
+    // Finally, separation is per-eye so divide by 2
+    this.stereoRenderer.separation = 2.5 * 0.0254 / 2;
+
 	this.prepareCameras();
 	this.blueprintBorderRenderer.resize();
 	this.mergedRenderer.resize();

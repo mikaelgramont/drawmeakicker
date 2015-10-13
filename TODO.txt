@@ -6,6 +6,18 @@ After launching:
 - responsiveness, no zooming on mobile
 - use chunking to respond super fast if no data is loaded.
 
+
+VR:
+- add a fullscreen button for the canvas.
+- need HTTPS for fullscreen
+- exit fullscreen: https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API call editor.stopVR
+- start Chrome with --enable-vr
+
+
+
+
+
+
 Next:
 - add a few more struts when necessary.
 - make the extra length longer if building a quarter pipe.

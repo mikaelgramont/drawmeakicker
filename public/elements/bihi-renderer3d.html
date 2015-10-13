@@ -60,7 +60,8 @@
       "request-data-for-save": "requestDataForSave",
       "state-change": "stateChange",
       "save-successful": "onSaveSuccess",
-      "update-units": "updateUnits"
+      "update-units": "updateUnits",
+      "vr-set-state": "VRSetState"
     },
     properties: {
       initialized: {
@@ -168,6 +169,9 @@
     },
     updateUnits: function(e) {
       this.renderer.setUnits(e.detail.units);
+    },
+    VRSetState: function(e) {
+      this.renderer.setVRState(e.detail.VRState);
     }
   });
 

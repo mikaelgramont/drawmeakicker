@@ -24,6 +24,11 @@
           <input type="checkbox" id="texturedEl" on-click="onClick" checked={{textured}} disabled={{texturedDisabled}}> Textured
         </label>
       </li>
+      <li id="vr" class="hidden">
+        <label>
+          <input type="checkbox" id="VRactive" on-click="onVRClick"> VR mode
+        </label>        
+      </li>
     </ul>
   </template>
 
@@ -34,6 +39,24 @@
     is: "bihi-representation",
     ready: function() {
       this.updateTextureCheckbox(this.repType);
+      if (document.body.classList.contains("vr")) {
+        this.$.vr.classList.remove("hidden");
+      }
+      this.rendererEl = document.querySelector('#renderer');
+      this.rendererEl.addEventListener('mozfullscreenchange', onFullScreenChange.bind(this));
+      this.rendererEl.addEventListener('webkitfullscreenchange', onFullScreenChange.bind(this));
+      this.rendererEl.addEventListener('fullscreenchange', onFullScreenChange.bind(this));
+      function onFullScreenChange() {
+        var isFullScreen = (window.innerHeight == this.rendererEl.clientHeight
+          && window.innerWidth == this.rendererEl.clientWidth);
+        if (isFullScreen) {
+          editorEl.startVR();
+        } else {
+          this.$.VRactive.checked = false;
+          editorEl.stopVR();
+        }
+      }
+      
     },
     onClick: function(e) {
       var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');
@@ -57,6 +80,17 @@
     updateTextureCheckbox: function(repType) {
       this.texturedDisabled = repType && repType != '3d';
     },
+    onVRClick: function(e) {
+      // Only do this here because we HAVE to.
+      // Everything else will take place somewhere else.
+      if (this.rendererEl.mozRequestFullScreen) {
+          this.rendererEl.mozRequestFullScreen();
+      } else if (this.rendererEl.webkitRequestFullscreen){
+          this.rendererEl.webkitRequestFullscreen();
+      }               
+
+      this.fire("vr-start", {state: e.currentTarget.checked}, document.body, false);
+    },
     properties: {
       repType: {
         type: String,
@@ -78,7 +112,7 @@
       is3d: {
         type: Boolean,
         reflectToAttribute: true
-      },
+      }
     }
   });
 

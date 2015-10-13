@@ -13,6 +13,7 @@
 	$ogData = null;
 	$initialValues = "''";
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
+	$vr = isset($_GET['vr']);
 	$title = SITE_TITLE;
   
 	function getBuildFile($file) {
@@ -62,6 +63,11 @@
 	}
 	$autoStart = json_encode($id && !$error);
 
+	$body_classes = array();
+	if ($vr) {
+		$body_classes[] = "vr";
+	}
+	$body_classes = implode(" ", $body_classes);
 ?>
 <html>
 	<head>
@@ -76,7 +82,7 @@
 		<script src="components/webcomponentsjs/webcomponents.min.js"></script>
 	</head>
 
-	<body>
+	<body class="<?php echo $body_classes ?>">
 		<bihi-alert message="<?php echo $message ?>" id="alert"></bihi-alert>
 		<div class="content">
 			<header>
@@ -179,7 +185,9 @@
 <?php } else { ?>
           ['script', 'scripts/scripts.min.js'],
 <?php } ?>
-          ['link', '<?php echo getBuildFile('imports.html')?>']
+          ['link', '<?php echo getBuildFile('imports.html')?>'],
+          ['script', 'scripts/DeviceOrientationControls.js'],
+          ['script', 'scripts/StereoEffect.js']
         ]
       };
 		</script>

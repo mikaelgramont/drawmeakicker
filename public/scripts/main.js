@@ -88,6 +88,10 @@
 				resultsEl.dispatchEvent(event);
 		});
 
+		document.body.addEventListener('vr-start', function(e) {
+			editorEl.startVR();
+		});
+
 		var alertEl = document.getElementById('alert');
 		document.body.addEventListener('alert-set-message',
 			function(e) {

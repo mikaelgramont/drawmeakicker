@@ -1,0 +1,11 @@
+bihi-design-step: "Back", "Next"
+bihi-alert: "Close this message", 
+bihi-save: "Title", "Description", "Save"
+bihi-toolbarbuttons: "Duplicate", "Reset"
+bihi-results: "Radius", "Base length", "Surface length"
+bihi-representation: "2d", "3d", "Textured"
+bihi-params: "Height", "Width", "Exit angle"
+bihi-export: "Background color", "Borders", "Export"
+bihi-units: "meters", "feet"
+bihi-uploa-button: "Upload"
+bihi-context: "Annotations", "Grid (3d only)", "Mountainboard", "Rider"

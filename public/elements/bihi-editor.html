@@ -35,6 +35,7 @@
       this.toolbarButtonsEl = document.getElementById('buttons');
       this.accordionEl = document.getElementsByClassName('renderer-accordion')[0];
       this.loaded = true;
+      this.VRState = false;
     },
     init: function(initValues, units) {
       this.defaultInitialValues = initValues;
@@ -135,7 +136,20 @@
       loaded: {
         type: Boolean,
         reflectToAttribute: true
+      },
+      VRState: {
+        type: Boolean,
+        observer: "updateVR"
       }
+    },
+    startVR: function() {
+      this.VRState = true;
+    },
+    stopVR: function() {
+      this.VRState = false;
+    },
+    updateVR: function() {
+      this.fire("vr-set-state", {VRState: this.VRState}, this.rendererEl, false);
     }
   });
 </script>
