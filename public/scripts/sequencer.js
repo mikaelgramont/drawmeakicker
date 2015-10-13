@@ -52,6 +52,10 @@ Sequencer.prototype.requestContinuousRendering = function() {
 	this.renderingState_ = this.STATES_.CONTINUOUS;
 };
 
+Sequencer.prototype.isContinuouslyRendering = function() {
+	return this.renderingState_ == this.STATES_.CONTINUOUS;
+};
+
 Sequencer.prototype.requestStopRendering = function() {
 	this.log('requestStopRendering');
 	this.renderingState_ = this.STATES_.DONE;
@@ -59,17 +63,17 @@ Sequencer.prototype.requestStopRendering = function() {
 
 Sequencer.prototype.requestSingleUpdate = function() {
 	this.log('requestSingleUpdate');
-	this.updateState_ = this.UPDATING_STATES_.ONCE;
+	this.updateState_ = this.STATES_.ONCE;
 };
 
 Sequencer.prototype.requestContinuousUpdating = function() {
 	this.log('requestContinuousUpdating');
-	this.updateState_ = this.UPDATING_STATES_.CONTINUOUS;
+	this.updateState_ = this.STATES_.CONTINUOUS;
 };
 
-Sequencer.prototype.requestContinuousUpdating = function() {
-	this.log('requestContinuousUpdating');
-	this.updateState_ = this.UPDATING_STATES_.DONE;
+Sequencer.prototype.requestStopUpdating = function() {
+	this.log('requestStopUpdating');
+	this.updateState_ = this.STATES_.DONE;
 };
 
 Sequencer.prototype.log = function() {

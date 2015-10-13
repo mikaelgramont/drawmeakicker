@@ -13,6 +13,12 @@ var Renderer3d = function(sequencer, kicker, canvas3dEl, imageList, config, canv
 	this.rafId = null;
 	this.drawCounter = 0;
 	this.VRstate = false;
+
+	this.elapsedTime = 0;
+	this.VRCameraTarget = new THREE.Vector3(1.5, .5, 0);
+	this.VRCameraTimeConstant = .0005;
+
+
 	// Placeholder empty objects:
 	this.models = {
 		board: new THREE.Object3D()
@@ -56,10 +62,19 @@ Renderer3d.prototype.setVRState = function(state) {
 
 Renderer3d.prototype.onVRStateUpdate = function() {
 	// This is needed because THREE.StereoEffect does renderer.autoClear = false for some reason.
-	if (!this.VRstate) {
-		this.threeRenderer.autoClear = true;
-	} else {
+	console.log("this.VRstate", this.VRstate);
+	if (this.VRstate) {
+		this.elapsedTime = 0;
 		this.threeRenderer.autoClear = false;
+		this.orbitControls.enabled = false;
+		this.renderContinuously();
+		this.sequencer.requestContinuousUpdating();
+	} else {
+		this.threeRenderer.autoClear = true;
+			// TODO: only do this in 3d mode.
+			this.orbitControls.enabled = true;
+		this.stopRendering();
+		this.sequencer.requestStopUpdating();
 	}
 };
 
@@ -76,7 +91,9 @@ Renderer3d.prototype.getModel = function(name) {
 };
 
 Renderer3d.prototype.renderOnce = function() {
-	this.sequencer.requestSingleRender();
+	if (!this.sequencer.isContinuouslyRendering()) {
+		this.sequencer.requestSingleRender();
+	}
 };
 
 Renderer3d.prototype.renderContinuously = function() {
@@ -89,10 +106,18 @@ Renderer3d.prototype.stopRendering = function() {
 
 Renderer3d.prototype.update = function() {
 	// TODO: perform physics updates here.
-	 if (this.orbitControls.enabled && this.orbitControls.autorotate) {
-	 	this.orbitControls.update();
-	 }
-	this.draw();
+	var radius = 4.0;
+	if (this.VRstate) {
+		// Rotate the camera around the kicker.
+		this.camera.position.x = this.VRCameraTarget.x + radius * Math.cos(this.VRCameraTimeConstant * this.elapsedTime);         
+		this.camera.position.z = this.VRCameraTarget.z + radius * Math.sin(this.VRCameraTimeConstant * this.elapsedTime);
+		this.camera.lookAt(this.VRCameraTarget);
+		this.elapsedTime += 16;
+	} else {
+		if (this.orbitControls.enabled && this.orbitControls.autorotate) {
+			this.orbitControls.update();
+		}
+	}
 };
 
 Renderer3d.prototype.draw = function() {
@@ -112,7 +137,7 @@ Renderer3d.prototype.refresh = function() {
 		this.prepareCameras();
 	}
 	this.setVisibleObjects();
-	this.sequencer.requestSingleRender();
+	this.renderOnce();
 }
 
 Renderer3d.prototype.createCameras = function() {
@@ -145,7 +170,7 @@ Renderer3d.prototype.updateViz = function(update) {
 	}
 
 	this.setVisibleObjects();
-	this.sequencer.requestSingleRender();
+	this.renderOnce();
 };
 
 Renderer3d.prototype.setVisibleObjects = function() {
@@ -185,7 +210,7 @@ Renderer3d.prototype.resize = function() {
 	this.prepareCameras();
 	this.blueprintBorderRenderer.resize();
 	this.mergedRenderer.resize();
-	this.sequencer.requestSingleRender();
+	this.renderOnce();
 };
 
 Renderer3d.prototype.prepareCameras = function() {
