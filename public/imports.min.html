@@ -1,5 +1,4 @@
-<html><head><meta charset="UTF-8"><script src="components/webcomponentsjs/webcomponents.min.js"></script>
-<script>
+<html><head><meta charset="UTF-8"><script>
 
   Polymer = {
     Settings: (function() {
@@ -6592,6 +6591,7 @@ Note, all features of `x-style` are available when defining styles as part of Po
       this.toolbarButtonsEl = document.getElementById('buttons');
       this.accordionEl = document.getElementsByClassName('renderer-accordion')[0];
       this.loaded = true;
+      this.VRState = false;
     },
     init: function(initValues, units) {
       this.defaultInitialValues = initValues;
@@ -6692,7 +6692,20 @@ Note, all features of `x-style` are available when defining styles as part of Po
       loaded: {
         type: Boolean,
         reflectToAttribute: true
+      },
+      VRState: {
+        type: Boolean,
+        observer: "updateVR"
       }
+    },
+    startVR: function() {
+      this.VRState = true;
+    },
+    stopVR: function() {
+      this.VRState = false;
+    },
+    updateVR: function() {
+      this.fire("vr-set-state", {VRState: this.VRState}, this.rendererEl, false);
     }
   });
 </script>
@@ -7077,6 +7090,11 @@ Note, all features of `x-style` are available when defining styles as part of Po
           <input type="checkbox" id="texturedEl" on-click="onClick" checked="{{textured}}" disabled="{{texturedDisabled}}"> Textured
         </label>
       </li>
+      <li id="vr" class="hidden">
+        <label>
+          <input type="checkbox" id="VRactive" on-click="onVRClick"> VR mode
+        </label>        
+      </li>
     </ul>
   </template>
 
@@ -7087,6 +7105,24 @@ Note, all features of `x-style` are available when defining styles as part of Po
     is: "bihi-representation",
     ready: function() {
       this.updateTextureCheckbox(this.repType);
+      if (document.body.classList.contains("vr")) {
+        this.$.vr.classList.remove("hidden");
+      }
+      this.rendererEl = document.querySelector('#renderer');
+      this.rendererEl.addEventListener('mozfullscreenchange', onFullScreenChange.bind(this));
+      this.rendererEl.addEventListener('webkitfullscreenchange', onFullScreenChange.bind(this));
+      this.rendererEl.addEventListener('fullscreenchange', onFullScreenChange.bind(this));
+      function onFullScreenChange() {
+        var isFullScreen = (window.innerHeight == this.rendererEl.clientHeight
+          && window.innerWidth == this.rendererEl.clientWidth);
+        if (isFullScreen) {
+          editorEl.startVR();
+        } else {
+          this.$.VRactive.checked = false;
+          editorEl.stopVR();
+        }
+      }
+      
     },
     onClick: function(e) {
       var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');
@@ -7110,6 +7146,17 @@ Note, all features of `x-style` are available when defining styles as part of Po
     updateTextureCheckbox: function(repType) {
       this.texturedDisabled = repType && repType != '3d';
     },
+    onVRClick: function(e) {
+      // Only do this here because we HAVE to.
+      // Everything else will take place somewhere else.
+      if (this.rendererEl.mozRequestFullScreen) {
+          this.rendererEl.mozRequestFullScreen();
+      } else if (this.rendererEl.webkitRequestFullscreen){
+          this.rendererEl.webkitRequestFullscreen();
+      }               
+
+      this.fire("vr-start", {state: e.currentTarget.checked}, document.body, false);
+    },
     properties: {
       repType: {
         type: String,
@@ -7131,7 +7178,7 @@ Note, all features of `x-style` are available when defining styles as part of Po
       is3d: {
         type: Boolean,
         reflectToAttribute: true
-      },
+      }
     }
   });
 
@@ -7194,7 +7241,8 @@ Note, all features of `x-style` are available when defining styles as part of Po
       "request-data-for-save": "requestDataForSave",
       "state-change": "stateChange",
       "save-successful": "onSaveSuccess",
-      "update-units": "updateUnits"
+      "update-units": "updateUnits",
+      "vr-set-state": "VRSetState"
     },
     properties: {
       initialized: {
@@ -7302,6 +7350,9 @@ Note, all features of `x-style` are available when defining styles as part of Po
     },
     updateUnits: function(e) {
       this.renderer.setUnits(e.detail.units);
+    },
+    VRSetState: function(e) {
+      this.renderer.setVRState(e.detail.VRState);
     }
   });
 
