@@ -12,12 +12,13 @@
 	$message = "";
 	$ogData = null;
 	$initialValues = "''";
+	$title = SITE_TITLE;
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$vr = isset($_GET['vr']);
-	$title = SITE_TITLE;
+	$dev = isset($_GET['dev']) ? (bool)$_GET['dev'] : DEV;
   
-	function getBuildFile($file) {
-		if (DEV) {
+	function getBuildFile($file, $dev) {
+		if ($dev) {
 		  return $file;
 		}
 		list($name, $extension) = explode('.', $file);
@@ -177,15 +178,15 @@
         units: "<?php echo $units ?>",
         defaultTitle: "<?php echo SITE_TITLE ?>",
         defaultDescription: "<?php echo OG_DESCRIPTION ?>",
-        three: '<?php echo getBuildFile('components/threejs/build/three.js')?>',
+        three: '<?php echo getBuildFile('components/threejs/build/three.js', $dev)?>',
         files: [
           ['script', 'fonts/archer_medium_regular.typeface.js'],
-<?php if (DEV) { ?>
+<?php if ($dev) { ?>
           ['link', 'scripts/scripts.html'],
 <?php } else { ?>
           ['script', 'scripts/scripts.min.js'],
 <?php } ?>
-          ['link', '<?php echo getBuildFile('imports.html')?>'],
+          ['link', '<?php echo getBuildFile('imports.html', $dev)?>'],
           ['script', 'scripts/DeviceOrientationControls.js'],
           ['script', 'scripts/StereoEffect.js']
         ]
