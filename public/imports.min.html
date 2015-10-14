@@ -7071,28 +7071,31 @@ Note, all features of `x-style` are available when defining styles as part of Po
     .container {
       padding: 10px 0;
     }
+    .separate {
+      margin-top: 15px;
+    }
   </style>
 
   <template>
     <ul class="container size-2">
       <li>
         <label>
-          <input type="radio" on-click="onClick" name="representation" value="2d" checked="{{is2d}}">
+          <input id="is2dRradio" type="radio" on-click="onClick" name="representation" value="2d" checked="{{is2d}}">
           <span>2d</span>
         </label>
       </li>
       <li>
         <label>
-          <input type="radio" on-click="onClick" name="representation" value="3d" checked="{{is3d}}">
+          <input id="is3dRradio" type="radio" on-click="onClick" name="representation" value="3d" checked="{{is3d}}">
           <span>3d</span>
         </label>
         <label>
           <input type="checkbox" id="texturedEl" on-click="onClick" checked="{{textured}}" disabled="{{texturedDisabled}}"> Textured
         </label>
       </li>
-      <li id="vr" class="hidden">
+      <li id="vr" class="hidden separate">
         <label>
-          <input type="checkbox" id="VRactive" on-click="onVRClick"> VR mode
+          <button id="VRactive" on-click="onVRClick">VR mode</button>
         </label>        
       </li>
     </ul>
@@ -7118,7 +7121,6 @@ Note, all features of `x-style` are available when defining styles as part of Po
         if (isFullScreen) {
           editorEl.startVR();
         } else {
-          this.$.VRactive.checked = false;
           editorEl.stopVR();
         }
       }
@@ -7147,6 +7149,9 @@ Note, all features of `x-style` are available when defining styles as part of Po
       this.texturedDisabled = repType && repType != '3d';
     },
     onVRClick: function(e) {
+      this.$.is3dRradio.checked = true;
+      this.onClick();
+
       // Only do this here because we HAVE to.
       // Everything else will take place somewhere else.
       if (this.rendererEl.mozRequestFullScreen) {

@@ -65,14 +65,15 @@ Renderer3d.prototype.onVRStateUpdate = function() {
 	console.log("this.VRstate", this.VRstate);
 	if (this.VRstate) {
 		this.elapsedTime = 0;
-		this.threeRenderer.autoClear = false;
+		this.VRControls.connect();
 		this.orbitControls.enabled = false;
+		this.threeRenderer.autoClear = false;
 		this.renderContinuously();
 		this.sequencer.requestContinuousUpdating();
 	} else {
+		this.VRControls.disconnect();
+		this.orbitControls.enabled = true;
 		this.threeRenderer.autoClear = true;
-			// TODO: only do this in 3d mode.
-			this.orbitControls.enabled = true;
 		this.stopRendering();
 		this.sequencer.requestStopUpdating();
 	}
@@ -108,11 +109,13 @@ Renderer3d.prototype.update = function() {
 	// TODO: perform physics updates here.
 	var radius = 4.0;
 	if (this.VRstate) {
-		// Rotate the camera around the kicker.
-		this.camera.position.x = this.VRCameraTarget.x + radius * Math.cos(this.VRCameraTimeConstant * this.elapsedTime);         
-		this.camera.position.z = this.VRCameraTarget.z + radius * Math.sin(this.VRCameraTimeConstant * this.elapsedTime);
-		this.camera.lookAt(this.VRCameraTarget);
-		this.elapsedTime += 16;
+		this.VRControls.update();
+
+		// // Rotate the camera around the kicker.
+		// this.camera.position.x = this.VRCameraTarget.x + radius * Math.cos(this.VRCameraTimeConstant * this.elapsedTime);         
+		// this.camera.position.z = this.VRCameraTarget.z + radius * Math.sin(this.VRCameraTimeConstant * this.elapsedTime);
+		// this.camera.lookAt(this.VRCameraTarget);
+		// this.elapsedTime += 16;
 	} else {
 		if (this.orbitControls.enabled && this.orbitControls.autorotate) {
 			this.orbitControls.update();
@@ -150,6 +153,9 @@ Renderer3d.prototype.createCameras = function() {
 	
 	this.orbitControls.addEventListener('start', this.onOrbitStart.bind(this));
 	this.orbitControls.addEventListener('end', this.onOrbitEnd.bind(this));
+
+	this.VRControls = new THREE.DeviceOrientationControls(this.cameras.perspective);
+	this.VRControls.enabled = false;
 };
 
 Renderer3d.prototype.onOrbitStart = function(update) {

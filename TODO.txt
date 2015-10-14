@@ -8,11 +8,13 @@ After launching:
 
 
 VR:
-- add a fullscreen button for the canvas.
 - need HTTPS for fullscreen
-- exit fullscreen: https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API call editor.stopVR
-- start Chrome with --enable-vr
 
+Next:
+immutable.js and read about flux and redux
+http://benclinkinbeard.com/posts/up-and-running-with-es6-and-react-in-under-5-minutes/ <= follow that guy
+https://rackt.github.io/redux/docs/basics/Reducers.html
+https://github.com/rackt/redux
 
 
 
