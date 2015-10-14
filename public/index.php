@@ -5,6 +5,7 @@
 	require("dbsettings.php");
 	require("kickerdao.php");
 	require("opengraph.php");
+	require("mobiledetector.php");
 	require("share.php");
 	
 	$kickerData = null;
@@ -15,7 +16,8 @@
 	$title = SITE_TITLE;
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$dev = isset($_GET['dev']) ? (bool)$_GET['dev'] : DEV;
-  
+	$isMobile = MobileDetector::isMobile($_SERVER['HTTP_USER_AGENT']);
+	$vr = $isMobile || isset($_GET['vr']) ? (bool)$_GET['vr'] : false;
 	function getBuildFile($file, $dev) {
 		if ($dev) {
 		  return $file;
@@ -63,7 +65,10 @@
 	}
 	$autoStart = json_encode($id && !$error);
 
-	$body_classes = array('vr');
+	$body_classes = array();
+	if ($vr) {
+		$body_classes[] = "vr";
+	}
 	$body_classes = implode(" ", $body_classes);
 ?>
 <html>

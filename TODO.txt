@@ -8,6 +8,9 @@ After launching:
 
 
 VR:
+- detect support before showing the button
+- add an autostart parameter
+- figure out why VR breaks after exiting.
 - need HTTPS for fullscreen
 
 Next:
