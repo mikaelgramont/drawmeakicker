@@ -14,7 +14,6 @@
 	$initialValues = "''";
 	$title = SITE_TITLE;
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
-	$vr = isset($_GET['vr']);
 	$dev = isset($_GET['dev']) ? (bool)$_GET['dev'] : DEV;
   
 	function getBuildFile($file, $dev) {
@@ -64,10 +63,7 @@
 	}
 	$autoStart = json_encode($id && !$error);
 
-	$body_classes = array();
-	if ($vr) {
-		$body_classes[] = "vr";
-	}
+	$body_classes = array('vr');
 	$body_classes = implode(" ", $body_classes);
 ?>
 <html>
