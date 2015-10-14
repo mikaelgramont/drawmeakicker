@@ -16,7 +16,7 @@ EditorScene.createPerspectiveCamera_ = function(el) {
 
 	camera.position.copy(new THREE.Vector3(
 		-0.95,
-		2.64,
+		1.64,
 		3.85
 	));
 	return camera;
