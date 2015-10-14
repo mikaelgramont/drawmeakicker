@@ -18,7 +18,6 @@ var Renderer3d = function(sequencer, kicker, canvas3dEl, imageList, config, canv
 	this.VRCameraTarget = new THREE.Vector3(1.5, .5, 0);
 	this.VRCameraTimeConstant = .0005;
 
-
 	// Placeholder empty objects:
 	this.models = {
 		board: new THREE.Object3D()
@@ -44,6 +43,7 @@ Renderer3d.prototype.init = function() {
 
 	// Cameras - needs to happen before calling setRepresentationType.
 	this.createCameras();
+	this.VRControls = new THREE.DeviceOrientationControls();
 
 	this.threeRenderer = EditorScene.getRenderer(this.canvasEl);
 	this.stereoRenderer = new THREE.StereoEffect(this.threeRenderer);
@@ -61,11 +61,9 @@ Renderer3d.prototype.setVRState = function(state) {
 };
 
 Renderer3d.prototype.onVRStateUpdate = function() {
-	// This is needed because THREE.StereoEffect does renderer.autoClear = false for some reason.
-	console.log("this.VRstate", this.VRstate);
 	if (this.VRstate) {
 		this.elapsedTime = 0;
-		this.VRControls.connect();
+		this.VRControls.connect(this);
 		this.orbitControls.enabled = false;
 		this.threeRenderer.autoClear = false;
 		this.renderContinuously();
@@ -73,6 +71,7 @@ Renderer3d.prototype.onVRStateUpdate = function() {
 	} else {
 		this.VRControls.disconnect();
 		this.orbitControls.enabled = true;
+		// This is needed because THREE.StereoEffect does renderer.autoClear = false for some reason.
 		this.threeRenderer.autoClear = true;
 		this.stopRendering();
 		this.sequencer.requestStopUpdating();
@@ -109,7 +108,7 @@ Renderer3d.prototype.update = function() {
 	// TODO: perform physics updates here.
 	var radius = 4.0;
 	if (this.VRstate) {
-		this.VRControls.update();
+		//this.VRControls.update();
 
 		// // Rotate the camera around the kicker.
 		// this.camera.position.x = this.VRCameraTarget.x + radius * Math.cos(this.VRCameraTimeConstant * this.elapsedTime);         
@@ -118,6 +117,7 @@ Renderer3d.prototype.update = function() {
 		// this.elapsedTime += 16;
 	} else {
 		if (this.orbitControls.enabled && this.orbitControls.autorotate) {
+			console.log("calling orbitControls.update")
 			this.orbitControls.update();
 		}
 	}
@@ -153,9 +153,6 @@ Renderer3d.prototype.createCameras = function() {
 	
 	this.orbitControls.addEventListener('start', this.onOrbitStart.bind(this));
 	this.orbitControls.addEventListener('end', this.onOrbitEnd.bind(this));
-
-	this.VRControls = new THREE.DeviceOrientationControls(this.cameras.perspective);
-	this.VRControls.enabled = false;
 };
 
 Renderer3d.prototype.onOrbitStart = function(update) {
@@ -199,7 +196,7 @@ Renderer3d.prototype.pickCamera = function() {
 		this.camera = this.cameras.perspective;
 		this.orbitControls.target.copy(this.cameraTarget.position);
 		this.orbitControls.update();
-		this.orbitControls.enabled = true;
+		this.orbitControls.enabled = !this.VRstate;
 	}
 	Utils.makeAvailableForDebug('camera', this.camera);
 };

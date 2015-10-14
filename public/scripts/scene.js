@@ -4,7 +4,6 @@ EditorScene.createCameras = function(canvasEl, kickerObj) {
 	var parent = canvasEl.parentElement;
 	var persp = EditorScene.createPerspectiveCamera_(parent);
 	var ortho = EditorScene.createOrthoCamera_(parent, kickerObj);
-
 	return {
 		perspective: persp,
 		ortho: ortho
