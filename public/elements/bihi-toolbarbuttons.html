@@ -5,10 +5,23 @@
 		button:first-child {
 			margin-right: 5px;
 		}
+        .item {
+            vertical-align: middle;
+        }
+        #vr:hover {
+            cursor: pointer;
+        }
 	</style>
 	<template>
-		<button id="duplicate" on-click="doDuplicate" class="small">Duplicate</button>
-		<button on-click="doReset" class="small">Reset</button>	
+        <svg id="vr" role="button" on-click="onVRClick" class="hidden item" aria-label="VR mode" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="31" height="31" viewBox="0 0 48 48">
+            <path fill="#FFFFFF" d="M41.49,11L41.49,11H6.41C5.1,11,4,12.14,4,13.55v20.89C4,35.85,5.1,37,6.46,37h9.59
+            c1.03,0,1.91-0.65,2.28-1.58l2.78-6.97c0.47-1.18,1.59-2,2.9-2c1.3,0,2.42,0.82,2.89,2l2.78,6.97c0.37,0.93,1.25,1.58,2.23,1.58
+            h9.57C42.9,37,44,35.86,44,34.45V13.56C44,12.15,42.9,11,41.49,11z M15,28.25c-2.35,0-4.25-1.9-4.25-4.25s1.9-4.25,4.25-4.25
+            s4.25,1.9,4.25,4.25S17.35,28.25,15,28.25z M33,28.25c-2.35,0-4.25-1.9-4.25-4.25s1.9-4.25,4.25-4.25s4.25,1.9,4.25,4.25
+            S35.35,28.25,33,28.25z"/>
+        </svg>    
+		<button id="duplicate" on-click="doDuplicate" class="small item">Duplicate</button>
+		<button on-click="doReset" class="small item">Reset</button>	
 	</template>
 </dom-module>
 
@@ -17,6 +30,36 @@ Polymer({
     is: "bihi-toolbarbuttons",
     listeners: {
     	"update": "onUpdate"
+    },
+    ready: function() {
+      if (document.body.classList.contains("vr")) {
+        this.$.vr.classList.remove("hidden");
+      }
+      this.rendererEl = document.querySelector('#renderer');
+      this.rendererEl.addEventListener('mozfullscreenchange', onFullScreenChange.bind(this));
+      this.rendererEl.addEventListener('webkitfullscreenchange', onFullScreenChange.bind(this));
+      this.rendererEl.addEventListener('fullscreenchange', onFullScreenChange.bind(this));
+      function onFullScreenChange() {
+        var isFullScreen = (window.innerHeight == this.rendererEl.clientHeight
+          && window.innerWidth == this.rendererEl.clientWidth);
+        if (isFullScreen) {
+            this.fire("vr-start", {}, document.body, false);
+        } else {
+          this.fire("vr-stop", {}, document.body, false);
+        }
+      }
+
+    },
+    onVRClick: function(e) {
+      // Only do this here because we HAVE to.
+      // Everything else will take place somewhere else.
+      if (this.rendererEl.mozRequestFullScreen) {
+          this.rendererEl.mozRequestFullScreen();
+      } else if (this.rendererEl.webkitRequestFullscreen){
+          this.rendererEl.webkitRequestFullscreen();
+      }               
+
+      
     },
     onUpdate: function(e) {
     	this.$.duplicate.classList.toggle('hidden',

@@ -1,17 +1,26 @@
 After launching:
+- move the toolbar buttons into the first tab: modify and new instead of duplicate and reset
 - use a CDN
+- use memcache or APC to store versioning info and db requests
+- responsiveness, no zooming on mobile
+- iframe version: autostart, and add html code to share panel
+
+Nice to have:
 - list scripts in a json file
 - mess with console.time to get a sense for how slow things are to load on 3g
 - not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
-- responsiveness, no zooming on mobile
 - use chunking to respond super fast if no data is loaded.
 
 
 VR:
-- detect support before showing the button
+- need to clean up the vr start/stop
 - add an autostart parameter
 - figure out why VR breaks after exiting.
+- add a fullscreen only button
+- reenable auto-rotate
 - need HTTPS for fullscreen
+- http://mozvr.com/
+
 
 Next:
 immutable.js and read about flux and redux

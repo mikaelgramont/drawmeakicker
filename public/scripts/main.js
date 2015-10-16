@@ -92,6 +92,10 @@
 			editorEl.startVR();
 		});
 
+		document.body.addEventListener('vr-stop', function(e) {
+			editorEl.stopVR();
+		});
+
 		var alertEl = document.getElementById('alert');
 		document.body.addEventListener('alert-set-message',
 			function(e) {
