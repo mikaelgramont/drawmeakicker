@@ -4,6 +4,7 @@ After launching:
 - use memcache or APC to store versioning info and db requests
 - responsiveness, no zooming on mobile
 - iframe version: autostart, and add html code to share panel
+- use client hints to serve different images: https://developers.google.com/web/updates/2015/09/automating-resource-selection-with-client-hints
 
 Nice to have:
 - list scripts in a json file
@@ -28,7 +29,9 @@ http://benclinkinbeard.com/posts/up-and-running-with-es6-and-react-in-under-5-mi
 https://rackt.github.io/redux/docs/basics/Reducers.html
 https://github.com/rackt/redux
 
-
+Sublime
+jssrc
+color highlighter (ha_style: filled)
 
 
 
