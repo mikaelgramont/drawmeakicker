@@ -168,7 +168,12 @@
 			</div>
 			<footer>
 				<ul>
-					<li><a href="<?php echo TWITTER_LINK ?>">Twitter</a></li>
+					<li>
+						<a href="<?php echo ABOUT_LINK ?>">About</a>
+					</li>
+					<li>
+						<a href="<?php echo TWITTER_LINK ?>">Twitter</a>
+					</li>
 				</ul>
 			</footer>
 		</div>

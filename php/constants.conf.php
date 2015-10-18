@@ -9,4 +9,5 @@ define("SITE_TITLE_HTML", "&ldquo;Draw me a kicker!&rdquo;");
 define("VIDEO_ID", "rE5O35mUvBg");
 define("OG_DESCRIPTION", "Design your next kicker in 3D!");
 define("TWITTER_LINK", "");
+define("ABOUT_LINK", "");
 define("ANALYTICS_ID", "");
