@@ -9,17 +9,6 @@
 	require("share.php");
 	require("versioning.php");
 	
-	$files = array(
-		'components/threejs/build/three.js',
-		'components/webcomponentsjs/webcomponents.min.js',
-		'fonts/archer_medium_regular.typeface.js',
-		'imports.min.html',
-		'scripts/main.js',
-		'scripts/scripts.min.js',
-		'styles/style.min.css',
-	);
-	$versions = Versioning::getVersionList($files);
-
 	$kickerData = null;
 	$error = false;
 	$message = "";
@@ -30,6 +19,18 @@
 	$dev = isset($_GET['dev']) ? (bool)$_GET['dev'] : DEV;
 	$isMobile = MobileDetector::isMobile($_SERVER['HTTP_USER_AGENT']);
 	$vr = $isMobile || isset($_GET['vr']) ? (bool)$_GET['vr'] : false;
+
+	$files = array(
+		'components/threejs/build/three.js',
+		'components/webcomponentsjs/webcomponents.min.js',
+		'fonts/archer_medium_regular.typeface.js',
+		'imports.min.html',
+		'scripts/main.js',
+		'scripts/scripts.min.js',
+		'styles/style.min.css',
+	);
+	$versions = Versioning::getVersionList($files);
+	$fullPaths = Versioning::getFullPaths($files, $versions, $dev);
 
 	$units = 'm';
 	if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -80,13 +81,13 @@
 	<head>
 		<meta charset="utf-8" />
 		<title><?php echo $title?></title>
-		<link rel="stylesheet" href="<?php echo Versioning::getFullFilePath('styles/style.min.css', $versions, $dev) ?>">
+		<link rel="stylesheet" href="<?php echo $fullPaths['styles/style.min.css'] ?>">
 		<?php
 			if ($ogData) {
 				echo OpenGraph::renderProperties($ogData);
 			}
 		?>
-		<script src="<?php echo Versioning::getFullFilePath('components/webcomponentsjs/webcomponents.min.js', $versions, $dev) ?>"></script>
+		<script src="<?php echo $fullPaths['components/webcomponentsjs/webcomponents.min.js'] ?>"></script>
 	</head>
 
 	<body class="<?php echo $body_classes ?>">
@@ -189,22 +190,19 @@
         units: "<?php echo $units ?>",
         defaultTitle: "<?php echo SITE_TITLE ?>",
         defaultDescription: "<?php echo OG_DESCRIPTION ?>",
-        three: "<?php echo Versioning::getFullFilePath('components/threejs/build/three.js', $versions, $dev) ?>",
+        three: "<?php echo $fullPaths['components/threejs/build/three.js'] ?>",
         files: [
-          ['script', "<?php echo Versioning::getFullFilePath('fonts/archer_medium_regular.typeface.js', $versions, $dev) ?>"],
+          ['script', "<?php echo $fullPaths['fonts/archer_medium_regular.typeface.js'] ?>"],
 <?php if ($dev) { ?>
           ['link', 'scripts/scripts.html'],
 <?php } else { ?>
-          ['script', "<?php echo Versioning::getFullFilePath('scripts/scripts.min.js', $versions, $dev) ?>"],
+          ['script', "<?php echo $fullPaths['scripts/scripts.min.js'] ?>"],
 <?php } ?>
-          ['link', "<?php echo Versioning::getFullFilePath('imports.min.html', $versions, $dev) ?>"]
+          ['link', "<?php echo $fullPaths['imports.min.html'] ?>"]
         ]
       };
 		</script>
-		<!--
-		<?php echo json_encode($versions) ?>
-		-->
-		<script src="<?php echo Versioning::getFullFilePath('scripts/main.js', $versions, $dev) ?>"></script>
+		<script src="<?php echo $fullPaths['scripts/main.js'] ?>"></script>
 <?php if (ANALYTICS_ID) { ?>		
 		<script>
 		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

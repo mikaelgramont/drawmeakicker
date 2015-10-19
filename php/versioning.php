@@ -1,18 +1,23 @@
 <?php
 class Versioning {
-	public static function getFullFilePath($path, $versionedList, $dev) {
-		if ($dev) {
-		  return $path;
+	public static function getFullPaths($unversionedPaths, $versionedList, $dev) {
+		$versionedPaths = array();
+		foreach ($unversionedPaths as $unversionedPath) {
+			if (!isset($versionedList[$unversionedPath])) {
+				throw new Exception("Could not find version information for: ".$unversionedPath);
+			}
+			if ($dev) {
+			 	$versionedPaths[$unversionedPath] = $unversionedPath;
+			} else {
+				$versionedPaths[$unversionedPath] = $versionedList[$unversionedPath];	
+			}
 		}
-		if (!isset($versionedList[$path])) {
-			throw new Exception("Could not find version information for: ".$path);
-		}
-		return $versionedList[$path];
+		return $versionedPaths;
 	}
 
-	public static function getVersionList($files) {
+	public static function getVersionList($unversionedPaths) {
 		$versions = array();
-		foreach ($files as $unversionedPath) {
+		foreach ($unversionedPaths as $unversionedPath) {
 			$versions[$unversionedPath] = self::getVersionedFilePath($unversionedPath);
 		}
 		return $versions;
