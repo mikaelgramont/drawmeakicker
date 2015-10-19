@@ -43,6 +43,8 @@ gulp.task('scripts', function () {
             'public/scripts/kicker.js',
             'public/scripts/ColladaLoader.js', 
             'public/scripts/THREEx.GeometryUtils.js', 
+            'public/scripts/DeviceOrientationControls.js',
+            'public/scripts/StereoEffect.js',
             'public/scripts/representation3d.js',
             'public/scripts/scene.js',
             'public/scripts/orbitcontrols.js',
