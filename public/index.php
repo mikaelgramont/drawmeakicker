@@ -2,6 +2,10 @@
 <?php
 	set_include_path(__DIR__.'/../php');
 	require("constants.php");
+
+	require('Zend/Loader.php');
+	require('Zend/Cache.php');
+	require("cache.php");
 	require("dbsettings.php");
 	require("kickerdao.php");
 	require("opengraph.php");
@@ -20,6 +24,7 @@
 	$isMobile = MobileDetector::isMobile($_SERVER['HTTP_USER_AGENT']);
 	$vr = $isMobile || isset($_GET['vr']) ? (bool)$_GET['vr'] : false;
 
+	$cache = Cache::getCache(CACHE_METHOD);
 	$files = array(
 		'components/threejs/build/three.js',
 		'components/webcomponentsjs/webcomponents.min.js',
@@ -29,7 +34,7 @@
 		'scripts/scripts.min.js',
 		'styles/style.min.css',
 	);
-	$versions = Versioning::getVersionList($files);
+	$versions = Versioning::getVersionList($files, $cache);
 	$fullPaths = Versioning::getFullPaths($files, $versions, $dev);
 
 	$units = 'm';

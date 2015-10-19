@@ -15,10 +15,13 @@ class Versioning {
 		return $versionedPaths;
 	}
 
-	public static function getVersionList($unversionedPaths) {
-		$versions = array();
-		foreach ($unversionedPaths as $unversionedPath) {
-			$versions[$unversionedPath] = self::getVersionedFilePath($unversionedPath);
+	public static function getVersionList($unversionedPaths, $cache) {
+		if(!$versions = $cache->load('versions')) {
+			$versions = array();
+			foreach ($unversionedPaths as $unversionedPath) {
+				$versions[$unversionedPath] = self::getVersionedFilePath($unversionedPath);
+			}
+			$cache->save($versions, 'versions');
 		}
 		return $versions;
 	}
@@ -41,6 +44,7 @@ class Versioning {
 			return '';
 		}
 					
+		// Return only the first 6 characters of the commit hash, as displayed in GitHub.
     	return substr($matches[1], 0, 6);
     }	
 }

@@ -6,3 +6,4 @@ _tmp
 php/dbsettings.php
 php/constants.php
 node_modules/
+cache/z*

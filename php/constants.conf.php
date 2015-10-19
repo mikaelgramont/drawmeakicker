@@ -1,6 +1,8 @@
 <?php
 // Set to false to load bundled production files
 // true to load individual files.
+define('CACHE_METHOD', 'APC');
+define('CACHE_DIR', '../cache');
 define('DEV', false);
 define('DEFAULT_OG_IMAGE', 'images/default-kicker.png');
 define('UPLOAD_DIR', 'uploads/');
