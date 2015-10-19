@@ -1,7 +1,8 @@
 After launching:
 - move the toolbar buttons into the first tab: modify and new instead of duplicate and reset
+- move all references to images and fonts into index.php to allow for versioning
 - use a CDN
-- use memcache or APC to store versioning info and db requests
+- use memcache or APC to store db responses
 - responsiveness, no zooming on mobile
 - iframe version: autostart, and add html code to share panel
 - use client hints to serve different images: https://developers.google.com/web/updates/2015/09/automating-resource-selection-with-client-hints

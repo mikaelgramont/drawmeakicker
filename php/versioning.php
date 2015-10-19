@@ -27,6 +27,7 @@ class Versioning {
 	}
 
 	public static function getVersionedFilePath($path) {
+		// Insert the commit hash right before the extension.
 		$parts = explode('.', $path);
 		$extension = array_pop($parts);
 		$parts[] = self::getGitCommitHash($path);
@@ -44,7 +45,8 @@ class Versioning {
 			return '';
 		}
 					
-		// Return only the first 6 characters of the commit hash, as displayed in GitHub.
+		// Return only the first 6 characters of the commit hash,
+		// as displayed in GitHub.
     	return substr($matches[1], 0, 6);
     }	
 }
