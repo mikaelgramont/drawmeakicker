@@ -23,6 +23,7 @@
 	$dev = isset($_GET['dev']) ? (bool)$_GET['dev'] : DEV;
 	$isMobile = MobileDetector::isMobile($_SERVER['HTTP_USER_AGENT']);
 	$vr = $isMobile || isset($_GET['vr']) ? (bool)$_GET['vr'] : false;
+	$useCdn = isset($_GET['cdn']) ? (bool)$_GET['cdn'] : USE_CDN;
 
 	$cache = Cache::getCache(CACHE_METHOD);
 	$files = array(
@@ -34,7 +35,7 @@
 		'scripts/scripts.min.js',
 		'styles/style.min.css',
 	);
-	$filePrefix = USE_CDN ? CDN_PROTOCOL.'://'.CDN_URL.'/' : '/';
+	$filePrefix = $useCdn ? CDN_PROTOCOL.'://'.CDN_URL.'/' : '/';
 	if (BASE_URL) {
 		$filePrefix .= BASE_URL.'/';
 	}
