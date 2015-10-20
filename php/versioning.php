@@ -1,15 +1,15 @@
 <?php
 class Versioning {
-	public static function getFullPaths($unversionedPaths, $versionedList, $dev) {
+	public static function getFullPaths($unversionedPaths, $versionedList, $filePrefix, $dev) {
 		$versionedPaths = array();
 		foreach ($unversionedPaths as $unversionedPath) {
 			if (!isset($versionedList[$unversionedPath])) {
 				throw new Exception("Could not find version information for: ".$unversionedPath);
 			}
 			if ($dev) {
-			 	$versionedPaths[$unversionedPath] = $unversionedPath;
+			 	$versionedPaths[$unversionedPath] = $filePrefix . $unversionedPath;
 			} else {
-				$versionedPaths[$unversionedPath] = $versionedList[$unversionedPath];	
+				$versionedPaths[$unversionedPath] = $filePrefix . $versionedList[$unversionedPath];	
 			}
 		}
 		return $versionedPaths;

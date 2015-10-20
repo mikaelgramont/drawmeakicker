@@ -1,6 +1,10 @@
 <?php
 // Set to false to load bundled production files
 // true to load individual files.
+define('USE_CDN', false);
+define('CDN_PROTOCOL', 'http');
+define('CDN_URL', '');
+define('BASE_URL', '');
 define('CACHE_METHOD', 'APC');
 define('CACHE_DIR', '../cache');
 define('DEV', false);

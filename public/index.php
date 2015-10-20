@@ -34,8 +34,12 @@
 		'scripts/scripts.min.js',
 		'styles/style.min.css',
 	);
+	$filePrefix = USE_CDN ? CDN_PROTOCOL.'://'.CDN_URL.'/' : '/';
+	if (BASE_URL) {
+		$filePrefix .= BASE_URL.'/';
+	}
 	$versions = Versioning::getVersionList($files, $cache);
-	$fullPaths = Versioning::getFullPaths($files, $versions, $dev);
+	$fullPaths = Versioning::getFullPaths($files, $versions, $filePrefix, $dev);
 
 	$units = 'm';
 	if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
