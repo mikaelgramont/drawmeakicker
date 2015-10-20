@@ -34,6 +34,10 @@
 		'scripts/main.js',
 		'scripts/scripts.min.js',
 		'styles/style.min.css',
+		'models/board.dae',
+		'images/textures/wood1_256.jpg',
+		'images/textures/wood2_256.jpg',
+		'images/textures/wood3_256.jpg'
 	);
 	$filePrefix = $useCdn ? CDN_PROTOCOL.'://'.CDN_URL.'/' : '/';
 	if (BASE_URL) {
@@ -209,7 +213,13 @@
           ['script', "<?php echo $fullPaths['scripts/scripts.min.js'] ?>"],
 <?php } ?>
           ['link', "<?php echo $fullPaths['imports.min.html'] ?>"]
-        ]
+        ],
+        lazyLoadingFiles: {
+    		'board': "<?php echo $fullPaths['models/board.dae'] ?>",
+    		'wood1': "<?php echo $fullPaths['images/textures/wood1_256.jpg'] ?>",
+    		'wood2': "<?php echo $fullPaths['images/textures/wood2_256.jpg'] ?>",
+    		'wood3': "<?php echo $fullPaths['images/textures/wood3_256.jpg'] ?>"    		
+        }
       };
 		</script>
 		<script src="<?php echo $fullPaths['scripts/main.js'] ?>"></script>

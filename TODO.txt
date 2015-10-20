@@ -1,5 +1,4 @@
 After launching:
-- make sure images and JSON assets are loaded through CDN
 - use cache to store db responses
 
 - move the toolbar buttons into the first tab: modify and new instead of duplicate and reset

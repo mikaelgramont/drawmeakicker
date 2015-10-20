@@ -16,7 +16,7 @@ Board.prototype.createMeshes = function() {
 		// Model has not started loading yet.
 		var loader = new THREE.ColladaLoader();
 		loader.options.convertUpAxis = true;
-		loader.load('./models/board.dae', this.onBoardLoaded.bind(this));
+		loader.load(BIHI.lazyLoadingFiles.board, this.onBoardLoaded.bind(this));
 	}
 
 	var x = .5,
