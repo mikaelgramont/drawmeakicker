@@ -85,7 +85,7 @@
 	if ($vr) {
 		$body_classes[] = "vr";
 	}
-	if ($autoStart) {
+	if ($autoStart && $id) {
 		$body_classes[] = "loading-editor";
 	}
 	$body_classes = implode(" ", $body_classes);
