@@ -7,6 +7,7 @@ After launching:
 - remember units
 
 Nice to have:
+- add a clearcache gulp task
 - list scripts in a json file
 - mess with console.time to get a sense for how slow things are to load on 3g
 - not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen

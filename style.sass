@@ -174,12 +174,15 @@ h2,
 
 .loading-placeholder
 	background: $color-light-blue
-	display: flex
+	display: none
 	height: 700px
 	align-items: center
 	justify-content: center
 	margin: 20px 0
 	outline: $color-text 2px solid
+
+.loading-editor .loading-placeholder,
+	display: flex
 
 .expanded-editor .loading-placeholder
 	display: none
