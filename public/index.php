@@ -85,6 +85,9 @@
 	if ($vr) {
 		$body_classes[] = "vr";
 	}
+	if ($autoStart) {
+		$body_classes[] = "loading-editor";
+	}
 	$body_classes = implode(" ", $body_classes);
 ?>
 <html>
@@ -115,12 +118,12 @@
 						Ramp design the easy way.
 					</h2>
 					<div class="top-section-body">
-						<div class="top-section-content grid-element size-2">
+						<div class="intro-container top-section-content grid-element size-2">
 							<p>If you're thinking of building a kicker and you have some idea of what you want, but are not sure about the exact dimensions, we can help.</p>
 							<p>The nerds here have done the math for you, so you can focus on the fun part: deciding how big you want to go!</p>
 							<button id="start-button" class="action">Get Started</button>
 						</div>
-						<div class="top-section-content grid-element">
+						<div class="video-container top-section-content grid-element">
 							<div class="video-aspect-ratio-wrapper">
 								<?php if (VIDEO_ID) { ?>
 								<iframe src="https://www.youtube.com/embed/<?php echo VIDEO_ID; ?>" frameborder="0" allowfullscreen></iframe>
@@ -132,6 +135,11 @@
 			</div>
 
 			<div class="main" role="main">
+				<div class="loading-placeholder">
+					<svg class="load-animation rotating" version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+  						<path fill="#000" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(291.879 25 25)"></path>
+  					</svg>
+				</div>
 				<bihi-editor class="editor">
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 						<bihi-design-step caption="Design" step="0" display-step="1" active first>

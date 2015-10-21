@@ -14,7 +14,6 @@ $gutter-width: 20px
 $default-shadow-width: 3px
 $default-box-shadow: $default-shadow-width $default-shadow-width 1px rgba(0,0,0,.25)
 
-$main-vertical-offset: -50px
 $editor-height: 700px
 $bg-blur: 3px
 $content-max-width: 1280px
@@ -115,11 +114,20 @@ header .logo
 	padding-right: $gutter-width
 	box-sizing: border-box
 
+.intro-container
+	flex: 1 0 60%
+
+.video-container
+	flex: 1 0 40%
+	padding-right: 2px
+
 .video-aspect-ratio-wrapper
 	position: relative
 	width: 100%
 	height: 0
 	padding-bottom: 56.25%
+	margin: 2px 0
+	outline: 2px solid $color-text
 
 .video-aspect-ratio-wrapper iframe
 	position: absolute
@@ -162,16 +170,26 @@ h2,
 	padding: 0 50px
 
 .expanded-editor .main
-	margin-bottom: -$margin-default
 	flex: 1 0 $editor-height
+
+.loading-placeholder
+	background: $color-light-blue
+	display: flex
+	height: 700px
+	align-items: center
+	justify-content: center
+	margin: 20px 0
+	outline: $color-text 2px solid
+
+.expanded-editor .loading-placeholder
+	display: none
 
 .editor
 	height: 0
 	position: relative
-	top: $main-vertical-offset
 	overflow: hidden
 
-
+.loading-editor .loading-placeholder,
 .expanded-editor .editor
 	/* Can't use 100% because for some reason that translates to 100% of the viewport */
 	height: $editor-height
@@ -198,13 +216,11 @@ h2,
 
 .top-section-container
 	max-width: $content-max-width
-	flex: 1 0 300px
-	margin: 30px auto 100px
+	margin: 30px auto 10px
 
 .top-section
 	position: relative
 	box-sizing: border-box
-	min-height: 300px
 	margin: 0 50px
 	border: 8px solid #fff
 	padding: 30px
@@ -221,14 +237,13 @@ h2,
 
 .top-section-body
 	display: flex
-	min-height: 300px
 	overflow: hidden
 
 .top-section-content
 	flex: 1 0 50%
 
 footer	
-	flex: 0 0 50px
+	margin-top: 20px
 	background: $color-dark-brown
 	ul
 		margin: 0
@@ -241,6 +256,7 @@ footer
 			padding: $margin-default
 	a
 		color: $color-text
+		text-decoration: none
 
 .representation-container
 	padding: 0 10px
@@ -249,4 +265,49 @@ footer
 	display: none
 
 .editor[loaded] .share-notes
-	display: block	
+	display: block
+
+.load-animation
+	display: block
+
+svg path
+	fill: $color-text	
+
+@-webkit-keyframes rotating /* Safari and Chrome */
+	from
+		-ms-transform: rotate(0deg)
+		-moz-transform: rotate(0deg)
+		-webkit-transform: rotate(0deg)
+		-o-transform: rotate(0deg)
+		transform: rotate(0deg)
+
+	to
+		-ms-transform: rotate(360deg)
+		-moz-transform: rotate(360deg)
+		-webkit-transform: rotate(360deg)
+		-o-transform: rotate(360deg)
+		transform: rotate(360deg)
+	
+
+@keyframes rotating 
+	from 
+		-ms-transform: rotate(0deg)
+		-moz-transform: rotate(0deg)
+		-webkit-transform: rotate(0deg)
+		-o-transform: rotate(0deg)
+		transform: rotate(0deg)
+
+	to 
+		-ms-transform: rotate(360deg)
+		-moz-transform: rotate(360deg)
+		-webkit-transform: rotate(360deg)
+		-o-transform: rotate(360deg)
+		transform: rotate(360deg)
+
+.rotating 
+	-webkit-animation: rotating .8s linear infinite
+	-moz-animation: rotating .8s linear infinite
+	-ms-animation: rotating .8s linear infinite
+	-o-animation: rotating .8s linear infinite
+	animation: rotating .8s linear infinite
+	

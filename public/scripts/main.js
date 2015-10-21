@@ -1,4 +1,9 @@
 (function(initValues, autoStart, units, three, files) {
+	if (document.body.classList.contains('loading-editor')) {
+		// Scroll the loading placeholder into view asap.
+		document.querySelector('.loading-placeholder').scrollIntoView();
+	}
+
 	var initialized = false;
 		startEl = document.querySelector('#start-button'),
 		editorEl = document.querySelector('.editor'),
@@ -105,6 +110,7 @@
 
 	function showEditor() {
 		startEl.disabled = true;
+		document.body.classList.remove('loading-editor');
 		document.body.classList.add('expanded-editor');
 		document.querySelector('.editor').scrollIntoView();
 		editorEl.reset();
