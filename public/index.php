@@ -5,6 +5,7 @@
 
 	require('Zend/Loader.php');
 	require('Zend/Cache.php');
+	require('Zend/Exception.php');
 	require("cache.php");
 	require("dbsettings.php");
 	require("kickerdao.php");
@@ -57,18 +58,13 @@
 
 	if ($id) {
 		try {
-			$dbh = KickerDao::getDb();
-			$kickerData = KickerDao::loadById($id, $dbh);
+			$kickerData = KickerDao::loadById($id, $cache);
 		} catch(PDOException $e) {
+			if (get_class($e) == 'PDOException') {
+				$message = "We are having database issues. Sorry for the inconvenience.";
+			}
 			$error = true;
-			$message = "We are having database issues. Sorry for the inconvenience.";
-		} catch(KickerException $e) {
-			$error = true;
-			$message = $e->getMessage();
-		} catch(Exception $e) {
-			$error = true;
-			$message = "Unknown exception";
-			// TODO: log errors to a file.
+			error_log("Exception" . " - " . $e->getMessage());
 		}
 	}
 

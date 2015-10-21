@@ -1,11 +1,10 @@
 After launching:
-- use cache to store db responses
-
 - move the toolbar buttons into the first tab: modify and new instead of duplicate and reset
 - move all references to images and fonts into index.php to allow for versioning
 - responsiveness, no zooming on mobile
 - iframe version: autostart, and add html code to share panel
 - use client hints to serve different images: https://developers.google.com/web/updates/2015/09/automating-resource-selection-with-client-hints
+- remember units
 
 Nice to have:
 - list scripts in a json file
@@ -22,6 +21,7 @@ VR:
 - reenable auto-rotate
 - need HTTPS for fullscreen
 - http://mozvr.com/
+- try 2nd way of rendering? http://www.slideshare.net/auradeluxe/webgl-the-next-generation
 
 
 Next:

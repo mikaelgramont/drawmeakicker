@@ -42,17 +42,28 @@ class KickerDao {
 		return $dbh;
 	}
 
-	public static function loadById($id, $dbh) {
-		$stmt = $dbh->prepare("SELECT * FROM " . self::$_table . " WHERE id = :id");
-		$stmt->bindParam(':id', $id);
-		$stmt->execute();
-		$row = $stmt->fetch();
+	private static function _getCacheEntryId($id) {
+		return 'kickerdata'.$id;
+	}
 
-		if (!$row) {
-			throw new NotFoundKickerException("Kicker ".$id." not found.");
+	public static function loadById($id, $cache) {
+		$cacheEntryId = self::_getCacheEntryId($id);
+
+		if(!$kickerData = $cache->load($cacheEntryId)) {
+			$dbh = self::getDb();
+			$stmt = $dbh->prepare("SELECT * FROM " . self::$_table . " WHERE id = :id");
+			$stmt->bindParam(':id', $id);
+			$stmt->execute();
+			$kickerData = $stmt->fetch();
+
+			if (!$kickerData) {
+				throw new NotFoundKickerException("Kicker ".$id." not found.");
+			}
+
+			$cache->save($kickerData, $cacheEntryId);
 		}
 
-		return $row;
+		return $kickerData;
 	}
 
 	public static function getDefaultData() {
@@ -140,7 +151,5 @@ class KickerDao {
 
 }
 
-class KickerException extends Exception {}
-
-class NotFoundKickerException extends KickerException {}
+class NotFoundKickerException extends Exception {}
 
