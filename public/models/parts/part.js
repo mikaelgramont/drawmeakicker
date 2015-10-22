@@ -40,6 +40,7 @@ Part.prototype.createGhostFor = function(obj) {
 };
 
 Part.prototype.getTexture = function(url) {
+	THREE.ImageUtils.crossOrigin = 'anonymous';
 	return THREE.ImageUtils.loadTexture(url, undefined, this.requestRedraw_.bind(this));
 };
 
