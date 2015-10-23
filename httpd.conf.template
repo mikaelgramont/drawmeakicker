@@ -1,0 +1,34 @@
+<VirtualHost *:80>
+        ServerAdmin someone@gmail.com
+        ServerName drawmeakicker.com
+        ServerAlias www.drawmeakicker.com
+        DocumentRoot /var/www/drawmeakicker.com/public
+        HostNameLookups Off
+        <Directory /var/www/drawmeakicker.com/public>
+                # CORS.
+                Header add Access-Control-Allow-Origin *
+                Header set Vary Origin
+
+                # No listing
+                Options -Indexes FollowSymLinks -MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+
+                RewriteEngine on
+                # Canonical domain does not use www.
+                RewriteCond %{HTTP_HOST} ^www.drawmeakicker.com$
+                RewriteRule ^(.*)$ http://drawmeakicker.com [R=301,L]
+
+                # Strip versioning info.
+                RewriteRule ^(.*\.)[a-f0-9]{1,32}+\.([a-z]{2,4})$ $1$2 [L]
+                FileETag none
+                Header unset Last-Modified
+                ExpiresDefault "access plus 1 month"
+
+        </Directory>
+
+        ErrorLog /var/www/drawmeakicker.com/logs/error.log
+        LogLevel warn
+        CustomLog /var/www/drawmeakicker.com/logs/access.log combined
+</VirtualHost>

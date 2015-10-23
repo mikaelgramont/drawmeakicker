@@ -32,6 +32,7 @@
 		'components/webcomponentsjs/webcomponents.min.js',
 		'fonts/archer_medium_regular.typeface.js',
 		'imports.min.html',
+		'imports.html',
 		'scripts/main.js',
 		'scripts/scripts.min.js',
 		'styles/style.min.css',
@@ -143,14 +144,14 @@
 				<bihi-editor class="editor">
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 						<bihi-design-step caption="Design" step="0" display-step="1" active first>
+							<bihi-design-fieldset legend="General">
+								<bihi-controlbuttons id="buttons"></bihi-controlbuttons>							
+							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Parameters">
 								<bihi-params id="params" units="<?php echo $units; ?>" <?php if ($id) echo "disabled"?>></bihi-params>
 							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Results">
 								<bihi-results id="results" units="<?php echo $units; ?>"></bihi-results>
-							</bihi-design-fieldset>
-							<bihi-design-fieldset legend="Representation">
-								<bihi-representation></bihi-representation>
 							</bihi-design-fieldset>
 						</bihi-design-step>
 
@@ -183,8 +184,8 @@
 					</bihi-accordion>
 					<div class="renderer-container">
 						<div class="toolbar blueprint">
-							<bihi-units units="<?php echo $units; ?>"></bihi-units>
-							<bihi-toolbarbuttons id="buttons"></bihi-toolbarbuttons>
+							<bihi-units class="toolbar-item" units="<?php echo $units; ?>"></bihi-units>
+							<bihi-representation class="toolbar-item"></bihi-representation>
 						</div>
 						<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>
 					</div>
@@ -216,7 +217,7 @@
 <?php } else { ?>
           ['script', "<?php echo $fullPaths['scripts/scripts.min.js'] ?>"],
 <?php } ?>
-          ['link', "<?php echo $fullPaths['imports.min.html'] ?>"]
+          ['link', "<?php echo $fullPaths['imports.html'] ?>"]
         ],
         lazyLoadingFiles: {
     		'board': "<?php echo $fullPaths['models/board.dae'] ?>",

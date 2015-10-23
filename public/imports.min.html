@@ -6556,6 +6556,284 @@ Note, all features of `x-style` are available when defining styles as part of Po
     }
   });
 
+</script><dom-module id="bihi-controlbuttons" assetpath="elements/">
+	<style>
+    :host {
+      margin: 10px 0;
+      display: block;
+    }
+		button:first-child {
+			margin-right: 5px;
+		}
+    .item {
+        vertical-align: middle;
+        display: inline-block;
+        margin: 0 2px;
+    }
+	</style>
+	<template>
+		<button id="duplicate" on-click="doDuplicate" class="small item">Modify</button>
+		<button on-click="doReset" class="small item">New</button>	
+	</template>
+</dom-module>
+
+<script>
+Polymer({
+    is: "bihi-controlbuttons",
+    listeners: {
+    	"update": "onUpdate"
+    },
+    onUpdate: function(e) {
+    	this.$.duplicate.classList.toggle('hidden',
+    		[EditorState.READ_ONLY, EditorState.SAVED].indexOf(e.detail.state) === -1);
+    },
+    doReset: function() {
+    	this.fire("requested-state-change", {state: EditorState.NEW}, document.body, false);
+        setTimeout(function() {
+            // Once we've reset everything, move to the ready state.
+            this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);
+        }.bind(this), 0);
+    },
+    doDuplicate: function() {
+    	this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);
+    }
+});	
+</script>
+<dom-module id="bihi-design-fieldset" assetpath="elements/">
+  <style>
+    :host {
+      display: block;
+      margin: 10px 0;
+    };
+    fieldset {
+      padding: 0 15px;
+    }
+  </style>
+
+  <template>
+    <fieldset class="dashed-borders">
+      <legend class="size-3">{{legend}}</legend>
+      <content></content>
+    </fieldset>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-design-fieldset",
+    properties: {
+      legend: {type: "String"}
+    }
+  });
+</script>
+<dom-module id="bihi-design-parameter" assetpath="elements/">
+  <style>
+      :host {
+        display: block;
+        margin: 10px 0;
+      }
+      label,
+      .caption {
+        display: block;
+      }
+      input {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+      }
+      input[disabled] {
+        display: none;
+      }
+  </style>
+
+  <template>
+    <label>
+      <span class="caption size-2">
+        <span>{{caption}}</span>:
+        <span>{{displayValue}}</span>
+      </span>
+      <input id="slider" type="range" min="{{min}}" max="{{max}}" step="{{step}}" value="{{value}}" on-change="onInputChange">
+    </label>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-design-parameter",
+    properties: {
+      caption: {type: String},
+      units: {type: String, observer: "updateDisplay"},
+      disabled: {type: Boolean, reflectToAttribute: true, observer: "onDisableChange"},
+      displayValue: {type: String},
+      max: {type: Number},
+      min: {type: Number},
+      step: {type: Number},
+      value: {type: Number, reflectToAttribute: true, observer: "updateDisplay"}
+    },
+    ready: function() {
+      this.updateDisplay();
+    },
+    updateDisplay: function() {
+      if (this.units == 'ft') {
+        this.displayValue = Utils.metersToDumb(this.value);      
+      } else {
+        this.displayValue = this.value + this.units;
+      }
+    },
+    onDisableChange: function(newValue) {
+      this.$.slider.disabled = newValue;
+    },
+    onInputChange: function(e) {
+      // Update the actual property.
+      this.value = e.target.value;
+      this.updateDisplay();
+      this.fire("parameter-change", this.value);
+    }
+  });
+</script><dom-module id="bihi-design-result" assetpath="elements/">
+  <style>
+      :host {
+        display: block;
+        margin: 10px 0;
+      }
+      .caption {
+        display: block;
+      }
+  </style>
+
+  <template>
+    <span class="caption size-2">
+      <span>{{caption}}</span>:
+      <span>{{displayValue}}</span>
+    </span>
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-design-result",
+    ready: function() {
+      this.updateDisplay();
+    },
+    updateDisplay: function() {
+      if (this.units == 'ft') {
+        this.displayValue = Utils.metersToDumb(this.value);      
+      } else {
+        this.displayValue = this.value + this.units;
+      }
+    },
+    properties: {
+      caption: {type: String},
+      displayValue: {type: String},
+      units: {type: String, observer: "updateDisplay"},
+      value: {type: Number, observer: "updateDisplay"}
+    }    
+  });
+</script>
+<dom-module id="bihi-design-step" assetpath="elements/">
+  <style>
+    :host {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #d7d7d7;
+    }
+    :host[active] {
+      flex-grow: 1;
+    }
+    :host[active] .body {
+      display: flex;
+    }
+    :host[last] #next,
+    :host[first] #prev {
+      visibility: hidden;
+    };
+    .title {
+      display: block;
+      box-sizing: border-box;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      padding: 5px 15px;
+      margin: 0;
+    }
+    .title:hover {
+      cursor: pointer;
+    }
+    .body {
+      padding: 0 15px;
+      display: none;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .body-content {
+      flex-grow: 1;
+    }
+    .button-section {
+      display: flex;
+      margin: 15px 0;
+      justify-content: space-between;
+    }
+  </style>
+
+  <template>
+    <div role="tab" class="title inverted size-3" on-click="onTitleClick">
+      <span>{{displayStep}}</span> - <span>{{caption}}</span>
+    </div>
+    <div role="tabpanel" class="body">
+      <div class="body-content">
+        <content></content>
+      </div>
+      <div class="button-section">
+          <button id="prev" class="deemphasized" on-click="onBackClick">Back</button>
+          <input type="submit" id="next" on-click="onNextClick" value="Next">
+      </div>
+      </div>
+    
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: "bihi-design-step",
+    listeners: {
+      "step-select": "onSelect",
+      "step-unselect": "onUnselect"
+    },
+    onBackClick: function() {
+      if (this.first) {
+        return;
+      }        
+      this.fire('step-back-click', {step: this.step});
+    },
+    onNextClick: function() {
+      if (this.last) {
+        return;
+      }        
+      this.fire('step-next-click', {step: this.step});
+    },
+    onSelect: function() {
+      this.active = true;
+    },
+    onTitleClick: function() {
+      // Dispatch an event to the parent to tell it this step
+      // should get focus.
+      this.fire('step-title-click', {step: this.step});
+    },
+    onUnselect: function() {
+      this.active = false;
+    },
+    properties: {
+      active: {type: Boolean, reflectToAttribute: true},
+      first: {type: Boolean},
+      caption: {type: String},
+      last: {type: Boolean},
+      step: {type: Number},
+      displayStep: {type: Number}
+    }
+  });
 </script><dom-module id="bihi-editor" assetpath="elements/">
   <style>
     :host {
@@ -6709,242 +6987,7 @@ Note, all features of `x-style` are available when defining styles as part of Po
     }
   });
 </script>
-<dom-module id="bihi-design-fieldset" assetpath="elements/">
-  <style>
-    :host {
-      display: block;
-      margin: 10px 0;
-    };
-    fieldset {
-      padding: 0 15px;
-    }
-  </style>
-
-  <template>
-    <fieldset class="dashed-borders">
-      <legend class="size-3">{{legend}}</legend>
-      <content></content>
-    </fieldset>
-  </template>
-</dom-module>
-
-<script>
-  Polymer({
-    is: "bihi-design-fieldset",
-    properties: {
-      legend: {type: "String"}
-    }
-  });
-</script>
-<dom-module id="bihi-design-parameter" assetpath="elements/">
-  <style>
-      :host {
-        display: block;
-        margin: 10px 0;
-      }
-      label,
-      .caption {
-        display: block;
-      }
-      input {
-        display: block;
-        width: 100%;
-        margin: 5px 0;
-      }
-      input[disabled] {
-        display: none;
-      }
-  </style>
-
-  <template>
-    <label>
-      <span class="caption size-2">
-        <span>{{caption}}</span>:
-        <span>{{displayValue}}</span>
-      </span>
-      <input id="slider" type="range" min="{{min}}" max="{{max}}" step="{{step}}" value="{{value}}" on-change="onInputChange">
-    </label>
-  </template>
-
-</dom-module>
-
-<script>
-  Polymer({
-    is: "bihi-design-parameter",
-    properties: {
-      caption: {type: String},
-      units: {type: String, observer: "updateDisplay"},
-      disabled: {type: Boolean, reflectToAttribute: true, observer: "onDisableChange"},
-      displayValue: {type: String},
-      max: {type: Number},
-      min: {type: Number},
-      step: {type: Number},
-      value: {type: Number, reflectToAttribute: true, observer: "updateDisplay"}
-    },
-    ready: function() {
-      this.updateDisplay();
-    },
-    updateDisplay: function() {
-      if (this.units == 'ft') {
-        this.displayValue = Utils.metersToDumb(this.value);      
-      } else {
-        this.displayValue = this.value + this.units;
-      }
-    },
-    onDisableChange: function(newValue) {
-      this.$.slider.disabled = newValue;
-    },
-    onInputChange: function(e) {
-      // Update the actual property.
-      this.value = e.target.value;
-      this.updateDisplay();
-      this.fire("parameter-change", this.value);
-    }
-  });
-</script><dom-module id="bihi-design-result" assetpath="elements/">
-  <style>
-      :host {
-        display: block;
-        margin: 5px 0;
-      }
-      .caption {
-        display: block;
-      }
-  </style>
-
-  <template>
-    <span class="caption size-2">
-      <span>{{caption}}</span>:
-      <span>{{displayValue}}</span>
-    </span>
-  </template>
-
-</dom-module>
-
-<script>
-  Polymer({
-    is: "bihi-design-result",
-    ready: function() {
-      this.updateDisplay();
-    },
-    updateDisplay: function() {
-      if (this.units == 'ft') {
-        this.displayValue = Utils.metersToDumb(this.value);      
-      } else {
-        this.displayValue = this.value + this.units;
-      }
-    },
-    properties: {
-      caption: {type: String},
-      displayValue: {type: String},
-      units: {type: String, observer: "updateDisplay"},
-      value: {type: Number, observer: "updateDisplay"}
-    }    
-  });
-</script>
-<dom-module id="bihi-design-step" assetpath="elements/">
-  <style>
-    :host {
-      display: flex;
-      flex-direction: column;
-      border-bottom: 1px solid #d7d7d7;
-    }
-    :host[active] {
-      flex-grow: 1;
-    }
-    :host[active] .body {
-      display: flex;
-    }
-    :host[last] #next,
-    :host[first] #prev {
-      visibility: hidden;
-    };
-    .title {
-      display: block;
-      box-sizing: border-box;
-      width: 100%;
-      text-align: left;
-      border: 0;
-      padding: 5px 15px;
-      margin: 0;
-    }
-    .title:hover {
-      cursor: pointer;
-    }
-    .body {
-      padding: 0 15px;
-      display: none;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-    .body-content {
-      flex-grow: 1;
-    }
-    .button-section {
-      display: flex;
-      margin: 15px 0;
-      justify-content: space-between;
-    }
-  </style>
-
-  <template>
-    <div role="tab" class="title inverted size-3" on-click="onTitleClick">
-      <span>{{displayStep}}</span> - <span>{{caption}}</span>
-    </div>
-    <div role="tabpanel" class="body">
-      <div class="body-content">
-        <content></content>
-      </div>
-      <div class="button-section">
-          <button id="prev" class="deemphasized" on-click="onBackClick">Back</button>
-          <input type="submit" id="next" on-click="onNextClick" value="Next">
-      </div>
-      </div>
-    
-  </template>
-
-</dom-module>
-
-<script>
-  Polymer({
-    is: "bihi-design-step",
-    listeners: {
-      "step-select": "onSelect",
-      "step-unselect": "onUnselect"
-    },
-    onBackClick: function() {
-      if (this.first) {
-        return;
-      }        
-      this.fire('step-back-click', {step: this.step});
-    },
-    onNextClick: function() {
-      if (this.last) {
-        return;
-      }        
-      this.fire('step-next-click', {step: this.step});
-    },
-    onSelect: function() {
-      this.active = true;
-    },
-    onTitleClick: function() {
-      // Dispatch an event to the parent to tell it this step
-      // should get focus.
-      this.fire('step-title-click', {step: this.step});
-    },
-    onUnselect: function() {
-      this.active = false;
-    },
-    properties: {
-      active: {type: Boolean, reflectToAttribute: true},
-      first: {type: Boolean},
-      caption: {type: String},
-      last: {type: Boolean},
-      step: {type: Number},
-      displayStep: {type: Number}
-    }
-  });
-</script><dom-module id="bihi-export" assetpath="elements/">
+<dom-module id="bihi-export" assetpath="elements/">
   <style>
     label {
       display: block;
@@ -7068,13 +7111,20 @@ Note, all features of `x-style` are available when defining styles as part of Po
 
 </script><dom-module id="bihi-representation" assetpath="elements/">
   <style>
-    .container {
-      padding: 10px 0;
+    li {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    #vr {
+      margin-left: 10px;
+    }
+    #vr-button:hover {
+        cursor: pointer;
     }
   </style>
 
   <template>
-    <ul class="container size-2">
+    <ul class="container">
       <li>
         <label>
           <input id="is2dRradio" type="radio" on-click="onClick" name="representation" value="2d" checked="{{is2d}}">
@@ -7090,6 +7140,15 @@ Note, all features of `x-style` are available when defining styles as part of Po
           <input type="checkbox" id="texturedEl" on-click="onClick" checked="{{textured}}" disabled="{{texturedDisabled}}"> Textured
         </label>
       </li>
+      <li id="vr" class="hidden">
+        <svg id="vr-button" role="button" on-click="onVRClick" title="View in VR mode" aria-label="VR mode" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="31" height="31" viewBox="0 0 48 48">
+          <path fill="#FFFFFF" d="M41.49,11L41.49,11H6.41C5.1,11,4,12.14,4,13.55v20.89C4,35.85,5.1,37,6.46,37h9.59
+          c1.03,0,1.91-0.65,2.28-1.58l2.78-6.97c0.47-1.18,1.59-2,2.9-2c1.3,0,2.42,0.82,2.89,2l2.78,6.97c0.37,0.93,1.25,1.58,2.23,1.58
+          h9.57C42.9,37,44,35.86,44,34.45V13.56C44,12.15,42.9,11,41.49,11z M15,28.25c-2.35,0-4.25-1.9-4.25-4.25s1.9-4.25,4.25-4.25
+          s4.25,1.9,4.25,4.25S17.35,28.25,15,28.25z M33,28.25c-2.35,0-4.25-1.9-4.25-4.25s1.9-4.25,4.25-4.25s4.25,1.9,4.25,4.25
+          S35.35,28.25,33,28.25z"></path>
+        </svg>        
+      </li>
     </ul>
   </template>
 
@@ -7100,6 +7159,22 @@ Note, all features of `x-style` are available when defining styles as part of Po
     is: "bihi-representation",
     ready: function() {
       this.updateTextureCheckbox(this.repType);
+      if (document.body.classList.contains("vr")) {
+        this.$.vr.classList.remove("hidden");
+      }
+      this.rendererEl = document.querySelector('#renderer');
+      this.rendererEl.addEventListener('mozfullscreenchange', onFullScreenChange.bind(this));
+      this.rendererEl.addEventListener('webkitfullscreenchange', onFullScreenChange.bind(this));
+      this.rendererEl.addEventListener('fullscreenchange', onFullScreenChange.bind(this));
+      function onFullScreenChange() {
+        var isFullScreen = (window.innerHeight == this.rendererEl.clientHeight
+          && window.innerWidth == this.rendererEl.clientWidth);
+        if (isFullScreen) {
+            this.fire("vr-start", {}, document.body, false);
+        } else {
+          this.fire("vr-stop", {}, document.body, false);
+        }
+      }      
     },
     onClick: function(e) {
       var checkedTypeEl = Polymer.dom(this.root).querySelector('input[type=radio]:checked');
@@ -7112,6 +7187,15 @@ Note, all features of `x-style` are available when defining styles as part of Po
         'textured': this.textured
       });
     },
+    onVRClick: function(e) {
+      // Only do this here because we HAVE to.
+      // Everything else will take place somewhere else.
+      if (this.rendererEl.mozRequestFullScreen) {
+          this.rendererEl.mozRequestFullScreen();
+      } else if (this.rendererEl.webkitRequestFullscreen){
+          this.rendererEl.webkitRequestFullscreen();
+      }
+    },    
     setRadioChecked: function() {
       this.is2d = this.repType == '2d';
       this.is3d = this.repType == '3d';
@@ -7539,89 +7623,8 @@ Note, all features of `x-style` are available when defining styles as part of Po
     }    
   });
 
-</script><dom-module id="bihi-toolbarbuttons" assetpath="elements/">
+</script><dom-module id="bihi-units" assetpath="elements/">
 	<style>
-		button:first-child {
-			margin-right: 5px;
-		}
-        .item {
-            vertical-align: middle;
-        }
-        #vr:hover {
-            cursor: pointer;
-        }
-	</style>
-	<template>
-        <svg id="vr" role="button" on-click="onVRClick" class="hidden item" aria-label="VR mode" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="31" height="31" viewBox="0 0 48 48">
-            <path fill="#FFFFFF" d="M41.49,11L41.49,11H6.41C5.1,11,4,12.14,4,13.55v20.89C4,35.85,5.1,37,6.46,37h9.59
-            c1.03,0,1.91-0.65,2.28-1.58l2.78-6.97c0.47-1.18,1.59-2,2.9-2c1.3,0,2.42,0.82,2.89,2l2.78,6.97c0.37,0.93,1.25,1.58,2.23,1.58
-            h9.57C42.9,37,44,35.86,44,34.45V13.56C44,12.15,42.9,11,41.49,11z M15,28.25c-2.35,0-4.25-1.9-4.25-4.25s1.9-4.25,4.25-4.25
-            s4.25,1.9,4.25,4.25S17.35,28.25,15,28.25z M33,28.25c-2.35,0-4.25-1.9-4.25-4.25s1.9-4.25,4.25-4.25s4.25,1.9,4.25,4.25
-            S35.35,28.25,33,28.25z"></path>
-        </svg>    
-		<button id="duplicate" on-click="doDuplicate" class="small item">Duplicate</button>
-		<button on-click="doReset" class="small item">Reset</button>	
-	</template>
-</dom-module>
-
-<script>
-Polymer({
-    is: "bihi-toolbarbuttons",
-    listeners: {
-    	"update": "onUpdate"
-    },
-    ready: function() {
-      if (document.body.classList.contains("vr")) {
-        this.$.vr.classList.remove("hidden");
-      }
-      this.rendererEl = document.querySelector('#renderer');
-      this.rendererEl.addEventListener('mozfullscreenchange', onFullScreenChange.bind(this));
-      this.rendererEl.addEventListener('webkitfullscreenchange', onFullScreenChange.bind(this));
-      this.rendererEl.addEventListener('fullscreenchange', onFullScreenChange.bind(this));
-      function onFullScreenChange() {
-        var isFullScreen = (window.innerHeight == this.rendererEl.clientHeight
-          && window.innerWidth == this.rendererEl.clientWidth);
-        if (isFullScreen) {
-            this.fire("vr-start", {}, document.body, false);
-        } else {
-          this.fire("vr-stop", {}, document.body, false);
-        }
-      }
-
-    },
-    onVRClick: function(e) {
-      // Only do this here because we HAVE to.
-      // Everything else will take place somewhere else.
-      if (this.rendererEl.mozRequestFullScreen) {
-          this.rendererEl.mozRequestFullScreen();
-      } else if (this.rendererEl.webkitRequestFullscreen){
-          this.rendererEl.webkitRequestFullscreen();
-      }               
-
-      
-    },
-    onUpdate: function(e) {
-    	this.$.duplicate.classList.toggle('hidden',
-    		[EditorState.READ_ONLY, EditorState.SAVED].indexOf(e.detail.state) === -1);
-    },
-    doReset: function() {
-    	this.fire("requested-state-change", {state: EditorState.NEW}, document.body, false);
-        setTimeout(function() {
-            // Once we've reset everything, move to the ready state.
-            this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);
-        }.bind(this), 0);
-    },
-    doDuplicate: function() {
-    	this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);
-    }
-});	
-</script>
-<dom-module id="bihi-units" assetpath="elements/">
-	<style>
-	:host {
-		/* Same height as small buttons. */
-		line-height: 31px;
-	}
 	</style>
 	<template>
 		Units:
@@ -7663,26 +7666,4 @@ Polymer({
     	);
     }
 });	
-</script><dom-module id="bihi-upload-button" assetpath="elements/">
-  <style>
-    button {
-      margin: 10px;
-    }
-  </style>
-
-  <template>
-    <button id="upload" on-click="onClick">Upload</button>
-  </template>
-
-</dom-module>
-
-<script>
-  Polymer({
-    is: "bihi-upload-button",
-    onClick: function(e) {
-      var event = new CustomEvent('renderer-event', {detail:{type: 'upload'}});
-      document.body.dispatchEvent(event);      
-    },
-  });
-
 </script></div></body></html>

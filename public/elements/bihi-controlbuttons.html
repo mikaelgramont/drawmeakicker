@@ -1,0 +1,45 @@
+<link rel="import" href="../components/polymer/polymer.html">
+
+<dom-module id="bihi-controlbuttons">
+	<style>
+    :host {
+      margin: 10px 0;
+      display: block;
+    }
+		button:first-child {
+			margin-right: 5px;
+		}
+    .item {
+        vertical-align: middle;
+        display: inline-block;
+        margin: 0 2px;
+    }
+	</style>
+	<template>
+		<button id="duplicate" on-click="doDuplicate" class="small item">Modify</button>
+		<button on-click="doReset" class="small item">New</button>	
+	</template>
+</dom-module>
+
+<script>
+Polymer({
+    is: "bihi-controlbuttons",
+    listeners: {
+    	"update": "onUpdate"
+    },
+    onUpdate: function(e) {
+    	this.$.duplicate.classList.toggle('hidden',
+    		[EditorState.READ_ONLY, EditorState.SAVED].indexOf(e.detail.state) === -1);
+    },
+    doReset: function() {
+    	this.fire("requested-state-change", {state: EditorState.NEW}, document.body, false);
+        setTimeout(function() {
+            // Once we've reset everything, move to the ready state.
+            this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);
+        }.bind(this), 0);
+    },
+    doDuplicate: function() {
+    	this.fire("requested-state-change", {state: EditorState.READY}, document.body, false);
+    }
+});	
+</script>

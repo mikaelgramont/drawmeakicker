@@ -1,6 +1,5 @@
 After launching:
 - move the toolbar buttons into the first tab: modify and new instead of duplicate and reset
-- move all references to images and fonts into index.php to allow for versioning
 - responsiveness, no zooming on mobile
 - iframe version: autostart, and add html code to share panel
 - use client hints to serve different images: https://developers.google.com/web/updates/2015/09/automating-resource-selection-with-client-hints
@@ -13,7 +12,6 @@ Nice to have:
 - not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
 - use chunking to respond super fast if no data is loaded.
 
-
 VR:
 - need to clean up the vr start/stop
 - add an autostart parameter
@@ -24,6 +22,13 @@ VR:
 - http://mozvr.com/
 - try 2nd way of rendering? http://www.slideshare.net/auradeluxe/webgl-the-next-generation
 
+V2.0
+- design miniramps
+- design quarter pipes
+- input radius + angle, or height + angle
+- snap to imperial units
+- calculate volumes
+- assemble more than one object.
 
 Next:
 immutable.js and read about flux and redux
