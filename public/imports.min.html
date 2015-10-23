@@ -7074,6 +7074,9 @@ Polymer({
       "parameter-change": "onParamChange",
       "units-change": "updateUnits"
     },
+    ready: function() {
+      this.updateUnits();
+    },
     onParamChange: function(e) {
       this[e.target.id] = e.detail;
     },
@@ -7082,8 +7085,14 @@ Polymer({
       this.$.width.disabled = newValue;
       this.$.angle.disabled = newValue;
     },
-    updateUnits: function(e) {
+    onUnitsChange: function(e) {
       this.units = e.detail.units;
+      this.updateUnits();
+    },
+    updateUnits: function() {
+      var step = this.units == 'm' ? 0.1 : 0.0254;
+      this.$.height.setAttribute('step', step);
+      this.$.width.setAttribute('step', step);
     },
     properties: {
       disabled: {
