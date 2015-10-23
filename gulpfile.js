@@ -10,6 +10,9 @@ var gulp = require('gulp'),
     del = require('del'),
     vulcanize = require('gulp-vulcanize');
 
+// Do it all
+gulp.task('build', ['styles', 'imports', 'scripts'], function() {});
+
 // Styles
 gulp.task('styles', function() {
     return sass('style.sass', { style: 'compressed' })
@@ -17,7 +20,7 @@ gulp.task('styles', function() {
         .pipe(rename({suffix: '.min'}))
         .pipe(minifycss())
         .pipe(gulp.dest('./public/styles'));
-})
+});
 
 // Imports
 gulp.task('imports', function () {
