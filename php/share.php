@@ -8,8 +8,9 @@ class Share {
 
 	public static function twitter($url, $title, $description) {
 		$url .= "&utm=twitter";
-		$encoded = urlencode($url);
+
 		$shareUrl = "https://twitter.com/intent/tweet";
+		$shareUrl .= "?url=".urlencode($url);
 
 		$text = array();
 		if ($title) {
@@ -18,9 +19,7 @@ class Share {
 		if ($description) {
 			$text[] = $description;
 		}
-		$text[] = $url;
-		$text = implode(" - ", $text);
-		$shareUrl .= "?text=".$text;
+		$shareUrl .= "&text=".urlencode(implode(" - ", $text));
 
 		return $shareUrl;
 	}

@@ -197,6 +197,9 @@
 					<li>
 						<a href="<?php echo TWITTER_LINK ?>">Twitter</a>
 					</li>
+					<li>
+						<a href="<?php echo GITHUB_LINK ?>">GitHub</a>
+					</li>
 				</ul>
 			</footer>
 		</div>

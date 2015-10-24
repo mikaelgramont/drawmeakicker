@@ -100,7 +100,8 @@
           document.body.dispatchEvent(new CustomEvent('requested-state-change', {
             detail: {
               state: EditorState.SAVED,
-              data: json.data
+              data: json.data,
+              share: json.share
             }
           }));
         }

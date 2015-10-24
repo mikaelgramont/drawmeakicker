@@ -13,7 +13,8 @@ class OpenGraph {
 		}
 		$ogData["og:description"] = $description ;
 
-		$ogData["og:url"] = SITE_URL . "/?id=".$data->id;
+		// Use '%' as a placeholder so it can be easily replaced on the client after saving.
+		$ogData["og:url"] = SITE_URL . "/?id=". ($data->id ? $data->id : '%');
 
 		$ogData["og:image"] = SITE_URL . "/" . DEFAULT_OG_IMAGE;
 

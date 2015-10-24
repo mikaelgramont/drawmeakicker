@@ -6933,6 +6933,8 @@ Polymer({
     },
     applyStateChange: function(e) {
       this.state.setState(e.detail.state, e.detail.data);
+      // This is ugly.
+      document.getElementsByTagName('bihi-share')[0].update(e.detail);
     },
     onStateChange: function (e) {
       this.fire("state-change", {state: e.detail.state}, this.rendererEl, false);
@@ -7607,7 +7609,8 @@ Polymer({
           document.body.dispatchEvent(new CustomEvent('requested-state-change', {
             detail: {
               state: EditorState.SAVED,
-              data: json.data
+              data: json.data,
+              share: json.share
             }
           }));
         }
@@ -7663,6 +7666,10 @@ Polymer({
       } else {
         this.shareWindow.focus();
       }
+    },
+    update: function(saveDetail) {
+      this.twitterUrl = saveDetail.share.twitterUrl;
+      this.facebookUrl = saveDetail.share.facebookUrl;
     },
     properties: {
       twitterLabel: {

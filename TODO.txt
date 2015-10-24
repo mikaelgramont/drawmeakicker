@@ -1,3 +1,5 @@
+sudo /usr/local/mysql/support-files/mysql.server start
+
 After launching:
 - responsiveness, no zooming on mobile
 - iframe version: autostart, and add html code to share panel
@@ -9,6 +11,7 @@ Nice to have:
 - list scripts in a json file
 - mess with console.time to get a sense for how slow things are to load on 3g
 - not resetting camera position on update, instead add a button to do that. Another one for VR/fullscreen
+- having zooming on the 2d view as well. maybe behind a setting, so that things don't jump.
 - use chunking to respond super fast if no data is loaded.
 
 VR:

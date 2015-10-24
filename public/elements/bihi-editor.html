@@ -53,6 +53,8 @@
     },
     applyStateChange: function(e) {
       this.state.setState(e.detail.state, e.detail.data);
+      // This is ugly.
+      document.getElementsByTagName('bihi-share')[0].update(e.detail);
     },
     onStateChange: function (e) {
       this.fire("state-change", {state: e.detail.state}, this.rendererEl, false);
