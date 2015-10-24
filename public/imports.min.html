@@ -6492,19 +6492,19 @@ Note, all features of `x-style` are available when defining styles as part of Po
   <template>
     <div class="container size-2">
       <label>
-        <input id="annotations" type="checkbox" on-click="onClick" value="1" checked="{{annotations}}">
+        <input id="annotations" type="checkbox" on-click="onClick" value="1">
         <span>Annotations</span>
       </label>
       <label>
-        <input id="grid" type="checkbox" on-click="onClick" value="1" checked="{{grid}}">
+        <input id="grid" type="checkbox" on-click="onClick" value="1">
         <span>Grid (3d only)</span>
       </label>
       <label>
-        <input id="mountainboard" type="checkbox" on-click="onClick" value="1" checked="{{mountainboard}}">
+        <input id="mountainboard" type="checkbox" on-click="onClick" value="1">
         <span>Mountainboard</span>
       </label>
       <label style="display: none">
-        <input id="rider" type="checkbox" on-click="onClick" value="1" checked="{{rider}}">
+        <input id="rider" type="checkbox" on-click="onClick" value="1">
         <span>Rider</span>
       </label>
     </div>
@@ -7597,6 +7597,7 @@ Polymer({
       }));
     },
     proceedToSave: function(data) {
+      console.log("proceedToSave", data);
       post('./save.php', data).then(function(response) {
         return JSON.parse(response);
       }).then(function(json) {
@@ -7668,8 +7669,10 @@ Polymer({
       }
     },
     update: function(saveDetail) {
-      this.twitterUrl = saveDetail.share.twitterUrl;
-      this.facebookUrl = saveDetail.share.facebookUrl;
+      if (saveDetail.share) {
+        this.twitterUrl = saveDetail.share.twitterUrl;
+        this.facebookUrl = saveDetail.share.facebookUrl;
+      }
     },
     properties: {
       twitterLabel: {
