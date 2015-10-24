@@ -217,7 +217,7 @@
 <?php } else { ?>
           ['script', "<?php echo $fullPaths['scripts/scripts.min.js'] ?>"],
 <?php } ?>
-          ['link', "<?php echo $fullPaths['imports.html'] ?>"]
+          ['link', "<?php echo $fullPaths['imports.min.html'] ?>"]
         ],
         lazyLoadingFiles: {
     		'board': "<?php echo $fullPaths['models/board.dae'] ?>",
