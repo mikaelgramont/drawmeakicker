@@ -6570,6 +6570,9 @@ Note, all features of `x-style` are available when defining styles as part of Po
         display: inline-block;
         margin: 0 2px;
     }
+    .hidden {
+        display: none;
+    }
 	</style>
 	<template>
 		<button id="duplicate" on-click="doDuplicate" class="small item">Modify</button>
@@ -6584,8 +6587,9 @@ Polymer({
     	"update": "onUpdate"
     },
     onUpdate: function(e) {
-    	this.$.duplicate.classList.toggle('hidden',
-    		[EditorState.READ_ONLY, EditorState.SAVED].indexOf(e.detail.state) === -1);
+        if (e.detail.state !== EditorState.READ_ONLY) {
+            this.$.duplicate.classList.add('hidden');
+        }    	
     },
     doReset: function() {
     	this.fire("requested-state-change", {state: EditorState.NEW}, document.body, false);
@@ -6663,7 +6667,7 @@ Polymer({
     is: "bihi-design-parameter",
     properties: {
       caption: {type: String},
-      units: {type: String, observer: "updateDisplay"},
+      units: {type: String, observer: "updateUnits"},
       disabled: {type: Boolean, reflectToAttribute: true, observer: "onDisableChange"},
       displayValue: {type: String},
       max: {type: Number},
@@ -6676,6 +6680,9 @@ Polymer({
     },
     onInput: function(e) {
       this.updateDisplay(e.target.value);
+    },
+    updateUnits: function(e) {
+      this.updateDisplay(this.value);
     },
     updateDisplay: function(value) {
       if (this.units == 'ft') {

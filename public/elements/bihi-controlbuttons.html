@@ -32,7 +32,8 @@ Polymer({
     },
     onUpdate: function(e) {
         if (e.detail.state !== EditorState.READ_ONLY) {
-            this.$.duplicate.classList.add('hidden');    	
+            this.$.duplicate.classList.add('hidden');
+        }    	
     },
     doReset: function() {
     	this.fire("requested-state-change", {state: EditorState.NEW}, document.body, false);
