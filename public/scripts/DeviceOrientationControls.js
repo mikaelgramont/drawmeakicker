@@ -17,7 +17,6 @@ THREE.DeviceOrientationControls = function () {
 	this.screenOrientation = 0;
 
 	this.onDeviceOrientationChangeEvent = function ( event ) {
-		console.log('onDeviceOrientationChangeEvent', this.getCamera().uuid, event);
 		this.deviceOrientation = event;
 		if (this.enabled) {
 			this.update();

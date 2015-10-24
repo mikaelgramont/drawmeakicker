@@ -1,12 +1,20 @@
 <link rel="import" href="../components/polymer/polymer.html">
-
+<style>
+    .short {
+        display: none;
+    }
+</style>
 <dom-module id="bihi-units">
-	<style>
-	</style>
 	<template>
-		Units:
-		<label><input type="radio" on-click="pickUnits" data-units="m" name="units" id="unit-meters" checked={{metersChecked}} value="1" /> meters</label>
-		<label><input type="radio" on-click="pickUnits" data-units="ft" name="units" id="unit-feet" checked={{feetChecked}} value="1" /> feet</label>
+		<span class="not-mobile">Units:</span>
+		<label><input type="radio" on-click="pickUnits" data-units="m" name="units" id="unit-meters" checked={{metersChecked}} value="1" />
+            <span class="not-mobile">meters</span>
+            <span class="mobile-only">m</span>
+        </label>
+		<label><input type="radio" on-click="pickUnits" data-units="ft" name="units" id="unit-feet" checked={{feetChecked}} value="1" />
+            <span class="not-mobile">feet</span>
+            <span class="mobile-only">ft</span>
+        </label>
 	</template>
 </dom-module>
 

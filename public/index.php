@@ -96,6 +96,8 @@
 		<meta charset="utf-8" />
 		<title><?php echo $title?></title>
 		<link rel="stylesheet" href="<?php echo $fullPaths['styles/style.min.css'] ?>">
+		<meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<?php
 			if ($ogData) {
 				echo OpenGraph::renderProperties($ogData);
@@ -187,6 +189,9 @@
 					</bihi-accordion>
 					<div class="renderer-container">
 						<div class="toolbar blueprint">
+					      	<span role="button" aria-label="menu" class="mobile-menu not-desktop toolbar-item">
+						    	Menu
+						    </span>
 							<bihi-units class="toolbar-item" units="<?php echo $units; ?>"></bihi-units>
 							<bihi-representation class="toolbar-item"></bihi-representation>
 						</div>

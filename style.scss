@@ -1,0 +1,520 @@
+//
+// VARIABLES
+//
+$color-light-blue: #3b69d5;
+$color-dark-blue: #010845;
+
+$color-background: #b5b9c4;
+
+$color-text: #f8faff;
+
+$color-light-brown: #e9b900;
+$color-dark-brown: #151100;
+
+$text-default-size: 16px;
+$margin-default: 15px;
+$gutter-width: 20px;
+$default-shadow-width: 3px;
+$default-box-shadow: $default-shadow-width $default-shadow-width 1px rgba(0, 0, 0, 0.25);
+
+$editor-height: 700px;
+$bg-blur: 3px;
+$content-max-width: 1280px;
+
+$accordion-layer: 2;
+$editor-layer: 1;
+
+//
+// MIXINS
+//
+@mixin not_desktop {
+  @media screen and (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media screen and (max-width: 600px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media screen and (min-width: 601px) and (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media screen and (min-width: 769px) {
+    @content;
+  }
+}
+
+//
+// FONTS
+//
+@font-face {
+  font-family: Archer;
+  src: url("../fonts/archer-medium.otf");
+}
+
+
+@font-face {
+  font-family: Bebas;
+  src: url("../fonts/bebas.otf");
+}
+
+
+//
+// RESETS AND TOP-LEVEL LAYOUT
+//
+body,
+input,
+textarea,
+button,
+select {
+  font-family: Archer;
+}
+
+h1,h2,h3 {
+  margin: 0;
+  font-family: Bebas;
+  letter-spacing: 1px;
+}
+
+p {
+  margin: 0 0 1.2em;
+}
+
+body {
+  margin: 0;
+  @include mobile {
+    background: #ffa0a0;
+  }
+
+  @include tablet {
+    background: #a0ffa0;
+  }
+
+  @include desktop {
+    background: $color-background;
+    background: url("../images/seamlessbg.jpg");
+  }
+
+  color: $color-text;
+  font-size: $text-default-size;
+}
+
+input,
+select,
+button,
+textarea {
+  font-size: $text-default-size;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+button,
+input[type=button],
+input[type=submit],
+button.deemphasized:hover,
+button.deemphasized:focus, {
+  background: transparent;
+  color: $color-text;
+  border: 2px solid $color-text;
+  border-radius: 3px;
+  padding: 15px 20px;
+  opacity: 0.95;
+  &:hover {
+    background: $color-text;
+    color: $color-dark-blue;
+    opacity: 1;
+    cursor: pointer;
+  }
+  &:disabled {
+    opacity: 0.6;
+    &:hover {
+      cursor: auto;
+      background: transparent;
+      color: $color-text;
+    }
+  }
+}
+
+button.action {
+  background: $color-light-brown;
+  color: $color-text;
+  border: none;
+}
+
+button.deemphasized {
+  background: transparent;
+  color: $color-text;
+  border-color: transparent;
+}
+
+button.small,
+button.small:hover,
+button.small:focus {
+  padding: 5px;
+}
+
+header {
+  margin-bottom: $margin-default;
+}
+
+header .logo {
+  padding: 15px;
+  background: #151100;
+  @include mobile {
+    padding: 5px;
+    font-size: 36px;
+    text-align: center;
+  }
+}
+
+//
+// CONVENIENCE CLASSES
+//
+.hidden {
+  display: none;
+}
+
+.blueprint {
+  background: $color-light-blue;
+  box-shadow: $default-box-shadow;
+}
+
+.grid-element {
+  padding-right: $gutter-width;
+  @include mobile {
+    padding: 0;
+  }
+  box-sizing: border-box;
+}
+
+.inverted {
+  background: $color-text;
+  color: $color-dark-blue;
+}
+
+.dashed-borders {
+  border: 1px dashed $color-text;
+}
+
+.size-2 {
+  font-size: 20px;
+}
+
+h3,
+.size-3 {
+  font-size: 24px;
+}
+
+h2,
+.size-4 {
+  font-size: 50px;
+}
+
+@include mobile {
+  .vr-button {
+    height: 22px;
+  }
+}
+
+.mobile-only {
+  display: none;
+}
+@include mobile {
+  .not-mobile {
+    display: none;
+  }
+  .mobile-only {
+    display: initial;
+  }
+}
+
+.not-desktop {
+  display: none;
+}
+@include not_desktop {
+  .not-desktop {
+    display: initial;
+  }
+}
+
+//
+// ALL THE REST
+//
+.content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.expanded-editor .content {
+  display: block;
+}
+
+.main {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 auto;
+  max-width: $content-max-width;
+  @include mobile {
+    padding: 0 5px;
+  }
+  @include tablet {
+    padding: 0 10px;
+  }
+  padding: 0 50px;
+}
+
+.expanded-editor .main {
+  flex: 1 0 $editor-height;
+}
+
+.intro-container {
+  flex: 1 0 60%;
+}
+
+.video-container {
+  flex: 1 0 40%;
+  padding-right: 2px;
+}
+
+.video-aspect-ratio-wrapper {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  margin: 2px 0;
+  outline: 2px solid $color-text;
+}
+
+.video-aspect-ratio-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.loading-placeholder {
+  background: $color-light-blue;
+  display: none;
+  height: 700px;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  outline: $color-text 2px solid;
+}
+
+.loading-editor .loading-placeholder, {
+  display: flex;
+}
+
+.expanded-editor .loading-placeholder {
+  display: none;
+}
+
+.editor {
+  height: 0;
+  position: relative;
+  display: none;
+}
+
+.expanded-editor .editor {
+  display: flex
+}
+
+.loading-editor .loading-placeholder,
+.expanded-editor .editor {
+  /* Can't use 100% because for some reason that translates to 100% of the viewport */
+  height: $editor-height;
+  padding: $margin-default 3px 3px 0;
+}
+
+.renderer-accordion {
+  width: 280px;
+  @include not_desktop {
+    position: absolute;
+    z-index: $accordion-layer;
+    transform: translateX(-100%);
+  }
+}
+
+.renderer-container {
+  margin-left: $gutter-width;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  margin-bottom: $gutter-width;
+  padding: 10px;
+  display: none;
+  justify-content: space-between;
+  align-content: center;
+}
+
+.toolbar-item {
+  /* Same height as small buttons. */
+  line-height: 31px;
+  @include not_desktop {
+    line-height: initial;
+  }
+}
+
+.mobile-menu {
+
+}
+
+.editor[loaded] .toolbar {
+  display: flex;
+}
+
+.top-section-container {
+  max-width: $content-max-width;
+  margin: 30px auto 10px;
+  @include mobile {
+    margin-top: 10px;
+  }
+}
+
+.top-section {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0 50px;
+  border: 8px solid white;
+  padding: 30px;
+  @include mobile {
+    margin: 0 5px;
+    padding: 10px 15px;
+  }
+  @include tablet {
+    margin: 0 10px;
+    padding: 10px;
+  }
+  box-shadow: $default-box-shadow;
+  background: url("../images/header.jpg");
+  background-size: cover;
+}
+
+.top-section-content {
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.top-section-header {
+  margin: 5px 0 $margin-default;
+  word-break: break-word;
+}
+
+.top-section-body {
+  display: flex;
+  overflow: hidden;
+}
+@include not_desktop {
+  .top-section-body {
+    display: block;
+    overflow: visible;
+  }
+
+  .video-container {
+    margin-top: 20px;
+  }
+}
+
+.top-section-content {
+  flex: 1 0 50%;
+}
+
+footer {
+  margin-top: 20px;
+  background: $color-dark-brown;
+  ul {
+    margin: 0;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    li {
+      flex-grow: 1;
+      max-width: 100px;
+      padding: $margin-default;
+    }
+  }
+  a {
+    color: $color-text;
+    text-decoration: none;
+  }
+}
+
+.representation-container {
+  padding: 0 10px;
+}
+
+.share-notes {
+  display: none;
+}
+
+.editor[loaded] .share-notes {
+  display: block;
+}
+
+.load-animation {
+  display: block;
+}
+
+svg path {
+  fill: $color-text;
+}
+
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+
+.rotating {
+  -webkit-animation: rotating 0.8s linear infinite;
+  -moz-animation: rotating 0.8s linear infinite;
+  -ms-animation: rotating 0.8s linear infinite;
+  -o-animation: rotating 0.8s linear infinite;
+  animation: rotating 0.8s linear infinite;
+}

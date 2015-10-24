@@ -9,10 +9,10 @@
       display: inline-block;
       vertical-align: middle;
     }
-    #vr {
+    .vr-container {
       margin-left: 10px;
     }
-    #vr-button:hover {
+    .vr-button:hover {
         cursor: pointer;
     }
   </style>
@@ -31,11 +31,13 @@
           <span>3d</span>
         </label>
         <label>
-          <input type="checkbox" id="texturedEl" on-click="onClick" checked={{textured}} disabled={{texturedDisabled}}> Textured
+          <input type="checkbox" id="texturedEl" on-click="onClick" checked={{textured}} disabled={{texturedDisabled}}>
+            <span class="not-mobile">Textured</span>
+            <span class="mobile-only">Tex.</span>
         </label>
       </li>
-      <li id="vr" class="hidden">
-        <svg id="vr-button" role="button" on-click="onVRClick" title="View in VR mode" aria-label="VR mode" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="31" height="31" viewBox="0 0 48 48">
+      <li class="vr-container" class="hidden">
+        <svg class="vr-button" role="button" on-click="onVRClick" aria-label="VR mode" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="31" height="31" viewBox="0 0 48 48">
           <path fill="#FFFFFF" d="M41.49,11L41.49,11H6.41C5.1,11,4,12.14,4,13.55v20.89C4,35.85,5.1,37,6.46,37h9.59
           c1.03,0,1.91-0.65,2.28-1.58l2.78-6.97c0.47-1.18,1.59-2,2.9-2c1.3,0,2.42,0.82,2.89,2l2.78,6.97c0.37,0.93,1.25,1.58,2.23,1.58
           h9.57C42.9,37,44,35.86,44,34.45V13.56C44,12.15,42.9,11,41.49,11z M15,28.25c-2.35,0-4.25-1.9-4.25-4.25s1.9-4.25,4.25-4.25
@@ -54,7 +56,7 @@
     ready: function() {
       this.updateTextureCheckbox(this.repType);
       if (document.body.classList.contains("vr")) {
-        this.$.vr.classList.remove("hidden");
+        document.getElementsByClassName('vr-container')[0].classList.remove("hidden");
       }
       this.rendererEl = document.querySelector('#renderer');
       this.rendererEl.addEventListener('mozfullscreenchange', onFullScreenChange.bind(this));
