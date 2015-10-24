@@ -15,6 +15,9 @@ class Cache {
 
 	public static function getCache($method)
 	{
+		if (!USE_CACHE) {
+			return null;
+		}
 		if(!self::$_cache) {
 			self::$_cache = self::cacheFactory(
 				$method, array(

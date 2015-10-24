@@ -5,6 +5,7 @@ define('USE_CDN', false);
 define('CDN_PROTOCOL', 'http');
 define('CDN_URL', '');
 define('BASE_URL', '');
+define('USE_CACHE', true);
 define('CACHE_METHOD', 'APC');
 define('CACHE_DIR', '../cache');
 define('DEV', false);

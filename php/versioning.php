@@ -16,11 +16,20 @@ class Versioning {
 	}
 
 	public static function getVersionList($unversionedPaths, $cache) {
-		if(!$versions = $cache->load('versions')) {
+		if($cache) {
+			$versions = $cache->load('versions');
+		} else {
+			$versions = null;
+		}
+
+		if(!$versions) {
 			$versions = array();
 			foreach ($unversionedPaths as $unversionedPath) {
 				$versions[$unversionedPath] = self::getVersionedFilePath($unversionedPath);
 			}
+		}
+		
+		if ($cache) {
 			$cache->save($versions, 'versions');
 		}
 		return $versions;
