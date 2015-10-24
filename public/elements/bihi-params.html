@@ -34,10 +34,13 @@
       this.units = e.detail.units;
       this.updateUnits();
     },
+    convertToCurrentUnits: function(value) {
+      var ratio = this.units == 'm' ? 1 : 0.254;
+      return value * ratio;
+    },
     updateUnits: function() {
-      var step = this.units == 'm' ? 0.1 : 0.0254;
-      this.$.height.setAttribute('step', step);
-      this.$.width.setAttribute('step', step);
+      this.$.height.setAttribute('step', this.convertToCurrentUnits(0.1));
+      this.$.width.setAttribute('step', this.convertToCurrentUnits(0.1));
     },
     properties: {
       disabled: {

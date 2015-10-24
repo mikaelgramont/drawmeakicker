@@ -27,7 +27,7 @@
         <span>{{displayValue}}</span>
       </span>
       <input id="slider" type="range" min="{{min}}" max="{{max}}"
-        step="{{step}}" value="{{value}}" on-change="onInputChange">
+        step="{{step}}" value="{{value}}" on-change="onChange" on-input="onInput" >
     </label>
   </template>
 
@@ -47,23 +47,28 @@
       value: {type: Number, reflectToAttribute: true, observer: "updateDisplay"}
     },
     ready: function() {
-      this.updateDisplay();
+      this.updateDisplay(this.value);
     },
-    updateDisplay: function() {
+    onInput: function(e) {
+      this.updateDisplay(e.target.value);
+    },
+    updateDisplay: function(value) {
       if (this.units == 'ft') {
-        this.displayValue = Utils.metersToDumb(this.value);      
+        this.displayValue = Utils.metersToDumb(value);
       } else {
-        this.displayValue = this.value + this.units;
+        this.displayValue = value + this.units;
       }
     },
     onDisableChange: function(newValue) {
       this.$.slider.disabled = newValue;
     },
-    onInputChange: function(e) {
+    onChange: function(e) {
       // Update the actual property.
       this.value = e.target.value;
-      this.updateDisplay();
+      this.updateDisplay(this.value);
       this.fire("parameter-change", this.value);
+
+      // TODO: snap to the closest displayable value for the current units.
     }
   });
 </script>
