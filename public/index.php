@@ -155,7 +155,12 @@
 
 						<bihi-design-step caption="Visualize" step="1" display-step="2">
 							<bihi-design-fieldset legend="Context">
-								<bihi-context></bihi-context>
+								<bihi-context
+									<?php if ($kickerData->annotations) echo "annotations" ?>
+									<?php if ($kickerData->grid) echo "grid" ?> 
+									<?php if ($kickerData->mountainboard) echo "mountainboard" ?> 
+									<?php if ($kickerData->rider) echo "rider" ?>
+								>
 							</bihi-design-fieldset>
 							<bihi-design-fieldset legend="Image export">
 								<bihi-export></bihi-export>

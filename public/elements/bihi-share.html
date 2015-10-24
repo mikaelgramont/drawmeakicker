@@ -35,8 +35,10 @@
       }
     },
     update: function(saveDetail) {
-      this.twitterUrl = saveDetail.share.twitterUrl;
-      this.facebookUrl = saveDetail.share.facebookUrl;
+      if (saveDetail.share) {
+        this.twitterUrl = saveDetail.share.twitterUrl;
+        this.facebookUrl = saveDetail.share.facebookUrl;
+      }
     },
     properties: {
       twitterLabel: {

@@ -34,15 +34,15 @@ KickerIOFromDOM.prototype.get = function(name) {
 		case 'id':
 			return this.saveEl[name];
 		case 'textured':
-			return !!this.repEl[name];
+			return this.repEl[name];
 		case 'fill':
 		case 'borders':
-			return !!this.exportEl[name];
+			return this.exportEl[name];
 		case 'annotations':
 		case 'grid':
 		case 'mountainboard':
 		case 'rider':
-			return !!this.contextEl[name];
+			return this.contextEl[name];
 		default:
 			throw new Error('Get not supported:' + name);
 	}
@@ -68,6 +68,19 @@ KickerIOFromDOM.prototype.set = function(name, value) {
 
 	if (this.floatValues.indexOf(name) !== -1) {
 		targetEl[name] = parseFloat(value, 10).toFixed(2);
+	} else if (this.booleanValues.indexOf(name) !== -1) {
+		switch(value) {
+			case 0:
+			case "0":
+			case false:
+				targetEl[name] = false;
+				break;
+			case 1:
+			case "1":
+			case true:
+				targetEl[name] = true;
+				break;
+		}
 	} else {
 		targetEl[name] = value;
 	}

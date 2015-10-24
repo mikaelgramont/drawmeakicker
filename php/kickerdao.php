@@ -105,7 +105,7 @@ class KickerDao {
 		$data = array();
 		foreach ($dataRaw as $k => $v) {
 			if (in_array($k, self::$_convertBoolean)) {
-				$data[$k] = $v ? "1" : "0";
+				$data[$k] = $v == "true" ? "1" : "0";
 			} else {
 				$data[$k] = $v;
 			}
@@ -120,7 +120,6 @@ class KickerDao {
 		$params = implode(",", $paramsArr);
 
 		$insert  = "INSERT INTO " . self::$_table . " (".$columns.") VALUES (".$params.")";
-		
 		$stmt = $dbh->prepare($insert);
 		foreach ($paramsArr as $column => $prefixed) {
 			$stmt->bindParam($prefixed, $data[$column]);

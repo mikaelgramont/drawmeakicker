@@ -13,6 +13,12 @@ var KickerIO = function() {
 		'height', 'width', 'angle', 'arc', 'radius', 'length'
 	];
 
+	this.booleanValues = [
+		'annotations', 'grid', 'mountainboard', 'rider',
+		'fill', 'borders',
+		'textured'
+	];
+
 	this.saveValues = this.params.concat(
 		this.save,
 		this.rep,
