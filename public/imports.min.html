@@ -6652,7 +6652,7 @@ Polymer({
         <span>{{caption}}</span>:
         <span>{{displayValue}}</span>
       </span>
-      <input id="slider" type="range" min="{{min}}" max="{{max}}" step="{{step}}" value="{{value}}" on-change="onInputChange">
+      <input id="slider" type="range" min="{{min}}" max="{{max}}" step="{{step}}" value="{{value}}" on-change="onChange" on-input="onInput">
     </label>
   </template>
 
@@ -6672,23 +6672,28 @@ Polymer({
       value: {type: Number, reflectToAttribute: true, observer: "updateDisplay"}
     },
     ready: function() {
-      this.updateDisplay();
+      this.updateDisplay(this.value);
     },
-    updateDisplay: function() {
+    onInput: function(e) {
+      this.updateDisplay(e.target.value);
+    },
+    updateDisplay: function(value) {
       if (this.units == 'ft') {
-        this.displayValue = Utils.metersToDumb(this.value);      
+        this.displayValue = Utils.metersToDumb(value);
       } else {
-        this.displayValue = this.value + this.units;
+        this.displayValue = value + this.units;
       }
     },
     onDisableChange: function(newValue) {
       this.$.slider.disabled = newValue;
     },
-    onInputChange: function(e) {
+    onChange: function(e) {
       // Update the actual property.
       this.value = e.target.value;
-      this.updateDisplay();
+      this.updateDisplay(this.value);
       this.fire("parameter-change", this.value);
+
+      // TODO: snap to the closest displayable value for the current units.
     }
   });
 </script><dom-module id="bihi-design-result" assetpath="elements/">
@@ -7089,10 +7094,13 @@ Polymer({
       this.units = e.detail.units;
       this.updateUnits();
     },
+    convertToCurrentUnits: function(value) {
+      var ratio = this.units == 'm' ? 1 : 0.254;
+      return value * ratio;
+    },
     updateUnits: function() {
-      var step = this.units == 'm' ? 0.1 : 0.0254;
-      this.$.height.setAttribute('step', step);
-      this.$.width.setAttribute('step', step);
+      this.$.height.setAttribute('step', this.convertToCurrentUnits(0.1));
+      this.$.width.setAttribute('step', this.convertToCurrentUnits(0.1));
     },
     properties: {
       disabled: {
