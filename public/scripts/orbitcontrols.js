@@ -348,6 +348,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		scope.domElement.addEventListener( 'mousemove', onMouseMove, false );
 		scope.domElement.addEventListener( 'mouseup', onMouseUp, false );
+		scope.domElement.addEventListener( 'mouseout', onMouseOut, false );
 		scope.dispatchEvent( startEvent );
 
 	}
@@ -417,9 +418,20 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		scope.domElement.removeEventListener( 'mousemove', onMouseMove, false );
 		scope.domElement.removeEventListener( 'mouseup', onMouseUp, false );
+		scope.domElement.removeEventListener( 'mouseout', onMouseOut, false );
 		scope.dispatchEvent( endEvent );
 		state = STATE.NONE;
 
+	}
+
+	function onMouseOut( /* event */ ) {
+		if ( scope.enabled === false ) return;
+
+		scope.domElement.removeEventListener( 'mousemove', onMouseMove, false );
+		scope.domElement.removeEventListener( 'mouseup', onMouseUp, false );
+		scope.domElement.removeEventListener( 'mouseout', onMouseOut, false );
+		scope.dispatchEvent( endEvent );
+		state = STATE.NONE;		
 	}
 
 	function onMouseWheel( event ) {
