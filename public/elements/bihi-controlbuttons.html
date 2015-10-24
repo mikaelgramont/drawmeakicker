@@ -14,6 +14,9 @@
         display: inline-block;
         margin: 0 2px;
     }
+    .hidden {
+        display: none;
+    }
 	</style>
 	<template>
 		<button id="duplicate" on-click="doDuplicate" class="small item">Modify</button>
@@ -28,8 +31,8 @@ Polymer({
     	"update": "onUpdate"
     },
     onUpdate: function(e) {
-    	this.$.duplicate.classList.toggle('hidden',
-    		[EditorState.READ_ONLY, EditorState.SAVED].indexOf(e.detail.state) === -1);
+        if (e.detail.state !== EditorState.READ_ONLY) {
+            this.$.duplicate.classList.add('hidden');    	
     },
     doReset: function() {
     	this.fire("requested-state-change", {state: EditorState.NEW}, document.body, false);
