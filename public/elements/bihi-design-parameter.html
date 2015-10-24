@@ -38,7 +38,7 @@
     is: "bihi-design-parameter",
     properties: {
       caption: {type: String},
-      units: {type: String, observer: "updateDisplay"},
+      units: {type: String, observer: "updateUnits"},
       disabled: {type: Boolean, reflectToAttribute: true, observer: "onDisableChange"},
       displayValue: {type: String},
       max: {type: Number},
@@ -51,6 +51,9 @@
     },
     onInput: function(e) {
       this.updateDisplay(e.target.value);
+    },
+    updateUnits: function(e) {
+      this.updateDisplay(this.value);
     },
     updateDisplay: function(value) {
       if (this.units == 'ft') {
