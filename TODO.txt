@@ -1,5 +1,4 @@
 After launching:
-- move the toolbar buttons into the first tab: modify and new instead of duplicate and reset
 - responsiveness, no zooming on mobile
 - iframe version: autostart, and add html code to share panel
 - use client hints to serve different images: https://developers.google.com/web/updates/2015/09/automating-resource-selection-with-client-hints
@@ -40,6 +39,8 @@ Sublime
 jssrc
 color highlighter (ha_style: filled)
 
+Notes:
+	http://www.xtremeskater.com/ramp-plans
 
 
 Next:

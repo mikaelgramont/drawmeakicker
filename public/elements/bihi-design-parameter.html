@@ -11,24 +11,37 @@
         display: block;
       }
       input {
-        display: block;
-        width: 100%;
-        margin: 5px 0;
+        margin: 5px;
+        flex-grow: 1;
       }
       input[disabled] {
         display: none;
       }
+      .wrapper {
+        display: flex;
+        margin: 5px;
+      }
+      .step-button {
+        padding: 0;
+        width: 2em;
+        height: 2em;
+        border-radius: 2em;
+      }
   </style>
 
   <template>
-    <label>
+    <label for="slider">
       <span class="caption size-2">
         <span>{{caption}}</span>:
         <span>{{displayValue}}</span>
       </span>
+    </label>
+    <div class="wrapper">
+      <button id="down" on-click="down" class="step-button" aria-label="decrease {{caption}}">-</button>
       <input id="slider" type="range" min="{{min}}" max="{{max}}"
         step="{{step}}" value="{{value}}" on-change="onChange" on-input="onInput" >
-    </label>
+      <button id="up" on-click="up" class="step-button" aria-label="increase {{caption}}">+</button>
+    </div>
   </template>
 
 </dom-module>
@@ -45,6 +58,22 @@
       min: {type: Number},
       step: {type: Number},
       value: {type: Number, reflectToAttribute: true, observer: "updateDisplay"}
+    },
+    up: function() {
+      var value = parseFloat(this.value);
+      var step = parseFloat(this.step);
+      if (value + step <= parseFloat(this.max)) {
+        this.value = (value + step).toFixed(2);
+      }
+      this.applyChange();
+    },
+    down: function() {
+      var value = parseFloat(this.value);
+      var step = parseFloat(this.step);
+      if (value - step >= parseFloat(this.min)) {
+        this.value = (value - step).toFixed(2);
+      }
+      this.applyChange();
     },
     ready: function() {
       this.updateDisplay(this.value);
@@ -68,9 +97,11 @@
     onChange: function(e) {
       // Update the actual property.
       this.value = e.target.value;
+      this.applyChange();
+    },
+    applyChange: function() {
       this.updateDisplay(this.value);
       this.fire("parameter-change", this.value);
-
       // TODO: snap to the closest displayable value for the current units.
     }
   });

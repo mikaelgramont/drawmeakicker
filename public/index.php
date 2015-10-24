@@ -144,9 +144,7 @@
 				<bihi-editor class="editor">
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 						<bihi-design-step caption="Design" step="0" display-step="1" active first>
-							<bihi-design-fieldset legend="General">
-								<bihi-controlbuttons id="buttons"></bihi-controlbuttons>							
-							</bihi-design-fieldset>
+							<bihi-controlbuttons id="buttons"></bihi-controlbuttons>							
 							<bihi-design-fieldset legend="Parameters">
 								<bihi-params id="params" units="<?php echo $units; ?>" <?php if ($id) echo "disabled"?>></bihi-params>
 							</bihi-design-fieldset>
@@ -217,7 +215,11 @@
 <?php } else { ?>
           ['script', "<?php echo $fullPaths['scripts/scripts.min.js'] ?>"],
 <?php } ?>
+<?php if ($dev) { ?>
+          ['link', "<?php echo $fullPaths['imports.html'] ?>"]
+<?php } else { ?>
           ['link', "<?php echo $fullPaths['imports.min.html'] ?>"]
+<?php } ?>
         ],
         lazyLoadingFiles: {
     		'board': "<?php echo $fullPaths['models/board.dae'] ?>",
