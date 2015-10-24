@@ -14,7 +14,8 @@
         margin: 5px;
         flex-grow: 1;
       }
-      input[disabled] {
+      input[disabled],
+      button[disabled] {
         display: none;
       }
       .wrapper {
@@ -92,7 +93,9 @@
       }
     },
     onDisableChange: function(newValue) {
+      this.$.down.disabled = newValue;
       this.$.slider.disabled = newValue;
+      this.$.up.disabled = newValue;
     },
     onChange: function(e) {
       // Update the actual property.
