@@ -21,17 +21,11 @@ p {
 
 body {
   margin: 0;
+  background: #8b8a84;
   color: #f8faff;
   font-size: 16px; }
-  @media screen and (max-width: 600px) {
-    body {
-      background: #ffa0a0; } }
-  @media screen and (min-width: 601px) and (max-width: 768px) {
-    body {
-      background: #a0ffa0; } }
   @media screen and (min-width: 769px) {
     body {
-      background: #b5b9c4;
       background: url("../images/seamlessbg.jpg"); } }
 
 input,
@@ -140,8 +134,11 @@ h2,
   font-size: 50px; }
 
 @media screen and (max-width: 600px) {
-  .vr-button {
-    height: 22px; } }
+  .vr-container {
+    position: absolute;
+    top: 95px;
+    right: 20px;
+    z-index: 2; } }
 .mobile-only {
   display: none; }
 
@@ -180,6 +177,9 @@ h2,
 
 .expanded-editor .main {
   flex: 1 0 700px; }
+  @media screen and (max-width: 768px) {
+    .expanded-editor .main {
+      flex-basis: 90vh; } }
 
 .intro-container {
   flex: 1 0 60%; }
@@ -231,20 +231,32 @@ h2,
   /* Can't use 100% because for some reason that translates to 100% of the viewport */
   height: 700px;
   padding: 15px 3px 3px 0; }
+  @media screen and (max-width: 768px) {
+    .loading-editor .loading-placeholder,
+    .expanded-editor .editor {
+      height: 90vh; } }
 
 .renderer-accordion {
   width: 280px; }
   @media screen and (max-width: 768px) {
     .renderer-accordion {
       position: absolute;
-      z-index: 2;
-      transform: translateX(-100%); } }
+      z-index: 3;
+      transform: translateX(-100%);
+      -webkit-transition: -webkit-transform 300ms;
+      transition: transform 300ms; } }
 
+@media screen and (max-width: 768px) {
+  .accordion-visible .renderer-accordion {
+    transform: translateX(0); } }
 .renderer-container {
   margin-left: 20px;
   flex-grow: 1;
   display: flex;
   flex-direction: column; }
+  @media screen and (max-width: 600px) {
+    .renderer-container {
+      margin-left: 5px; } }
 
 .toolbar {
   margin-bottom: 20px;

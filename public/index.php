@@ -189,9 +189,7 @@
 					</bihi-accordion>
 					<div class="renderer-container">
 						<div class="toolbar blueprint">
-					      	<span role="button" aria-label="menu" class="mobile-menu not-desktop toolbar-item">
-						    	Menu
-						    </span>
+					      	<span id="mobile-menu" role="button" aria-label="menu" class="mobile-menu not-desktop toolbar-item">Menu</span>
 							<bihi-units class="toolbar-item" units="<?php echo $units; ?>"></bihi-units>
 							<bihi-representation class="toolbar-item"></bihi-representation>
 						</div>

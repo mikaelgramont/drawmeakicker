@@ -1,6 +1,5 @@
 quand on clique sur le bouton, faire slider le menu,
 set a max height on mobile for the editor
-bouger la video sur mobile
 
 
 

@@ -106,6 +106,15 @@
 			function(e) {
 				alertEl.message = e.detail.message;
 		});
+
+		var menuEl = document.getElementById('mobile-menu');
+		menuEl.addEventListener('click', function(e) {
+			document.body.classList.add('accordion-visible');
+			e.stopPropagation();
+		}, false);
+		document.body.addEventListener('click', function(e) {
+			document.body.classList.remove('accordion-visible');
+		});
 	}
 
 	function showEditor() {

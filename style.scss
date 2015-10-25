@@ -4,7 +4,7 @@
 $color-light-blue: #3b69d5;
 $color-dark-blue: #010845;
 
-$color-background: #b5b9c4;
+$color-background: #8b8a84;
 
 $color-text: #f8faff;
 
@@ -17,12 +17,17 @@ $gutter-width: 20px;
 $default-shadow-width: 3px;
 $default-box-shadow: $default-shadow-width $default-shadow-width 1px rgba(0, 0, 0, 0.25);
 
-$editor-height: 700px;
+$editor-height-desktop: 700px;
+$editor-height-not-desktop: 90vh;
+
 $bg-blur: 3px;
 $content-max-width: 1280px;
 
-$accordion-layer: 2;
+$accordion-layer: 3;
+$canvas-button-layer: 2;
 $editor-layer: 1;
+
+$accordion-transition-duration: 300ms;
 
 //
 // MIXINS
@@ -89,16 +94,17 @@ p {
 
 body {
   margin: 0;
-  @include mobile {
-    background: #ffa0a0;
-  }
 
-  @include tablet {
-    background: #a0ffa0;
-  }
+  // @include mobile {
+  //   background: #ffa0a0;
+  // }
+
+  // @include tablet {
+  //   background: #a0ffa0;
+  // }
+  background: $color-background;
 
   @include desktop {
-    background: $color-background;
     background: url("../images/seamlessbg.jpg");
   }
 
@@ -222,8 +228,11 @@ h2,
 }
 
 @include mobile {
-  .vr-button {
-    height: 22px;
+  .vr-container {
+    position: absolute;
+    top: 95px;
+    right: 20px;
+    z-index: $canvas-button-layer;
   }
 }
 
@@ -276,7 +285,10 @@ h2,
 }
 
 .expanded-editor .main {
-  flex: 1 0 $editor-height;
+  flex: 1 0 $editor-height-desktop;
+  @include not_desktop {
+    flex-basis: $editor-height-not-desktop;
+  }
 }
 
 .intro-container {
@@ -336,7 +348,10 @@ h2,
 .loading-editor .loading-placeholder,
 .expanded-editor .editor {
   /* Can't use 100% because for some reason that translates to 100% of the viewport */
-  height: $editor-height;
+  height: $editor-height-desktop;
+  @include not_desktop {
+    height: $editor-height-not-desktop;
+  }
   padding: $margin-default 3px 3px 0;
 }
 
@@ -346,11 +361,22 @@ h2,
     position: absolute;
     z-index: $accordion-layer;
     transform: translateX(-100%);
+    -webkit-transition: -webkit-transform $accordion-transition-duration;
+    transition: transform $accordion-transition-duration;    
+  }
+}
+
+@include not_desktop {
+  .accordion-visible .renderer-accordion {
+    transform: translateX(0);
   }
 }
 
 .renderer-container {
   margin-left: $gutter-width;
+  @include mobile {
+    margin-left: 5px;
+  }
   flex-grow: 1;
   display: flex;
   flex-direction: column;
