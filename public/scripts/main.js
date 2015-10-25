@@ -121,17 +121,21 @@
 			e.preventDefault();
 			isTouchMoving = true;
 		}, true);
+		var hideAccordion = function() {
+			if (body.classList.contains('accordion-visible')) {
+				body.classList.remove('accordion-visible');
+			}			
+		};
 		maskEl.addEventListener('touchend', function(e) {
 			e.preventDefault();
 			if (isTouchMoving) {
 				isTouchMoving = false;
 				return;
 			} else {
-				if (body.classList.contains('accordion-visible')) {
-					body.classList.remove('accordion-visible');
-				}
+				hideAccordion();
 			}
 		}, true);
+		maskEl.addEventListener('click', hideAccordion, true);
 	}
 
 	function showEditor() {

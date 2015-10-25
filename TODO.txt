@@ -4,7 +4,6 @@ After launching:
 - responsiveness:
 	- need to be able to flick the accordion out
 	- stop scroll events at the top or bottom of accordion
-	- look into landscape mode
 	- background for mobile
 	- header image
 	- 2d cam cuts content off in landscape mobile
