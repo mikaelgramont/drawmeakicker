@@ -16,7 +16,6 @@ gulp.task('build', ['styles', 'imports', 'scripts'], function() {});
 // Styles
 gulp.task('styles', function() {
     return sass('style.scss', { style: 'compressed' })
-        .pipe(gulp.dest('.'))
         .pipe(minifycss())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('./public/styles'));
