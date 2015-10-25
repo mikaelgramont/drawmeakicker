@@ -7,6 +7,7 @@ After launching:
 	- look into landscape mode
 	- background for mobile
 	- header image
+	- 2d cam cuts content off in landscape mobile
 - iframe version: autostart, and add html code to share panel
 - use client hints to serve different images: https://developers.google.com/web/updates/2015/09/automating-resource-selection-with-client-hints
 - remember units

@@ -14,11 +14,12 @@ $color-dark-brown: #151100;
 $text-default-size: 16px;
 $margin-default: 15px;
 $gutter-width: 20px;
+$gutter-width-mobile: 10px;
 $default-shadow-width: 3px;
 $default-box-shadow: $default-shadow-width $default-shadow-width 1px rgba(0, 0, 0, 0.25);
 
 $editor-height-desktop: 700px;
-$editor-height-not-desktop: 90vh;
+$editor-height-not-desktop: 100vh;
 
 $bg-blur: 3px;
 $content-max-width: 1280px;
@@ -351,10 +352,12 @@ h2,
 .expanded-editor .editor {
   /* Can't use 100% because for some reason that translates to 100% of the viewport */
   height: $editor-height-desktop;
+  padding: $margin-default 3px 3px 0;
   @include not_desktop {
     height: $editor-height-not-desktop;
+    padding: 3px 3px 10px;
+    box-sizing: border-box;
   }
-  padding: $margin-default 3px 3px 0;
 }
 
 .renderer-accordion {
@@ -378,7 +381,7 @@ h2,
 .renderer-container {
   margin-left: $gutter-width;
   @include mobile {
-    margin-left: 5px;
+    margin-left: $gutter-width-mobile;
   }
   position: relative;
   z-index: $renderer-container-layer;
@@ -390,6 +393,9 @@ h2,
 .toolbar {
   position: relative;
   margin-bottom: $gutter-width;
+  @include not_desktop {
+    margin-bottom: $gutter-width-mobile;
+  }
   padding: 5px 10px;
   display: none;
   justify-content: space-between;

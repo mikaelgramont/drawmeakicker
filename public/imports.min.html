@@ -6808,6 +6808,8 @@ Polymer({
       border: 0;
       padding: 5px 15px;
       margin: 0;
+      /* This needs to match the height of the text in the toolbar. */
+      line-height: 31px;
     }
     .title:hover {
       cursor: pointer;
@@ -7257,7 +7259,8 @@ Polymer({
       });
     },
     onVRClick: function(e) {
-      // Only do this here because we HAVE to.
+      // Only do this here because we HAVE to since
+      // fullscreen requests can't be done through custom events.
       // Everything else will take place somewhere else.
       if (this.rendererEl.mozRequestFullScreen) {
           this.rendererEl.mozRequestFullScreen();
