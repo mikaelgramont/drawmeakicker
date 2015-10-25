@@ -1,14 +1,12 @@
-quand on clique sur le bouton, faire slider le menu,
-set a max height on mobile for the editor
-
-
-
-
-
 sudo /usr/local/mysql/support-files/mysql.server start
 
 After launching:
-- responsiveness, no zooming on mobile
+- responsiveness:
+	- need to be able to flick the accordion out
+	- stop scroll events at the top or bottom of accordion
+	- look into landscape mode
+	- background for mobile
+	- header image
 - iframe version: autostart, and add html code to share panel
 - use client hints to serve different images: https://developers.google.com/web/updates/2015/09/automating-resource-selection-with-client-hints
 - remember units

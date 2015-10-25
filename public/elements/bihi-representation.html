@@ -84,7 +84,8 @@
       });
     },
     onVRClick: function(e) {
-      // Only do this here because we HAVE to.
+      // Only do this here because we HAVE to since
+      // fullscreen requests can't be done through custom events.
       // Everything else will take place somewhere else.
       if (this.rendererEl.mozRequestFullScreen) {
           this.rendererEl.mozRequestFullScreen();

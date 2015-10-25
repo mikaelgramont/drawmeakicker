@@ -15,10 +15,10 @@ gulp.task('build', ['styles', 'imports', 'scripts'], function() {});
 
 // Styles
 gulp.task('styles', function() {
-    return sass('style.sass', { style: 'compressed' })
+    return sass('style.scss', { style: 'compressed' })
         .pipe(gulp.dest('.'))
-        .pipe(rename({suffix: '.min'}))
         .pipe(minifycss())
+        .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('./public/styles'));
 });
 

@@ -23,9 +23,11 @@ $editor-height-not-desktop: 90vh;
 $bg-blur: 3px;
 $content-max-width: 1280px;
 
-$accordion-layer: 3;
-$canvas-button-layer: 2;
-$editor-layer: 1;
+$accordion-layer: 5;
+$renderer-mask-layer: 4;
+$canvas-button-layer: 3;
+$editor-layer: 2;
+$renderer-container-layer: 1;
 
 $accordion-transition-duration: 300ms;
 
@@ -230,7 +232,7 @@ h2,
 @include mobile {
   .vr-container {
     position: absolute;
-    top: 95px;
+    top: 80px;
     right: 20px;
     z-index: $canvas-button-layer;
   }
@@ -356,6 +358,7 @@ h2,
 }
 
 .renderer-accordion {
+  overflow-y: auto;
   width: 280px;
   @include not_desktop {
     position: absolute;
@@ -377,29 +380,40 @@ h2,
   @include mobile {
     margin-left: 5px;
   }
+  position: relative;
+  z-index: $renderer-container-layer;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
 .toolbar {
+  position: relative;
   margin-bottom: $gutter-width;
-  padding: 10px;
+  padding: 5px 10px;
   display: none;
   justify-content: space-between;
   align-content: center;
 }
 
-.toolbar-item {
+.toolbar-item,
+#mobile-menu {
   /* Same height as small buttons. */
   line-height: 31px;
-  @include not_desktop {
-    line-height: initial;
+}
+
+@include not_desktop {
+  .toolbar-item.first {
+    margin-left: 41px;
   }
 }
 
-.mobile-menu {
-
+#mobile-menu {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 5px;
+  background: #f8faff;
 }
 
 .editor[loaded] .toolbar {
@@ -499,6 +513,29 @@ footer {
 
 svg path {
   fill: $color-text;
+}
+
+svg.inverted path {
+  fill: $color-light-blue;
+}
+
+#renderer-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  z-index: $renderer-mask-layer;
+  background: rgba(0,0,0,.5);
+}
+
+#pointer-mask {
+  pointer-events: none;
+}
+
+.accordion-visible #renderer-mask {
+  display: initial;
 }
 
 @-webkit-keyframes rotating /* Safari and Chrome */ {

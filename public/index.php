@@ -144,6 +144,7 @@
   					</svg>
 				</div>
 				<bihi-editor class="editor">
+					<div id="renderer-mask"></div>
 					<bihi-accordion class="renderer-accordion blueprint" role="tablist">
 						<bihi-design-step caption="Design" step="0" display-step="1" active first>
 							<bihi-controlbuttons id="buttons"></bihi-controlbuttons>							
@@ -189,8 +190,12 @@
 					</bihi-accordion>
 					<div class="renderer-container">
 						<div class="toolbar blueprint">
-					      	<span id="mobile-menu" role="button" aria-label="menu" class="mobile-menu not-desktop toolbar-item">Menu</span>
-							<bihi-units class="toolbar-item" units="<?php echo $units; ?>"></bihi-units>
+					      	<span id="mobile-menu" role="button" aria-label="menu" class="mobile-menu not-desktop toolbar-item">
+								<svg height="31px" class="inverted" style="enable-background:new 0 0 32 32;" version="1.1" viewBox="0 0 32 32" width="31px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+									<path d="M4,10h24c1.104,0,2-0.896,2-2s-0.896-2-2-2H4C2.896,6,2,6.896,2,8S2.896,10,4,10z M28,14H4c-1.104,0-2,0.896-2,2  s0.896,2,2,2h24c1.104,0,2-0.896,2-2S29.104,14,28,14z M28,22H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h24c1.104,0,2-0.896,2-2  S29.104,22,28,22z"/>
+								</svg>					      		
+					      	</span>
+							<bihi-units class="toolbar-item first" units="<?php echo $units; ?>"></bihi-units>
 							<bihi-representation class="toolbar-item"></bihi-representation>
 						</div>
 						<bihi-renderer3d id="renderer" class="blueprint"></bihi-renderer3d>

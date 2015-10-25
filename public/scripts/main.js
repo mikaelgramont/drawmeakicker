@@ -64,8 +64,9 @@
 	});
 
 	function setListeners() {
+		var body = document.body;
 		startEl.addEventListener('click', showEditor);
-		document.body.addEventListener('renderer-event', function(e) {
+		body.addEventListener('renderer-event', function(e) {
 			if (!e.detail.type) {
 				throw new Error('Unspecified renderer event type.');
 			}
@@ -75,17 +76,17 @@
 			rendererEl.dispatchEvent(new CustomEvent(type, {detail: detail}));
 		});
 
-		document.body.addEventListener('published-state-change',
+		body.addEventListener('published-state-change',
 			function(e) {
 				editorEl.dispatchEvent(new CustomEvent('editor-react-to-state-change', {detail: e.detail}));
 		});
 
-		document.body.addEventListener('requested-state-change',
+		body.addEventListener('requested-state-change',
 			function(e) {
 				editorEl.dispatchEvent(new CustomEvent('editor-apply-state-change', {detail: e.detail}));
 		});
 
-		document.body.addEventListener('units-change-request',
+		body.addEventListener('units-change-request',
 			function(e) {
 				var event = new CustomEvent('units-change', {detail: e.detail})
 				editorEl.dispatchEvent(event);
@@ -93,28 +94,44 @@
 				resultsEl.dispatchEvent(event);
 		});
 
-		document.body.addEventListener('vr-start', function(e) {
+		body.addEventListener('vr-start', function(e) {
 			editorEl.startVR();
 		});
 
-		document.body.addEventListener('vr-stop', function(e) {
+		body.addEventListener('vr-stop', function(e) {
 			editorEl.stopVR();
 		});
 
 		var alertEl = document.getElementById('alert');
-		document.body.addEventListener('alert-set-message',
+		body.addEventListener('alert-set-message',
 			function(e) {
 				alertEl.message = e.detail.message;
 		});
 
+		// MOBILE MENU
 		var menuEl = document.getElementById('mobile-menu');
 		menuEl.addEventListener('click', function(e) {
-			document.body.classList.add('accordion-visible');
+			body.classList.add('accordion-visible');
 			e.stopPropagation();
 		}, false);
-		document.body.addEventListener('click', function(e) {
-			document.body.classList.remove('accordion-visible');
-		});
+		var maskEl = document.getElementById('renderer-mask');
+		var isTouchMoving = false;
+		maskEl.addEventListener('touchmove', function(e) {
+			// Disable scrolling by touching the mask.
+			e.preventDefault();
+			isTouchMoving = true;
+		}, true);
+		maskEl.addEventListener('touchend', function(e) {
+			e.preventDefault();
+			if (isTouchMoving) {
+				isTouchMoving = false;
+				return;
+			} else {
+				if (body.classList.contains('accordion-visible')) {
+					body.classList.remove('accordion-visible');
+				}
+			}
+		}, true);
 	}
 
 	function showEditor() {
