@@ -6922,6 +6922,7 @@ Polymer({
       this.accordionEl = document.getElementsByClassName('renderer-accordion')[0];
       this.loaded = true;
       this.VRState = false;
+      this.wakeLock = new WakeLock();
     },
     init: function(initValues, units) {
       this.defaultInitialValues = initValues;
@@ -7032,9 +7033,11 @@ Polymer({
     },
     startVR: function() {
       this.VRState = true;
+      this.wakeLock.request();
     },
     stopVR: function() {
       this.VRState = false;
+      this.wakeLock.release();
     },
     updateVR: function() {
       this.fire("vr-set-state", {VRState: this.VRState}, this.rendererEl, false);

@@ -74,7 +74,8 @@ gulp.task('scripts', function () {
             'public/scripts/sequencer.js',
             'public/scripts/renderer3d.js',
             'public/scripts/blueprintborderrenderer.js',
-            'public/scripts/mergedrenderer.js'        
+            'public/scripts/mergedrenderer.js',
+            'public/scripts/wakelock.js'
         ])
         .pipe(concat('scripts.min.js'))
         .pipe(uglify())
