@@ -23,7 +23,7 @@
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 	$dev = isset($_GET['dev']) ? (bool)$_GET['dev'] : DEV;
 	$isMobile = MobileDetector::isMobile($_SERVER['HTTP_USER_AGENT']);
-	$vr = $isMobile || isset($_GET['vr']) ? (bool)$_GET['vr'] : false;
+	$vr = $isMobile || (isset($_GET['vr']) ? (bool)$_GET['vr'] : false);
 	$useCdn = isset($_GET['cdn']) ? (bool)$_GET['cdn'] : USE_CDN;
 
 	$cache = Cache::getCache(CACHE_METHOD);
