@@ -109,8 +109,10 @@
 		});
 
 		// MOBILE MENU
+		var documentScrollTop;
 		var menuEl = document.getElementById('mobile-menu');
-		menuEl.addEventListener('click', function(e) {
+		menuEl.addEventListener('touchstart', function(e) {
+			documentScrollTop = document.body.scrollTop;
 			body.classList.add('accordion-visible');
 			e.stopPropagation();
 		}, false);
@@ -122,6 +124,7 @@
 			isTouchMoving = true;
 		}, true);
 		var hideAccordion = function() {
+			window.scroll(0, documentScrollTop);
 			if (body.classList.contains('accordion-visible')) {
 				body.classList.remove('accordion-visible');
 			}			
@@ -136,6 +139,21 @@
 			}
 		}, true);
 		maskEl.addEventListener('click', hideAccordion, true);
+		var accordionEl = document.getElementsByClassName('renderer-accordion')[0];
+		accordionEl.addEventListener('mousewheel', function(e) {
+			if (accordionEl.scrollTop == 0 && e.deltaY < 0 ||
+				accordionEl.scrollTop == accordionEl.scrollHeight - accordionEl.clientHeight && e.deltaY > 0) {
+				e.preventDefault();
+			}
+		});
+		/* TODO for menu sliding.
+		- on touchstart, remember position, apply a "moving" class. remove the styling that does transitions
+		- on touchmove,
+			if difference < threshold set style.transform = 'translateX(' + difference + 'px)'
+			else remove moving class and style and close menu
+		- on touchend, restore classes and styles
+		*/
+
 	}
 
 	function showEditor() {

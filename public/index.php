@@ -118,7 +118,8 @@
 			<div class="top-section-container">
 				<section class="top-section">
 					<h2 class="top-section-header">
-						Ramp design the easy way.
+						<span>Ramp design</span>
+						<span>the easy way.</span>
 					</h2>
 					<div class="top-section-body">
 						<div class="intro-container top-section-content grid-element size-2">

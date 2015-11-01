@@ -7,11 +7,12 @@ After launching:
 	- background for mobile
 	- header image
 	- 2d cam cuts content off in landscape mobile
-- iframe version: autostart, and add html code to share panel
-- use client hints to serve different images: https://developers.google.com/web/updates/2015/09/automating-resource-selection-with-client-hints
-- remember units
 
 Nice to have:
+- type parameter numbers in directly.
+- replace VR button with fullscreen button for platforms that don't support device orientation.
+- iframe version: autostart, and add html code to share panel
+- remember units
 - add a clearcache gulp task
 - list scripts in a json file
 - mess with console.time to get a sense for how slow things are to load on 3g

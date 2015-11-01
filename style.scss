@@ -173,10 +173,6 @@ button.small:focus {
   padding: 5px;
 }
 
-header {
-  margin-bottom: $margin-default;
-}
-
 header .logo {
   padding: 15px;
   background: #151100;
@@ -364,7 +360,8 @@ h2,
   overflow-y: auto;
   width: 280px;
   @include not_desktop {
-    position: absolute;
+    position: fixed;
+    top: 0;
     z-index: $accordion-layer;
     transform: translateX(-100%);
     -webkit-transition: -webkit-transform $accordion-transition-duration;
@@ -432,6 +429,10 @@ h2,
   @include mobile {
     margin-top: 10px;
   }
+}
+
+.top-section-container span {
+  display: inline-block;
 }
 
 .top-section {
