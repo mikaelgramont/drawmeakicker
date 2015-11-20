@@ -102,9 +102,14 @@ EditorScene.getRenderer = function(canvasEl) {
 		preserveDrawingBuffer: true
 	};
 
+	var threeRenderer;
 	if (!window.WebGLRenderingContext) {
-		return new THREE.CanvasRenderer(options);
+		threeRenderer = new THREE.CanvasRenderer(options);
 	} else {
-		return threeRenderer = new THREE.WebGLRenderer(options);
+		threeRenderer = new THREE.WebGLRenderer(options);
 	}
+
+	threeRenderer.setPixelRatio(window.devicePixelRatio);
+
+	return threeRenderer;
 };
