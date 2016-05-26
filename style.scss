@@ -269,6 +269,10 @@ h2,
   display: block;
 }
 
+.content > * {
+  flex: 1 0 auto;
+}
+
 .main {
   box-sizing: border-box;
   width: 100%;
@@ -494,12 +498,17 @@ footer {
       flex-grow: 1;
       max-width: 100px;
       padding: $margin-default;
+      text-align: center;
     }
   }
   a {
     color: $color-text;
     text-decoration: none;
   }
+}
+
+.content > footer {
+  flex-grow: 0;
 }
 
 .representation-container {
