@@ -11,7 +11,7 @@ The target audience is the type of people who have experience with launching off
 ##Install
 Install all bower dependencies.
 
-Copy `php/constants.conf.php` to `php/constants.php` and adjust `SITE_URL` to match the deployment site domain and path.
+Copy `php/constants.conf.php` to `php/constants.php` and adjust `SITE_URL` and `BASE_URL` to match the deployment site domain and path. Set `DEV` to true, otherwise you'll have to set up url rewriting for file versioning.
 
 Copy `php/dbsettings.conf.php` to `php/dbsettings.php` and set the MySQL parameters to match the host's.
 
