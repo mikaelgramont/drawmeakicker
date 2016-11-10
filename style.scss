@@ -23,6 +23,7 @@ $editor-height-not-desktop: 100vh;
 
 $bg-blur: 3px;
 $content-max-width: 1280px;
+$top-section-max-width: 960px;
 
 $accordion-layer: 5;
 $renderer-mask-layer: 4;
@@ -173,6 +174,15 @@ button.small:focus {
   padding: 5px;
 }
 
+header {
+  box-shadow: $default-box-shadow;
+}
+
+header, footer {
+  position: relative;
+  z-index: 1;
+}
+
 header .logo {
   padding: 15px;
   background: #151100;
@@ -267,10 +277,6 @@ h2,
 
 .expanded-editor .content {
   display: block;
-}
-
-.content > * {
-  flex: 1 0 auto;
 }
 
 .main {
@@ -428,7 +434,11 @@ h2,
 }
 
 .top-section-container {
-  max-width: $content-max-width;
+  height: 80%;
+  min-height: 400px;
+  flex: 1 0 auto;
+  self-align: center;
+  max-width: $top-section-max-width;
   margin: 30px auto 10px;
   @include mobile {
     margin-top: 10px;
@@ -440,6 +450,7 @@ h2,
 }
 
 .top-section {
+  height: 100%;
   position: relative;
   box-sizing: border-box;
   margin: 0 50px;
@@ -505,10 +516,6 @@ footer {
     color: $color-text;
     text-decoration: none;
   }
-}
-
-.content > footer {
-  flex-grow: 0;
 }
 
 .representation-container {
