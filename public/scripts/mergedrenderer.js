@@ -18,7 +18,7 @@ MergedRenderer.prototype.getData = function(options) {
 		ctx.fillStyle = '#3B69D5';
 		ctx.fillRect(0, 0, this.mergedCanvasEl.width, this.mergedCanvasEl.height);          
 	}
-	ctx.drawImage(this.canvas3dEl, 10, 10);
+	ctx.drawImage(this.canvas3dEl, 10, 10, this.mergedCanvasEl.width, this.mergedCanvasEl.height);
 	if (options.borders) {
 		ctx.drawImage(this.canvas2dEl, 10, 10, this.mergedCanvasEl.width - 20, this.mergedCanvasEl.height - 20);
 	}
