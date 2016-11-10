@@ -43,7 +43,9 @@
     <div class="canvas-container">
       <canvas id="canvas2d"></canvas>
     </div>
-    <canvas id="merged-canvas"></canvas>
+    <div style="background:red; position:relative; height: 50%; width: 50%; top: 0; left: 0;">
+      <canvas id="merged-canvas"></canvas>
+    </div>
   </template>
 
 </dom-module>
@@ -163,9 +165,7 @@
       var lnk = document.createElement('a');
       lnk.download = filename;
       lnk.href = imgData;
-
-      var e = new Event("click");
-      lnk.dispatchEvent(e);
+      lnk.click();
     },
     updateUnits: function(e) {
       this.renderer.setUnits(e.detail.units);
