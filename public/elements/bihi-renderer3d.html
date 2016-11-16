@@ -170,6 +170,11 @@
     },
     VRSetState: function(e) {
       this.renderer.setVRState(e.detail.VRState);
+        // Make sure to redraw the canvas, otherwise:
+        // - on enter it may not be the right size.
+        // - on exit, it may remain stuck in a hybrid state
+        //   (2 cameras but only 1 displayed).
+        this.renderer.resize();
     }
   });
 

@@ -95,12 +95,12 @@
 		});
 
 		body.addEventListener('vr-start', function(e) {
-			body.classList.add('vr');
+			body.classList.add('fullscreen-vr');
 			editorEl.startVR();
 		});
 
 		body.addEventListener('vr-stop', function(e) {
-			body.classList.remove('vr');
+			body.classList.remove('fullscreen-vr');
 			editorEl.stopVR();
 		});
 

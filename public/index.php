@@ -109,13 +109,13 @@
 	<body class="<?php echo $body_classes ?>">
 		<bihi-alert message="<?php echo $message ?>" id="alert"></bihi-alert>
 		<div class="content">
-			<header>
-        <div role="banner" class="logo size-4">
-          <?php echo SITE_TITLE_HTML ?>
-        </div>
+			<header class="hidden-in-fullscreen">
+		        <div role="banner" class="logo size-4">
+		          <?php echo SITE_TITLE_HTML ?>
+		        </div>
 			</header>
 
-			<div class="top-section-container">
+			<div class="top-section-container hidden-in-fullscreen">
 				<section class="top-section">
 					<h2 class="top-section-header">
 						<span>Ramp design</span>
@@ -203,7 +203,7 @@
 					</div>
 				</bihi-editor>
 			</div>
-			<footer>
+			<footer class="hidden-in-fullscreen">
 				<ul>
 					<li>
 						<a href="<?php echo ABOUT_LINK ?>">About</a>

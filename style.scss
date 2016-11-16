@@ -183,13 +183,11 @@ header, footer {
   z-index: 1;
 }
 
-.vr header,
-.vr .top-section-container,
-.vr footer {
+.fullscreen-vr .hidden-in-fullscreen {
   display: none;
 }
 
-.vr bihi-renderer3d {
+.fullscreen-vr bihi-renderer3d {
   width: 100%;
   height: 100%;
 }
