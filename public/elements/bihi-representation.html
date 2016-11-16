@@ -96,6 +96,7 @@
     setRadioChecked: function() {
       this.is2d = this.repType == '2d';
       this.is3d = this.repType == '3d';
+      document.body.classList.toggle('rep-2d', this.is2d);
     },
     onRepTypeUpdate: function() {
       this.setRadioChecked();

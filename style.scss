@@ -245,6 +245,10 @@ h2,
   font-size: 50px;
 }
 
+.rep-2d .vr-container {
+  display: none;
+}
+
 @include mobile {
   .vr-container {
     position: absolute;
