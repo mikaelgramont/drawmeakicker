@@ -62,10 +62,10 @@
       this.rendererEl.addEventListener('mozfullscreenchange', onFullScreenChange.bind(this));
       this.rendererEl.addEventListener('webkitfullscreenchange', onFullScreenChange.bind(this));
       this.rendererEl.addEventListener('fullscreenchange', onFullScreenChange.bind(this));
+      this.isFullScreen = false;
       function onFullScreenChange() {
-        var isFullScreen = (window.innerHeight == this.rendererEl.clientHeight
-          && window.innerWidth == this.rendererEl.clientWidth);
-        if (isFullScreen) {
+        this.isFullScreen = !this.isFullScreen;
+        if (this.isFullScreen) {
             this.fire("vr-start", {}, document.body, false);
         } else {
           this.fire("vr-stop", {}, document.body, false);

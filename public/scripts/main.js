@@ -95,10 +95,12 @@
 		});
 
 		body.addEventListener('vr-start', function(e) {
+			body.classList.add('vr');
 			editorEl.startVR();
 		});
 
 		body.addEventListener('vr-stop', function(e) {
+			body.classList.remove('vr');
 			editorEl.stopVR();
 		});
 
