@@ -7635,10 +7635,10 @@ Polymer({
       this.rendererEl.addEventListener('mozfullscreenchange', onFullScreenChange.bind(this));
       this.rendererEl.addEventListener('webkitfullscreenchange', onFullScreenChange.bind(this));
       this.rendererEl.addEventListener('fullscreenchange', onFullScreenChange.bind(this));
+      this.isFullScreen = false;
       function onFullScreenChange() {
-        var isFullScreen = (window.innerHeight == this.rendererEl.clientHeight
-          && window.innerWidth == this.rendererEl.clientWidth);
-        if (isFullScreen) {
+        this.isFullScreen = !this.isFullScreen;
+        if (this.isFullScreen) {
             this.fire("vr-start", {}, document.body, false);
         } else {
           this.fire("vr-stop", {}, document.body, false);
@@ -7669,6 +7669,7 @@ Polymer({
     setRadioChecked: function() {
       this.is2d = this.repType == '2d';
       this.is3d = this.repType == '3d';
+      document.body.classList.toggle('rep-2d', this.is2d);
     },
     onRepTypeUpdate: function() {
       this.setRadioChecked();
@@ -7871,6 +7872,11 @@ Polymer({
     },
     VRSetState: function(e) {
       this.renderer.setVRState(e.detail.VRState);
+        // Make sure to redraw the canvas, otherwise:
+        // - on enter it may not be the right size.
+        // - on exit, it may remain stuck in a hybrid state
+        //   (2 cameras but only 1 displayed).
+        this.renderer.resize();
     }
   });
 
