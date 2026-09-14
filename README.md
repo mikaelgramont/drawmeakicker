@@ -1,33 +1,68 @@
 # Draw me a kicker!
 
 ## What is this?
-This is a personal project I wrote in my spare time to learn how to use Polymer and to have some fun with WebGL while possibly helping out some people out there.
-The app's goal is to help build ramps (aka jumps, aka kickers) for mountainboarding, biking, skateboarding and whatnot.
 
-The target audience is the type of people who have experience with launching off of these things, and who want to build a new one. They'll have an idea of how tall they want the jump, and what kind of exit angle they'll want. Some people like flatter, mellow jumps that are good for distance jumps, others will prefer steeper, floaty jumps that are good for tricks.
+An app for designing ramps (aka jumps, aka kickers) for mountainboarding, biking,
+skateboarding and whatnot.
 
-![](https://raw.githubusercontent.com/mikaelgramont/drawmeakicker/master/public/images/default-kicker.png)
+The target audience is the type of people who have experience with launching off of
+these things, and who want to build a new one. They'll have an idea of how tall they
+want the jump, and what kind of exit angle they'll want. Some people like flatter,
+mellow jumps that are good for distance jumps, others will prefer steeper, floaty
+jumps that are good for tricks.
 
-##Install
-Install all bower dependencies.
+![](public/images/default-kicker.png)
 
-Copy `php/constants.conf.php` to `php/constants.php` and adjust `SITE_URL` and `BASE_URL` to match the deployment site domain and path. Set `DEV` to true, otherwise you'll have to set up url rewriting for file versioning.
+## Running it
 
-Copy `php/dbsettings.conf.php` to `php/dbsettings.php` and set the MySQL parameters to match the host's.
+Requires Node 22+ and pnpm.
 
-Run the `bihi_kickers.sql` file through MySQL to create the necessary table (you'll need this for saving and loading kickers, but the rest of the app is all client-side, so you'll be mostly fine without it).
+```sh
+pnpm install
+pnpm dev
+```
 
-Make sure the `cache` folder can be written to by the http server.
+Other scripts:
 
-## Building
-The client-side app is built on Polymer, which makes heavy use of custom elements, which all live in separate files (prefixed with bihi-). In order to avoid slowing things down on HTTP/1.1 connections, we can use [vulcanizer](https://github.com/polymer/vulcanize) to concatenate them all into one.
+| Script           | What it does                                        |
+| ---------------- | --------------------------------------------------- |
+| `pnpm build`     | Static export into `out/`                           |
+| `pnpm test`      | Geometry, unit and store tests (Vitest)             |
+| `pnpm typecheck` | `tsc --noEmit`                                      |
 
-On top of those custom elements, there's a ton of separate script files that need to be loaded. There's no module loading logic here, I didn't feel like doing it. So vulcanizer is also used to concatenate them all and send them over to the client in one single file.
+## How it fits together
 
-Developing locally is done by setting the DEV constant to true in the constants.php file. Setting it to false means the client will load bundled (vulcanized) files.
+Phase 1 is a purely static frontend: `next.config.ts` sets `output: 'export'`, so
+there is no server and no database yet.
 
-To update those bundles, run:
+- `src/lib/kicker` — the geometry. Arc radius, footprint, surface length, the side
+  and surface outlines, strut placement, and unit formatting. No three.js, so it is
+  unit-testable and reusable from the server in Phase 2.
+- `src/store/editor-store.ts` — all editor state, including the four-state editor
+  mode machine. Derived dimensions are computed by selector, never stored.
+- `src/scene` — the react-three-fiber scene. One component per part, with the
+  visibility truth table in `visibility.ts` and the orthographic bounding-box fit
+  for the 2D blueprint view in `Cameras.tsx`.
+- `src/components` — the UI: landing page, stepped sidebar, toolbar, and the stack
+  of three canvases (WebGL scene, blueprint frame, and a hidden one for compositing
+  PNG exports).
 
-`vulcanize scripts-dev.html > scripts.html`
+The editor is code-split behind `next/dynamic`: three.js and the XR runtime only
+download once the visitor asks for the editor.
 
-`vulcanize imports-dev.html > imports.html`
+## Assets
+
+`public/models/board.glb` is generated from the original Collada file:
+
+```sh
+pnpm assets:board
+```
+
+## Porting notes
+
+The original app (Polymer 0.8, three.js r71, PHP, MySQL) is preserved under
+`legacy/` for reference. It is not built or served, and it is not wired to
+anything — it is there so the port can be checked against it.
+
+Phase 2 will drop the static export to add the SQLite layer (Drizzle ORM) behind
+`?id=` URLs, restoring save and load.
