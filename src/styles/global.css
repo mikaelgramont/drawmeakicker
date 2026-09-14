@@ -1,0 +1,243 @@
+/*
+ * Ported from legacy/style.scss. Sass variables became custom properties;
+ * the not_desktop/mobile/tablet/desktop mixins became the breakpoints
+ * documented in src/styles/breakpoints.ts and used via plain media queries.
+ */
+
+:root {
+  --color-light-blue: #3b69d5;
+  --color-dark-blue: #010845;
+  --color-background: #8b8a84;
+  --color-text: #f8faff;
+  --color-light-brown: #e9b900;
+  --color-dark-brown: #151100;
+
+  --text-default-size: 16px;
+  --margin-default: 15px;
+  --gutter-width: 20px;
+  --gutter-width-mobile: 10px;
+  --default-box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.25);
+
+  --editor-height-desktop: 700px;
+  --editor-height-not-desktop: 100vh;
+
+  --content-max-width: 1280px;
+  --top-section-max-width: 960px;
+
+  --layer-accordion: 5;
+  --layer-renderer-mask: 4;
+  --layer-canvas-button: 3;
+  --layer-editor: 2;
+  --layer-renderer-container: 1;
+
+  --accordion-transition-duration: 300ms;
+}
+
+@font-face {
+  font-family: Archer;
+  src: url("/fonts/archer-medium.otf");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Bebas;
+  src: url("/fonts/bebas.otf");
+  font-display: swap;
+}
+
+/*
+ * RESETS AND TOP-LEVEL LAYOUT
+ */
+body,
+input,
+textarea,
+button,
+select {
+  font-family: Archer, serif;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: Bebas, sans-serif;
+  letter-spacing: 1px;
+}
+
+p {
+  margin: 0 0 1.2em;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: var(--text-default-size);
+}
+
+@media screen and (min-width: 769px) {
+  body {
+    background: url("/images/seamlessbg.jpg");
+  }
+}
+
+input,
+select,
+button,
+textarea {
+  font-size: var(--text-default-size);
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+button,
+input[type="button"],
+input[type="submit"] {
+  background: transparent;
+  color: var(--color-text);
+  border: 2px solid var(--color-text);
+  border-radius: 3px;
+  padding: 15px 20px;
+  opacity: 0.95;
+}
+
+button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  background: var(--color-text);
+  color: var(--color-dark-blue);
+  opacity: 1;
+  cursor: pointer;
+}
+
+button:disabled,
+input[type="button"]:disabled,
+input[type="submit"]:disabled {
+  opacity: 0.6;
+}
+
+button:disabled:hover,
+input[type="button"]:disabled:hover,
+input[type="submit"]:disabled:hover {
+  cursor: auto;
+  background: transparent;
+  color: var(--color-text);
+}
+
+button.action {
+  background: var(--color-light-brown);
+  color: var(--color-text);
+  border: none;
+}
+
+button.deemphasized {
+  background: transparent;
+  color: var(--color-text);
+  border-color: transparent;
+}
+
+button.deemphasized:hover,
+button.deemphasized:focus {
+  background: var(--color-text);
+  color: var(--color-dark-blue);
+  border: 2px solid var(--color-text);
+}
+
+button.small,
+button.small:hover,
+button.small:focus {
+  padding: 5px;
+}
+
+/*
+ * CONVENIENCE CLASSES
+ */
+.hidden {
+  display: none;
+}
+
+.blueprint {
+  background: var(--color-light-blue);
+  box-shadow: var(--default-box-shadow);
+}
+
+.inverted {
+  background: var(--color-text);
+  color: var(--color-dark-blue);
+}
+
+.dashed-borders {
+  border: 1px dashed var(--color-text);
+}
+
+.size-2 {
+  font-size: 20px;
+}
+
+h3,
+.size-3 {
+  font-size: 24px;
+}
+
+h2,
+.size-4 {
+  font-size: 50px;
+}
+
+.not-mobile {
+  display: initial;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media screen and (max-width: 600px) {
+  .not-mobile {
+    display: none;
+  }
+
+  .mobile-only {
+    display: initial;
+  }
+}
+
+.not-desktop {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .not-desktop {
+    display: initial;
+  }
+}
+
+svg path {
+  fill: var(--color-text);
+}
+
+svg.inverted path {
+  fill: var(--color-light-blue);
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  animation: rotating 0.8s linear infinite;
+}
