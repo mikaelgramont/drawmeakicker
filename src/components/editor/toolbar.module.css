@@ -1,0 +1,57 @@
+.toolbar {
+  position: relative;
+  margin-bottom: var(--gutter-width);
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.item {
+  /* Same height as a small button, so the toolbar lines up with step titles. */
+  line-height: 31px;
+}
+
+.choice {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  white-space: nowrap;
+}
+
+.menuButton {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 5px;
+  border: 0;
+  border-radius: 0;
+  line-height: 31px;
+  background: var(--color-text);
+}
+
+.vrButton {
+  padding: 0;
+  border: 0;
+  margin-left: 10px;
+  background: transparent;
+  vertical-align: middle;
+}
+
+.vrButton:hover {
+  background: transparent;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .toolbar {
+    margin-bottom: var(--gutter-width-mobile);
+  }
+
+  /* Clear the absolutely positioned menu button. */
+  .first {
+    margin-left: 41px;
+  }
+}

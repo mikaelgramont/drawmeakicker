@@ -1,0 +1,36 @@
+.result {
+  display: block;
+  margin: 10px 0;
+}
+
+.checkboxes {
+  padding: 10px 0;
+}
+
+.checkboxLabel {
+  display: block;
+}
+
+.buttonRow {
+  margin: 10px 0;
+  text-align: right;
+}
+
+.field {
+  display: block;
+  margin: 10px 0;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.textarea {
+  height: 4.5em;
+}
+
+.note {
+  margin: 10px 0;
+}

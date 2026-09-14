@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { create } from "zustand";
 import {
   calculateResults,
@@ -140,4 +141,22 @@ export function selectVisibleSteps(state: EditorState): readonly Step[] {
 /** Parameters are locked while viewing a saved kicker. */
 export function selectParametersLocked(state: EditorState): boolean {
   return state.mode === "readOnly";
+}
+
+/*
+ * The two selectors above build a fresh object on every call, so they cannot
+ * be handed to useEditorStore directly: the subscription compares snapshots by
+ * identity and would re-render forever. These hooks subscribe to the primitives
+ * the derivation actually depends on and memoize the result.
+ */
+
+export function useResults(): KickerResults {
+  const height = useEditorStore((state) => state.kicker.height);
+  const angle = useEditorStore((state) => state.kicker.angle);
+  return useMemo(() => calculateResults(height, angle), [height, angle]);
+}
+
+export function useVisibleSteps(): readonly Step[] {
+  const mode = useEditorStore((state) => state.mode);
+  return useMemo(() => selectVisibleSteps({ mode } as EditorState), [mode]);
 }

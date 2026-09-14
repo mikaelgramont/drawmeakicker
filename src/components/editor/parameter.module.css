@@ -1,0 +1,31 @@
+.parameter {
+  display: block;
+  margin: 10px 0;
+}
+
+.caption {
+  display: block;
+}
+
+.controls {
+  display: flex;
+  margin: 5px;
+}
+
+.slider {
+  margin: 5px;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.slider:disabled {
+  display: none;
+}
+
+.step {
+  padding: 0;
+  width: 2em;
+  height: 2em;
+  border-radius: 2em;
+  flex: none;
+}

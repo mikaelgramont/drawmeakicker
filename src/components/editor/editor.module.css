@@ -1,0 +1,62 @@
+.editor {
+  position: relative;
+  display: flex;
+  height: var(--editor-height-desktop);
+  padding: var(--margin-default) 3px 3px 0;
+}
+
+.sidebar {
+  /* Width and scrolling live in accordion.module.css. */
+  z-index: var(--layer-accordion);
+}
+
+.rendererContainer {
+  margin-left: var(--gutter-width);
+  position: relative;
+  z-index: var(--layer-renderer-container);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mask {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-renderer-mask);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+@media screen and (max-width: 768px) {
+  .editor {
+    height: var(--editor-height-not-desktop);
+    padding: 3px 3px 10px;
+    box-sizing: border-box;
+  }
+
+  /* The sidebar slides in over the drawing rather than sitting beside it. */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: translateX(-100%);
+    transition: transform var(--accordion-transition-duration);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .rendererContainer {
+    margin-left: var(--gutter-width-mobile);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar {
+    transition: none;
+  }
+}

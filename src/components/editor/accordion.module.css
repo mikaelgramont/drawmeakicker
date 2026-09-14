@@ -1,0 +1,71 @@
+.accordion {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-content: stretch;
+  align-items: stretch;
+  overflow-y: auto;
+  width: 280px;
+  flex: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #d7d7d7;
+}
+
+.step[data-active] {
+  flex-grow: 1;
+}
+
+.title {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-radius: 0;
+  padding: 5px 15px;
+  margin: 0;
+  opacity: 1;
+  /* Matches the height of the toolbar text so the two line up. */
+  line-height: 31px;
+}
+
+.title:hover {
+  cursor: pointer;
+}
+
+.body {
+  padding: 0 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.navigation {
+  display: flex;
+  margin: 15px 0;
+  justify-content: space-between;
+}
+
+.navigation button[hidden] {
+  /* Keep the surviving button on its own side rather than letting it centre. */
+  display: block;
+  visibility: hidden;
+}
+
+.fieldsetWrapper {
+  display: block;
+  margin: 10px 0;
+}
+
+.fieldset {
+  padding: 0 15px;
+  min-width: 0;
+}
