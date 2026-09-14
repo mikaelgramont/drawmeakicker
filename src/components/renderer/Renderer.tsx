@@ -50,7 +50,7 @@ export function Renderer({ canvases }: { canvases: RendererCanvases }) {
   );
 
   return (
-    <div className={styles.renderer}>
+    <div className={`${styles.renderer} blueprint`}>
       <div className={`${styles.layer} ${styles.content}`}>
         <Canvas
           ref={canvases.content}
