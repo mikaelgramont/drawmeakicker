@@ -37,6 +37,20 @@
   flex: 1 0 var(--editor-height-desktop);
 }
 
+.loadingPlaceholder {
+  background: var(--color-light-blue);
+  display: flex;
+  height: var(--editor-height-desktop);
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  outline: var(--color-text) 2px solid;
+}
+
+.loadAnimation path {
+  fill: var(--color-dark-blue);
+}
+
 .topSectionContainer {
   height: 80%;
   min-height: 400px;

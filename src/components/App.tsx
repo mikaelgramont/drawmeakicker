@@ -1,10 +1,41 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { ABOUT_LINK, GITHUB_LINK, SITE_TITLE_HTML, TWITTER_LINK, VIDEO_ID } from "@/lib/site";
 import { useEditorStore } from "@/store/editor-store";
-import { Editor } from "./editor/Editor";
 import styles from "./app.module.css";
+
+/** Ported from the .loading-placeholder block in legacy/public/index.php. */
+function LoadingPlaceholder() {
+  return (
+    <div className={styles.loadingPlaceholder}>
+      <svg
+        className={`${styles.loadAnimation} rotating`}
+        width="40"
+        height="40"
+        viewBox="0 0 50 50"
+        role="status"
+        aria-label="Loading the editor"
+      >
+        <path
+          d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z"
+          transform="rotate(291.879 25 25)"
+        />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * three.js, drei and the XR runtime are the bulk of the bundle and are of no
+ * use to someone reading the pitch, so the editor is fetched on demand. The
+ * legacy app did the same thing by injecting script tags from main.js.
+ */
+const Editor = dynamic(() => import("./editor/Editor").then((module) => module.Editor), {
+  ssr: false,
+  loading: LoadingPlaceholder,
+});
 
 function Alert() {
   const alert = useEditorStore((state) => state.alert);

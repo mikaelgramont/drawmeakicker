@@ -76,6 +76,7 @@ export function Renderer({ canvases }: { canvases: RendererCanvases }) {
               orbitEnabled={!vrActive}
               target={[length / 2, 0, 0]}
               content={contentRef}
+              labelled={kicker.annotations}
             />
 
             <ExportBridge onReady={registerRenderNow} />

@@ -4,10 +4,18 @@ import { useLayoutEffect, type RefObject } from "react";
 import { OrbitControls, OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Box3, OrthographicCamera as OrthographicCameraImpl, type Object3D } from "three";
+import { ANNOTATION_DISTANCE, ANNOTATION_TEXT_SIZE } from "./constants";
 import { visibleBoundingBox } from "./geometry";
 
 /** Fraction of slack left around the framed content in the 2D view. */
 const FIT_MARGIN = 0.1;
+
+/**
+ * Room to reserve for annotation labels, which the bounding box cannot
+ * measure. A label hangs one annotation-distance off the line it belongs to,
+ * so allow for that plus the height of the text itself.
+ */
+const LABEL_ALLOWANCE = ANNOTATION_DISTANCE + ANNOTATION_TEXT_SIZE;
 
 const box = new Box3();
 
@@ -21,7 +29,14 @@ const box = new Box3();
  * This runs on every commit rather than against a dependency list, because the
  * framing depends on which parts are visible, not just on the dimensions.
  */
-function Fit2dView({ content }: { content: RefObject<Object3D | null> }) {
+function Fit2dView({
+  content,
+  pad,
+}: {
+  content: RefObject<Object3D | null>;
+  /** Allowance for content the bounding box cannot measure, in metres. */
+  pad: number;
+}) {
   const camera = useThree((state) => state.camera);
   const size = useThree((state) => state.size);
   const invalidate = useThree((state) => state.invalidate);
@@ -31,6 +46,7 @@ function Fit2dView({ content }: { content: RefObject<Object3D | null> }) {
 
     visibleBoundingBox(content.current, box);
     if (box.isEmpty()) return;
+    box.expandByScalar(pad);
 
     const aspectRatio = size.width / size.height;
     const xRange = (1 + FIT_MARGIN) * Math.ceil(box.max.x - box.min.x);
@@ -61,6 +77,7 @@ export function Cameras({
   orbitEnabled,
   target,
   content,
+  labelled,
 }: {
   is3d: boolean;
   /** Orbiting is suspended while a headset is driving the camera. */
@@ -68,6 +85,8 @@ export function Cameras({
   /** What the perspective camera orbits around: the middle of the ramp. */
   target: [number, number, number];
   content: RefObject<Object3D | null>;
+  /** Whether annotation labels are showing, so the 2D fit can allow for them. */
+  labelled: boolean;
 }) {
   return (
     <>
@@ -89,7 +108,9 @@ export function Cameras({
         position={[-0.95, 1.64, 3.85]}
       />
 
-      {!is3d && <Fit2dView content={content} />}
+      {!is3d && (
+        <Fit2dView content={content} pad={labelled ? LABEL_ALLOWANCE : 0} />
+      )}
 
       {is3d && (
         <OrbitControls
