@@ -1,0 +1,32 @@
+.renderer {
+  position: relative;
+  flex-grow: 1;
+}
+
+/*
+ * The drawing sits inset from the blueprint panel, leaving a margin of paper
+ * around it. Both layers share the same rect so the export can composite them
+ * with a single offset.
+ */
+.layer {
+  position: absolute;
+  box-sizing: border-box;
+  inset: 10px;
+}
+
+/* Above the frame, so the transparent 3D canvas shows it through. */
+.content {
+  z-index: 1;
+}
+
+.borderCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Scratch surface for compositing the PNG export. */
+.mergeCanvas {
+  display: none;
+}
