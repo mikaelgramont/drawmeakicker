@@ -27,6 +27,7 @@ Other scripts:
 | Script           | What it does                                        |
 | ---------------- | --------------------------------------------------- |
 | `pnpm build`     | Static export into `out/`                           |
+| `pnpm start`     | Serve the `out/` export on port 3000                |
 | `pnpm test`      | Geometry, unit and store tests (Vitest)             |
 | `pnpm typecheck` | `tsc --noEmit`                                      |
 

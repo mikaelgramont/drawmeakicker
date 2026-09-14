@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "serve out -l 3000",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -34,6 +34,7 @@
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
     "jsdom": "^30.0.1",
+    "serve": "^14.2.6",
     "typescript": "^7.0.2",
     "vitest": "^5.0.0"
   }
