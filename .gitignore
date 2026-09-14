@@ -1,9 +1,18 @@
 .DS_Store
-bower_components
-.sass-cache
-_tmp
-.settings
-php/dbsettings.php
-php/constants.php
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Node
 node_modules/
-cache/z*
+.env*.local
+
+# Legacy PHP app (kept for reference during the port)
+legacy/bower_components
+legacy/.sass-cache
+legacy/php/dbsettings.php
+legacy/php/constants.php
+legacy/cache/z*
