@@ -2,13 +2,15 @@
 
 # Next.js
 /.next/
-/out/
 next-env.d.ts
 *.tsbuildinfo
 
 # Node
 node_modules/
 .env*.local
+
+# The SQLite database and its write-ahead log
+/data/
 
 # Legacy PHP app (kept for reference during the port)
 legacy/bower_components

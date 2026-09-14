@@ -16,6 +16,7 @@ import { ExportPanel } from "./panels/ExportPanel";
 import { ParametersPanel } from "./panels/ParametersPanel";
 import { ResultsPanel } from "./panels/ResultsPanel";
 import { NotesPanel, SavePanel } from "./panels/SavePanel";
+import { SharePanel } from "./panels/SharePanel";
 import styles from "./editor.module.css";
 
 const STEP_DEFINITIONS: Record<Step, Omit<AccordionStep, "id">> = {
@@ -57,15 +58,20 @@ const STEP_DEFINITIONS: Record<Step, Omit<AccordionStep, "id">> = {
       </Fieldset>
     ),
   },
-  // Only reachable once a kicker has been saved or loaded, so unreachable in
-  // Phase 1. The share buttons themselves are out of scope.
+  // Only reachable once a kicker has been saved or loaded, which is to say
+  // only once it has an id worth sharing.
   share: {
     caption: "Share",
     displayNumber: 3,
     content: (
-      <Fieldset legend="Notes">
-        <NotesPanel />
-      </Fieldset>
+      <>
+        <Fieldset legend="Notes">
+          <NotesPanel />
+        </Fieldset>
+        <Fieldset legend="Share with friends">
+          <SharePanel />
+        </Fieldset>
+      </>
     ),
   },
 };

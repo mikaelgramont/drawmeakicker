@@ -1,17 +1,35 @@
 "use client";
 
+import { GENERIC_SAVE_ERROR, saveKicker } from "@/lib/kicker-api";
 import { useEditorStore } from "@/store/editor-store";
 import styles from "./panels.module.css";
 
 /**
  * Title and description for a kicker, ported from bihi-save.
  *
- * The Save button is inert in Phase 1: there is no backend to post to yet, and
- * the app is built as a static export. Phase 2 wires it to POST /api/kickers.
+ * Pressing Save posts to /api/kickers and, on success, hands the new id and
+ * share links to the store, which swaps this step for Share. Failures go to
+ * the alert banner, as the legacy alert-set-message event did.
  */
 export function SavePanel() {
   const { title, description } = useEditorStore((state) => state.kicker);
   const setSaveFields = useEditorStore((state) => state.setSaveFields);
+  const saving = useEditorStore((state) => state.saving);
+  const setSaving = useEditorStore((state) => state.setSaving);
+  const markSaved = useEditorStore((state) => state.markSaved);
+  const setAlert = useEditorStore((state) => state.setAlert);
+
+  async function onSave() {
+    setSaving(true);
+    try {
+      // Read the kicker here rather than subscribing to it: this panel would
+      // otherwise re-render on every drag of a parameter slider.
+      markSaved(await saveKicker(useEditorStore.getState().kicker));
+    } catch (error) {
+      setSaving(false);
+      setAlert(error instanceof Error ? error.message : GENERIC_SAVE_ERROR);
+    }
+  }
 
   return (
     <div className="size-2">
@@ -23,6 +41,7 @@ export function SavePanel() {
         className={styles.input}
         value={title}
         maxLength={255}
+        disabled={saving}
         onChange={(event) => setSaveFields({ title: event.target.value })}
       />
 
@@ -34,12 +53,13 @@ export function SavePanel() {
         className={styles.textarea}
         value={description}
         maxLength={255}
+        disabled={saving}
         onChange={(event) => setSaveFields({ description: event.target.value })}
       />
 
       <div className={styles.buttonRow}>
-        <button type="button" disabled title="Saving arrives with the database in Phase 2">
-          Save
+        <button type="button" disabled={saving} onClick={onSave}>
+          {saving ? "Saving\u2026" : "Save"}
         </button>
       </div>
     </div>

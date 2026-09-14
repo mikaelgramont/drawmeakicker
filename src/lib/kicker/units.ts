@@ -30,3 +30,16 @@ export function formatLength(meters: number, unit: Unit): string {
 export function formatAngle(degrees: number): string {
   return `${degrees.toFixed(0)}${DEGREES}`;
 }
+
+/**
+ * Which unit to start a visitor off in, from their Accept-Language header.
+ *
+ * Ported from the en-US / en-CA check in legacy/public/index.php, which only
+ * looked at the head of the header: someone whose first preference is French
+ * gets meters even if en-US appears further down the list. Needs a server, so
+ * this went unused for the duration of the static-export phase.
+ */
+export function unitsForLanguage(acceptLanguage: string | null | undefined): Unit {
+  if (!acceptLanguage) return "m";
+  return /^en-(?:US|CA)\b/i.test(acceptLanguage.trim()) ? "ft" : "m";
+}

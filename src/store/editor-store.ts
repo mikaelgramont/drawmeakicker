@@ -8,6 +8,7 @@ import {
   type RepresentationType,
   type Unit,
 } from "@/lib/kicker";
+import type { ShareLinks } from "@/lib/share";
 
 /**
  * Replaces EditorState in legacy/public/scripts/editorstate.js. Same four
@@ -39,10 +40,37 @@ export type VisualizationPatch = Partial<
 export const STEPS = ["design", "visualize", "save", "share"] as const;
 export type Step = (typeof STEPS)[number];
 
+/**
+ * The server-rendered starting point, from `?id=` and the request headers.
+ * Every field is optional and anything omitted keeps its current value, so
+ * this only ever adds to the defaults; clearing is `resetToDefaults`' job.
+ */
+export interface EditorInit {
+  kicker?: Partial<Kicker>;
+  units?: Unit;
+  mode?: EditorMode;
+  /** The id of the kicker being viewed, when the page was loaded from `?id=`. */
+  savedId?: number;
+  share?: ShareLinks;
+  alert?: string;
+  /** Skip the pitch and reveal the editor, as the legacy autoStart flag did. */
+  editorOpen?: boolean;
+}
+
 export interface EditorState {
   kicker: Kicker;
   units: Unit;
   mode: EditorMode;
+
+  /**
+   * The id this kicker is reachable at, or null while it is unsaved. Set
+   * either by loading `?id=` or by a successful save.
+   */
+  savedId: number | null;
+  /** Share links for `savedId`, built by the server. */
+  share: ShareLinks | null;
+  /** Whether a save is in flight, which disables the form as bihi-save did. */
+  saving: boolean;
 
   /** Whether the editor has been revealed (the legacy `expanded-editor` body class). */
   editorOpen: boolean;
@@ -52,7 +80,7 @@ export interface EditorState {
   vrActive: boolean;
   alert: string;
 
-  initialize(input: { kicker?: Partial<Kicker>; units?: Unit; mode?: EditorMode }): void;
+  initialize(input: EditorInit): void;
   setParameter(name: "height" | "width" | "angle", value: number): void;
   setVisualization(patch: VisualizationPatch): void;
   setRepresentation(repType: RepresentationType): void;
@@ -66,6 +94,9 @@ export interface EditorState {
   setSidebarOpen(open: boolean): void;
   setVrActive(active: boolean): void;
   setAlert(message: string): void;
+
+  setSaving(saving: boolean): void;
+  markSaved(input: { id: number; kicker: Kicker; share: ShareLinks }): void;
 }
 
 export const useEditorStore = create<EditorState>()((set, get) => ({
@@ -73,17 +104,25 @@ export const useEditorStore = create<EditorState>()((set, get) => ({
   units: "m",
   mode: "new",
 
+  savedId: null,
+  share: null,
+  saving: false,
+
   editorOpen: false,
   sidebarOpen: false,
   step: "design",
   vrActive: false,
   alert: "",
 
-  initialize: ({ kicker, units, mode }) =>
+  initialize: ({ kicker, units, mode, savedId, share, alert, editorOpen }) =>
     set((state) => ({
       kicker: { ...state.kicker, ...kicker },
       units: units ?? state.units,
       mode: mode ?? state.mode,
+      savedId: savedId ?? state.savedId,
+      share: share ?? state.share,
+      alert: alert ?? state.alert,
+      editorOpen: editorOpen ?? state.editorOpen,
     })),
 
   setParameter: (name, value) =>
@@ -115,13 +154,55 @@ export const useEditorStore = create<EditorState>()((set, get) => ({
   },
 
   resetToDefaults: () =>
-    set({ kicker: defaultKicker, mode: "ready", step: "design", alert: "" }),
+    set({
+      kicker: defaultKicker,
+      mode: "ready",
+      step: "design",
+      alert: "",
+      savedId: null,
+      share: null,
+      saving: false,
+    }),
 
   goToStep: (step) => set({ step, sidebarOpen: false }),
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
   setVrActive: (vrActive) => set({ vrActive }),
   setAlert: (alert) => set({ alert }),
+
+  setSaving: (saving) => set({ saving }),
+
+  /**
+   * Accepts the save response: the kicker now has an id and share links, and
+   * the accordion lands on Share, as the SAVED branch of bihi-editor did.
+   *
+   * The title and description come back from the server rather than being
+   * kept from the form, so what is displayed is what was actually stored.
+   */
+  markSaved: ({ id, kicker, share }) => {
+    get().setMode("saved");
+    set({ kicker, savedId: id, share, saving: false, step: "share", alert: "" });
+  },
 }));
+
+/**
+ * Unlocks a loaded kicker so it can be used as the basis for a new design.
+ *
+ * The geometry is kept and only the identity is dropped, which is what
+ * bihi-editor's reset(true) amounted to: strip the id from the URL, clear the
+ * notes, re-enable the parameters. Clearing the notes matters because saving
+ * mints a new row, and inheriting someone else's title silently would be
+ * worse than starting blank.
+ */
+export function startDerivative(): void {
+  const { setMode, kicker } = useEditorStore.getState();
+  setMode("ready");
+  useEditorStore.setState({
+    kicker: { ...kicker, title: "", description: "" },
+    savedId: null,
+    share: null,
+    step: "design",
+  });
+}
 
 /** Derived dimensions. Recomputed from height/angle rather than stored. */
 export function selectResults(state: EditorState): KickerResults {

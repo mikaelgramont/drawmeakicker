@@ -24,21 +24,38 @@ pnpm dev
 
 Other scripts:
 
-| Script           | What it does                                        |
-| ---------------- | --------------------------------------------------- |
-| `pnpm build`     | Static export into `out/`                           |
-| `pnpm start`     | Serve the `out/` export on port 3000                |
-| `pnpm test`      | Geometry, unit and store tests (Vitest)             |
-| `pnpm typecheck` | `tsc --noEmit`                                      |
+| Script            | What it does                                          |
+| ----------------- | ----------------------------------------------------- |
+| `pnpm build`      | Production build                                      |
+| `pnpm start`      | Serve the build on port 3000                          |
+| `pnpm test`       | Geometry, unit, store, share and database tests        |
+| `pnpm typecheck`  | `tsc --noEmit`                                        |
+| `pnpm db:generate` | Write a migration into `drizzle/` after a schema edit |
+| `pnpm db:studio`  | Browse the database                                   |
+
+### Configuration
+
+Both are optional and both only matter on the server.
+
+| Variable         | Default                     | What it does                          |
+| ---------------- | --------------------------- | ------------------------------------- |
+| `KICKER_DB_PATH` | `data/kickers.db`           | Where the SQLite file lives           |
+| `SITE_URL`       | `http://drawmeakicker.com`  | Origin used for share and `og:` links |
+
+The database file and its schema are created on first use, so there is no
+setup step.
 
 ## How it fits together
 
-Phase 1 is a purely static frontend: `next.config.ts` sets `output: 'export'`, so
-there is no server and no database yet.
-
 - `src/lib/kicker` — the geometry. Arc radius, footprint, surface length, the side
   and surface outlines, strut placement, and unit formatting. No three.js, so it is
-  unit-testable and reusable from the server in Phase 2.
+  unit-testable and shared with the server.
+- `src/db` — the SQLite layer (Drizzle ORM). One `kickers` table, insert and
+  read-by-id, with migrations in `drizzle/` applied when the file is opened.
+- `src/app/page.tsx` — resolves `?id=` before anything renders, so a shared link
+  arrives with its kicker and its `og:` tags already in the HTML.
+- `src/app/api/kickers/route.ts` — the save endpoint.
+- `src/lib/share.ts` — Open Graph data and the Twitter/Facebook share links.
 - `src/store/editor-store.ts` — all editor state, including the four-state editor
   mode machine. Derived dimensions are computed by selector, never stored.
 - `src/scene` — the react-three-fiber scene. One component per part, with the
@@ -65,5 +82,17 @@ The original app (Polymer 0.8, three.js r71, PHP, MySQL) is preserved under
 `legacy/` for reference. It is not built or served, and it is not wired to
 anything — it is there so the port can be checked against it.
 
-Phase 2 will drop the static export to add the SQLite layer (Drizzle ORM) behind
-`?id=` URLs, restoring save and load.
+Saving and loading follow the legacy app closely, including its quirks worth
+keeping: a save always inserts, never updates, so a loaded kicker is read-only
+until Modify drops its id; the `utm` parameter still distinguishes the two share
+buttons; and `Accept-Language` still starts US and Canadian visitors in feet.
+
+Three things were changed on purpose:
+
+- `angle` is stored as REAL. The slider reaches 89.9, which the legacy
+  `int(11)` column would have truncated to 89 and its `IntValidator` rejected
+  outright.
+- An unknown `?id=` renders the default kicker with an explanation, where the
+  original let the exception escape as a 500.
+- Saving twice no longer produces `?id=1?id=2`. The legacy editor appended to
+  `window.location.href` without clearing the previous query string.

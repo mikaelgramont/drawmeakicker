@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatAngle, formatLength, metersToFeetAndInches } from "./units";
+import { formatAngle, formatLength, metersToFeetAndInches, unitsForLanguage } from "./units";
 
 describe("metersToFeetAndInches", () => {
   it("converts exact feet without an inches part", () => {
@@ -52,5 +52,28 @@ describe("formatAngle", () => {
   it("rounds to whole degrees", () => {
     expect(formatAngle(45)).toBe("45\u00b0");
     expect(formatAngle(89.9)).toBe("90\u00b0");
+  });
+});
+
+describe("unitsForLanguage", () => {
+  it("starts US and Canadian visitors in feet", () => {
+    expect(unitsForLanguage("en-US,en;q=0.9")).toBe("ft");
+    expect(unitsForLanguage("en-CA")).toBe("ft");
+  });
+
+  it("starts everyone else in meters", () => {
+    expect(unitsForLanguage("fr-FR,fr;q=0.9")).toBe("m");
+    expect(unitsForLanguage("en-GB")).toBe("m");
+    expect(unitsForLanguage("en-CH")).toBe("m");
+  });
+
+  it("only looks at the visitor's first preference", () => {
+    // Matches the legacy prefix check: en-US further down the list loses.
+    expect(unitsForLanguage("fr-FR,en-US;q=0.8")).toBe("m");
+  });
+
+  it("defaults to meters without a header", () => {
+    expect(unitsForLanguage(null)).toBe("m");
+    expect(unitsForLanguage("")).toBe("m");
   });
 });

@@ -2,8 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
+import { useShareableUrl } from "@/hooks/use-shareable-url";
 import { ABOUT_LINK, GITHUB_LINK, SITE_TITLE_HTML, TWITTER_LINK, VIDEO_ID } from "@/lib/site";
-import { useEditorStore } from "@/store/editor-store";
+import { useEditorStore, type EditorInit } from "@/store/editor-store";
 import styles from "./app.module.css";
 
 /** Ported from the .loading-placeholder block in legacy/public/index.php. */
@@ -125,11 +126,29 @@ function Footer() {
  * class and the deferred `editorEl.init()` call amounted to, except that here
  * it also defers creating the WebGL context.
  */
-export function App() {
+export function App({ init }: { init: EditorInit }) {
   const editorOpen = useEditorStore((state) => state.editorOpen);
   const openEditor = useEditorStore((state) => state.openEditor);
   const vrActive = useEditorStore((state) => state.vrActive);
+  const savedId = useEditorStore((state) => state.savedId);
+  const initialize = useEditorStore((state) => state.initialize);
   const editorRef = useRef<HTMLDivElement | null>(null);
+  const initialized = useRef(false);
+
+  /*
+   * The store is a module singleton, so adopting the server's starting state
+   * has to wait for the browser: doing it while rendering would mean one
+   * request's kicker could bleed into another's on a server handling both at
+   * once. The editor is `ssr: false` and shows its spinner until this lands,
+   * so nothing renders the default kicker in the meantime.
+   */
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    initialize(init);
+  }, [init, initialize]);
+
+  useShareableUrl(savedId);
 
   useEffect(() => {
     if (editorOpen) editorRef.current?.scrollIntoView({ behavior: "smooth" });
