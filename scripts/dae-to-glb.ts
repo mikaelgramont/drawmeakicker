@@ -42,6 +42,7 @@ const { GLTFExporter } = await import("three/examples/jsm/exporters/GLTFExporter
 // wrapper group rather than by setting rotation on the loaded scene itself.
 const loader = new ColladaLoader();
 const collada = loader.parse(readFileSync(SOURCE, "utf8"), "");
+if (!collada) throw new Error(`Could not parse ${SOURCE}`);
 
 const exporter = new GLTFExporter();
 const glb = (await exporter.parseAsync(collada.scene, { binary: true })) as ArrayBuffer;
