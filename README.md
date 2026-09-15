@@ -115,9 +115,15 @@ unsaved design with it.
 
 `script-src` carries `'wasm-unsafe-eval'`. It allows WebAssembly compilation
 and nothing else — it is not `'unsafe-eval'`, and no JavaScript becomes
-evaluable because of it. The SDF text generator asks for WebAssembly and has a
-WebGL fallback, so dropping it leaves the app looking correct while raising an
-unhandled rejection on every editor open and quietly taking the slower path.
+evaluable because of it. The SDF text generator asks for WebAssembly, so
+without it that request is refused on every editor open.
+
+It only buys anything on Windows. WebKit has not implemented the directive:
+macOS refuses the module regardless and reports it as `script-src` blocking
+`eval`, which is worth knowing before reading that violation as a real problem.
+Both platforms fall back to the generator's WebGL path and draw the same
+labels, so the visible cost is nothing and the directive is kept for WebView2's
+sake rather than being widened to `'unsafe-eval'` to satisfy WebKit.
 
 `desktop/src/text-rendering.ts` turns off troika's typesetting worker. Its
 comment has the detail; the short version is that the worker is built by
