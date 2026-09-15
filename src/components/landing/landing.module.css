@@ -1,0 +1,478 @@
+/*
+ * The landing page: one sheet of blueprint paper on the workbench.
+ *
+ * The palette and the fonts are the app's own, from src/styles/global.css. The
+ * layout is not ported from anything — the legacy pitch was a block of text
+ * over a photograph — so it is free to be plain: one column, a type scale, and
+ * dashed rules where a drawing would have them.
+ */
+
+.landing {
+  --ink: var(--color-text);
+  --paper: var(--color-light-blue);
+  --draft: rgba(1, 8, 69, 0.55);
+  --rule: rgba(248, 250, 255, 0.35);
+  --accent: var(--color-light-brown);
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 40px;
+  --space-5: 64px;
+  --space-6: 96px;
+
+  box-sizing: border-box;
+  /* Narrower than the content width so the workbench stays visible round it. */
+  max-width: min(1180px, calc(100% - 2 * var(--space-4)));
+  margin: var(--space-4) auto;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  background: var(--paper);
+  border: 2px solid rgba(248, 250, 255, 0.5);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+/*
+ * SECTIONS
+ */
+.section {
+  padding-top: var(--space-6);
+  margin-top: var(--space-6);
+  border-top: 1px dashed var(--rule);
+}
+
+.sectionHead {
+  max-width: 44rem;
+  margin-bottom: var(--space-5);
+}
+
+/* A section heading with the hand-drawn original sitting beside it. */
+.sectionHeadSplit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+  gap: var(--space-5);
+  align-items: end;
+  margin-bottom: var(--space-5);
+}
+
+.sketchFigure {
+  margin: 0;
+}
+
+.sectionTitle {
+  font-size: 40px;
+  line-height: 1.05;
+  margin-bottom: var(--space-2);
+}
+
+.sectionLead {
+  font-size: 19px;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.88;
+}
+
+/*
+ * A small monospaced-feeling label, the way a drawing is captioned.
+ */
+.tag {
+  display: inline-block;
+  margin-bottom: var(--space-3);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+/*
+ * HERO
+ */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: var(--space-5);
+  align-items: center;
+}
+
+.heroTitle {
+  font-size: 68px;
+  line-height: 0.98;
+  margin-bottom: var(--space-3);
+}
+
+.heroLead {
+  font-size: 21px;
+  line-height: 1.55;
+  max-width: 30rem;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  margin-top: var(--space-4);
+}
+
+/* The one thing on the page we want pressed. */
+.heroActions button {
+  padding: 18px 32px;
+  font-size: 18px;
+}
+
+.heroNote {
+  font-size: 15px;
+  opacity: 0.75;
+  margin: 0;
+}
+
+.heroFigure {
+  margin: 0;
+}
+
+.heroDiagram {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.figureCaption {
+  margin: var(--space-2) 0 0;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/*
+ * STEPS
+ */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+}
+
+.stepFigure {
+  margin: 0 0 var(--space-3);
+  border: 1px solid var(--rule);
+}
+
+.stepDiagram {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.stepNumber {
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  opacity: 0.7;
+  margin-bottom: var(--space-1);
+}
+
+.stepTitle {
+  font-size: 26px;
+  margin-bottom: var(--space-2);
+}
+
+.stepBody {
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/*
+ * THE SPLIT SECTION: the video beside its explanation.
+ */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: center;
+}
+
+.videoFrame {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  border: 1px solid var(--rule);
+}
+
+.videoFrame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.sketch {
+  display: block;
+  width: 100%;
+  /* `height: auto` is what lets aspect-ratio work at all: the element carries
+     width and height attributes for layout stability, and the height one wins
+     over a ratio until it is explicitly released. */
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+}
+
+/*
+ * FEATURES
+ */
+.features {
+  display: grid;
+  /* Sized so all four sit on one row on a desktop rather than leaving a
+     three-and-one orphan. */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.feature {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+}
+
+.featureTitle {
+  font-size: 22px;
+  margin-bottom: var(--space-1);
+}
+
+.featureBody {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.88;
+}
+
+/*
+ * CLOSING CALL TO ACTION
+ */
+.closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  margin-top: var(--space-5);
+  border-top: 1px dashed var(--rule);
+}
+
+.closingTitle {
+  font-size: 44px;
+  line-height: 1.05;
+}
+
+.closing button {
+  padding: 18px 32px;
+  font-size: 18px;
+}
+
+/*
+ * DIAGRAM INK
+ *
+ * Class selectors throughout, because global.css fills every `svg path` with
+ * --color-text and a drawing needs most of its paths not filled at all.
+ *
+ * Every stroke is non-scaling: the drawings are sized by their container, so
+ * without it a line is 2.3px on a desktop and 1.3px on a phone. Pinning the
+ * width to device pixels keeps one drafting weight everywhere, which is the
+ * whole point of a drafting weight.
+ */
+.gridLine,
+.groundLine,
+.profile,
+.profileGhost,
+.profileOutline,
+.surfaceTrace,
+.rideLine,
+.rideLineGhost,
+.strut,
+.annotationLine,
+.witnessLine {
+  vector-effect: non-scaling-stroke;
+}
+.gridLine {
+  fill: none;
+  stroke: var(--draft);
+  stroke-width: 1;
+}
+
+.groundLine {
+  stroke: var(--draft);
+  stroke-width: 2;
+}
+
+.profile {
+  fill: rgba(248, 250, 255, 0.16);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+/* The two sizes flanking the default one in the range drawing. */
+.profileGhost {
+  fill: none;
+  stroke: rgba(248, 250, 255, 0.5);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+.profileOutline {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.surface {
+  fill: var(--ink);
+  stroke: none;
+}
+
+.surfaceTrace {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+/* The bare line you ride, for the drawing that is only about size. */
+.rideLine {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.rideLineGhost {
+  fill: none;
+  stroke: rgba(248, 250, 255, 0.45);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 6 4;
+}
+
+.strut {
+  fill: rgba(248, 250, 255, 0.28);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.annotationLine {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.annotationFill {
+  fill: var(--ink);
+  stroke: none;
+}
+
+.witnessLine {
+  stroke: rgba(248, 250, 255, 0.55);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.dimensionLabel,
+.ghostLabel,
+.traceLabel {
+  fill: var(--ink);
+  font-family: Archer, serif;
+  font-size: 14px;
+}
+
+.ghostLabel {
+  fill: rgba(248, 250, 255, 0.6);
+  font-size: 13px;
+}
+
+.traceLabel {
+  fill: var(--accent);
+  font-size: 15px;
+}
+
+/*
+ * RESPONSIVE
+ *
+ * The breakpoints are the ones in src/styles/breakpoints.ts, used by the rest
+ * of the app.
+ */
+@media screen and (max-width: 768px) {
+  .landing {
+    margin: var(--space-2) auto;
+    padding: var(--space-4) var(--space-3) var(--space-3);
+  }
+
+  .hero,
+  .split,
+  .sectionHeadSplit {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  /* The drawing is the explanation, so it leads on a narrow screen. */
+  .heroFigure {
+    order: -1;
+  }
+
+  .heroTitle {
+    font-size: 46px;
+  }
+
+  .heroLead {
+    font-size: 19px;
+  }
+
+  .section {
+    padding-top: var(--space-5);
+    margin-top: var(--space-5);
+  }
+
+  .sectionTitle {
+    font-size: 32px;
+  }
+
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .closingTitle {
+    font-size: 34px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .landing {
+    margin: var(--space-1) auto;
+    padding: var(--space-3) var(--space-2) var(--space-2);
+    border-width: 1px;
+  }
+
+  .heroTitle {
+    font-size: 38px;
+  }
+
+  .heroActions button,
+  .closing button {
+    width: 100%;
+  }
+
+  /*
+   * Diagram text is in user units, so it shrinks with the drawing rather than
+   * holding a readable size. The hero has the widest viewBox and so suffers
+   * most on a phone; these are sized to land back around 13px there. The
+   * figures also appear in the caption underneath, so this is legibility
+   * rather than the only way to read them.
+   */
+  .heroDiagram .dimensionLabel {
+    font-size: 19px;
+  }
+}

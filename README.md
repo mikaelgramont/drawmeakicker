@@ -76,6 +76,10 @@ setup step.
 - `src/components` — the UI: landing page, stepped sidebar, toolbar, and the stack
   of three canvases (WebGL scene, blueprint frame, and a hidden one for compositing
   PNG exports).
+- `src/components/landing` — the pitch above the editor. A server component, so
+  its illustrations cost no script: they are SVG generated from `src/lib/kicker`
+  by `diagram.ts`, which is also why they cannot drift from what the editor
+  draws. Only the call-to-action button crosses into the client.
 
 The editor is code-split behind `next/dynamic`: three.js and the XR runtime only
 download once the visitor asks for the editor.
@@ -171,3 +175,7 @@ Four things were changed on purpose:
   synchronously from a form, where a retry was the user pressing the button
   again; this one retries in the background and has to be able to say "this is
   that same save" (see [Offline](#offline)).
+- The landing page is not a port. The original was two paragraphs and a video
+  over a photograph of a sketch, which explained the idea but never showed what
+  the app gives you. It now walks through that in drawings, and the photograph
+  is still there as the thing being improved on.

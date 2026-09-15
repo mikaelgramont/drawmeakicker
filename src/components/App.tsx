@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useLocalIdentity } from "@/hooks/use-offline-shared-link";
 import { useOutbox } from "@/hooks/use-outbox";
 import { useShareableUrl } from "@/hooks/use-shareable-url";
-import { ABOUT_LINK, GITHUB_LINK, SITE_TITLE_HTML, TWITTER_LINK, VIDEO_ID } from "@/lib/site";
+import { ABOUT_LINK, GITHUB_LINK, SITE_TITLE_HTML, TWITTER_LINK } from "@/lib/site";
 import { useEditorStore, type EditorInit } from "@/store/editor-store";
 import styles from "./app.module.css";
 
@@ -60,44 +60,6 @@ function Alert() {
   );
 }
 
-function TopSection({ onStart, started }: { onStart: () => void; started: boolean }) {
-  return (
-    <div className={`${styles.topSectionContainer} ${styles.hideInVr}`}>
-      <section className={styles.topSection}>
-        <h2 className={styles.topSectionHeader}>
-          <span>Ramp design</span> <span>the easy way.</span>
-        </h2>
-        <div className={styles.topSectionBody}>
-          <div className={`${styles.intro} ${styles.topSectionContent} size-2`}>
-            <p>
-              If you&rsquo;re thinking of building a kicker and you have some idea of what you
-              want, but are not sure about the exact dimensions, we can help.
-            </p>
-            <p>
-              The nerds here have done the math for you, so you can focus on the fun part:
-              deciding how big you want to go!
-            </p>
-            <button type="button" className="action" disabled={started} onClick={onStart}>
-              Get Started
-            </button>
-          </div>
-          {VIDEO_ID && (
-            <div className={`${styles.videoContainer} ${styles.topSectionContent}`}>
-              <div className={styles.videoAspectRatio}>
-                <iframe
-                  src={`https://www.youtube.com/embed/${VIDEO_ID}`}
-                  title="Draw me a kicker"
-                  allowFullScreen
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-    </div>
-  );
-}
-
 function Footer() {
   const links = [
     { href: ABOUT_LINK, label: "About" },
@@ -128,9 +90,8 @@ function Footer() {
  * class and the deferred `editorEl.init()` call amounted to, except that here
  * it also defers creating the WebGL context.
  */
-export function App({ init }: { init: EditorInit }) {
+export function App({ init, landing }: { init: EditorInit; landing: React.ReactNode }) {
   const editorOpen = useEditorStore((state) => state.editorOpen);
-  const openEditor = useEditorStore((state) => state.openEditor);
   const vrActive = useEditorStore((state) => state.vrActive);
   const savedId = useEditorStore((state) => state.savedId);
   const initialize = useEditorStore((state) => state.initialize);
@@ -179,7 +140,12 @@ export function App({ init }: { init: EditorInit }) {
         </div>
       </header>
 
-      <TopSection onStart={openEditor} started={editorOpen} />
+      {/*
+       * Rendered on the server and handed down, so the landing page's
+       * illustrations and their geometry never enter this client bundle. The
+       * only thing in there that needs the browser is its own button.
+       */}
+      <div className={styles.hideInVr}>{landing}</div>
 
       <main className={styles.main} ref={editorRef}>
         {editorOpen && <Editor />}

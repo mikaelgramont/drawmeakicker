@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { cache } from "react";
 import { App } from "@/components/App";
+import { Landing } from "@/components/landing/Landing";
 import { loadKickerById, parseKickerId, type SavedKicker } from "@/db/kickers";
 import { unitsForLanguage } from "@/lib/kicker";
 import { kickerShareLinks, openGraphData } from "@/lib/share";
@@ -89,5 +90,5 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       }
     : { units, alert };
 
-  return <App init={init} />;
+  return <App init={init} landing={<Landing units={units} />} />;
 }
