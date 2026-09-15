@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { composeExport, downloadDataUrl, type ExportOptions } from "@/lib/export-image";
+import { composeExport, type ExportOptions } from "@/lib/export-image";
+import { saveDataUrl } from "@/lib/runtime";
 import { useWakeLock } from "@/hooks/use-wake-lock";
 import { Renderer, type RendererCanvases } from "@/components/renderer/Renderer";
 import type { RenderNow } from "@/scene/ExportBridge";
@@ -126,7 +127,7 @@ export function Editor() {
       // The scene only draws on demand, so make sure the buffer is current.
       renderNow.current?.();
 
-      downloadDataUrl(
+      saveDataUrl(
         composeExport({
           target: merge.current,
           content: content.current,

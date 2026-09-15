@@ -1,0 +1,21 @@
+<!doctype html>
+<!--
+  Stands in for src/app/layout.tsx, minus the two things that are meaningless
+  in a desktop window: the page metadata a crawler would have read, and the
+  service worker registration. Caching an app that is already installed on the
+  disk it would cache to has nothing to offer.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      No viewport tag: there is no mobile browser to instruct, and its
+      user-scalable=no would disable pinch zoom on a trackpad.
+    -->
+    <title>Draw me a kicker!</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

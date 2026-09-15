@@ -1,0 +1,71 @@
+use base64::Engine;
+use tauri_plugin_dialog::DialogExt;
+
+/// Asks where to put an exported drawing, and puts it there.
+///
+/// Both ends of this belong to the app already — the bytes come from the
+/// editor's own canvas, the path from a dialog opened here — so the write is
+/// done in Rust rather than through the filesystem plugin. Going through the
+/// plugin would mean granting the WebView a write scope wide enough to cover
+/// anywhere the user might choose, which is to say all of it, and none of that
+/// reach is needed to save one PNG.
+///
+/// Takes base64 rather than a `Vec<u8>` because a byte array crosses the IPC
+/// boundary as a JSON array of numbers, which for a few megabytes of PNG costs
+/// far more than decoding the string the canvas produced in the first place.
+///
+/// `Ok(false)` means the user dismissed the dialog, which is not a failure.
+#[tauri::command]
+async fn save_export(
+    app: tauri::AppHandle,
+    filename: String,
+    base64: String,
+) -> Result<bool, String> {
+    let bytes = base64::engine::general_purpose::STANDARD
+        .decode(base64)
+        .map_err(|error| format!("The export was not valid base64: {error}"))?;
+
+    /*
+     * Blocking is safe here specifically because this is an async command, so
+     * it is polled on the async runtime rather than the main thread. A dialog
+     * opened from the main thread would deadlock the event loop it needs.
+     */
+    let Some(path) = app
+        .dialog()
+        .file()
+        .set_file_name(&filename)
+        .add_filter("PNG image", &["png"])
+        .blocking_save_file()
+    else {
+        return Ok(false);
+    };
+
+    let path = path
+        .into_path()
+        .map_err(|error| format!("That location cannot be written to: {error}"))?;
+
+    std::fs::write(&path, bytes).map_err(|error| format!("Could not write the export: {error}"))?;
+
+    Ok(true)
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_dialog::init())
+        .invoke_handler(tauri::generate_handler![save_export])
+        .setup(|app| {
+            if cfg!(debug_assertions) {
+                app.handle().plugin(
+                    tauri_plugin_log::Builder::default()
+                        .level(log::LevelFilter::Info)
+                        .build(),
+                )?;
+            }
+            Ok(())
+        })
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}

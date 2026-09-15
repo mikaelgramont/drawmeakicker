@@ -1,0 +1,19 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "What the editor window is allowed to reach outside itself.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    {
+      "identifier": "http:default",
+      "comment": "Saving a design. Scoped to the one host the app syncs with, so a compromised dependency in the editor bundle cannot use Rust's unrestricted client as an open proxy. Keep in step with VITE_API_ORIGIN in desktop/src/runtime.ts.",
+      "allow": [{ "url": "https://drawmeakicker.com/*" }]
+    },
+    {
+      "identifier": "opener:allow-open-url",
+      "comment": "The share buttons and the footer links, handed to the user's browser. Any https host, because the share URLs are built by the server and the destinations are not the app's to enumerate; http is left out so a downgraded link fails loudly instead of quietly.",
+      "allow": [{ "url": "https://*" }]
+    }
+  ]
+}

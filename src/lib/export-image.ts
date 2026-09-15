@@ -57,13 +57,3 @@ export function composeExport({
 
   return target.toDataURL("image/png");
 }
-
-/** Triggers a browser download for a data URL. */
-export function downloadDataUrl(dataUrl: string, filename: string): void {
-  const link = document.createElement("a");
-  link.href = dataUrl;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-}

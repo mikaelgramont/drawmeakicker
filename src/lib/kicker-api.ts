@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { kickerSchema, type Kicker } from "@/lib/kicker";
+import { apiFetch } from "@/lib/runtime";
 import type { ShareLinks } from "@/lib/share";
 
+/** A path, not a URL: see apiFetch for what the desktop build makes of it. */
 export const SAVE_ENDPOINT = "/api/kickers";
 
 /** How long a save may take before it counts as unavailable. */
@@ -102,7 +104,7 @@ export async function postKicker(
 
   let response: Response;
   try {
-    response = await fetch(SAVE_ENDPOINT, {
+    response = await apiFetch(SAVE_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

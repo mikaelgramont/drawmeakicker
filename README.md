@@ -54,6 +54,114 @@ Both are optional and both only matter on the server.
 The database file and its schema are created on first use, so there is no
 setup step.
 
+## Desktop app
+
+The same editor as a standalone app for macOS and Windows, via
+[Tauri](https://tauri.app). Requires a Rust toolchain on top of Node and pnpm.
+
+| Script              | What it does                                        |
+| ------------------- | --------------------------------------------------- |
+| `pnpm app:dev`      | The app, against the Vite dev server, with reload   |
+| `pnpm app:build`    | Installers for the machine you are on               |
+| `pnpm desktop:dev`  | Just the frontend, in a browser on port 1420        |
+| `pnpm desktop:build`| Just the frontend bundle, into `desktop/dist/`      |
+
+Every React component, the scene, the store and the local library are imported
+from `src/` unchanged. `desktop/` holds only the shell — an entry point, an
+`index.html` standing in for `layout.tsx`, and the three answers below.
+
+### Why not `next build`
+
+Next builds the website and cannot build this. `/` is a server component that
+reads `headers()` and queries SQLite so that a shared link arrives with its
+`og:` tags already in the HTML, and `/api/kickers` is a route handler; neither
+survives `output: "export"`. Making the site exportable would mean giving up
+the thing that makes shared links work, to produce a build that still would not
+have a server in it. Vite compiles the same `src/` tree as a plain SPA instead,
+and Tauri serves the result.
+
+That leaves the desktop app in the shape the offline shell already had: no
+server involved in start-up, designs in IndexedDB, and the outbox pushing them
+afterwards. It is close enough to `src/components/OfflineApp.tsx` that
+`desktop/src/DesktopApp.tsx` is a near-copy of it — the one thing that file
+hard-codes is an apology for an unreachable server, which is not why anyone is
+looking at this window.
+
+### What the shell has to answer
+
+Three things the editor does are browser assumptions rather than editor logic,
+so they became a seam in `src/lib/runtime.ts` whose defaults are the existing
+web behaviour spelled out. Nothing that does not call `configureRuntime` can
+tell it is there.
+
+| Assumption                       | Why it breaks                                                        | What the desktop does              |
+| -------------------------------- | -------------------------------------------------------------------- | ---------------------------------- |
+| The API is a path on our origin  | The document comes from `tauri://localhost`, so a path resolves into the bundle | Prefixes a configured origin |
+| `fetch` can reach it             | An absolute URL is cross-origin and the endpoint sends no CORS headers | Uses Rust's HTTP client, which has no origin to check |
+| `<a download>` saves a file      | WKWebView ignores the attribute, so Export appears to do nothing     | A native save dialog and a write in Rust |
+
+The export is written by a Rust command rather than the filesystem plugin. Both
+ends already belong to the app — the bytes come from the editor's own canvas and
+the path from a dialog it opened — and going through the plugin would mean
+granting the WebView a write scope wide enough to cover anywhere the user might
+pick, which is all of it, to save one PNG.
+
+Outbound links are handed to the real browser
+(`desktop/src/external-links.ts`). A window with no address bar and no back
+button would otherwise load Twitter's share dialog over the editor, taking an
+unsaved design with it.
+
+### Two things that look removable and are not
+
+`script-src` carries `'wasm-unsafe-eval'`. It allows WebAssembly compilation
+and nothing else — it is not `'unsafe-eval'`, and no JavaScript becomes
+evaluable because of it. The SDF text generator asks for WebAssembly and has a
+WebGL fallback, so dropping it leaves the app looking correct while raising an
+unhandled rejection on every editor open and quietly taking the slower path.
+
+`desktop/src/text-rendering.ts` turns off troika's typesetting worker. Its
+comment has the detail; the short version is that the worker is built by
+stringifying functions, which this bundler breaks, and the resulting throw
+comes from inside the canvas and takes the entire scene down with it. The
+symptom is an empty blueprint frame, which does not look like it has anything
+to do with text.
+
+Both were found by serving `desktop/dist` under the production CSP, because
+neither reproduces in `pnpm app:dev`: Tauri applies the policy to its own
+`tauri://` responses and not to the dev server it loads from in development.
+Worth remembering before trusting a dev run to say the app works.
+
+VR needs no special handling: `useVrSupported` asks `navigator.xr`, which
+neither WebView provides, so the toolbar button never appears.
+
+### Configuration
+
+| Variable          | Default                      | What it does                          |
+| ----------------- | ---------------------------- | ------------------------------------- |
+| `VITE_API_ORIGIN` | `https://drawmeakicker.com`  | The site designs are synced to        |
+
+Saving is local and immediate regardless, so this only decides where a design
+goes to be given the server id a share link is built from. Set it empty to keep
+the app entirely to itself, in which case saves stay `pending` and the share
+step says so.
+
+Changing it means changing the matching `http:default` scope in
+`src-tauri/capabilities/default.json` too. The allowance is enforced in Rust,
+which cannot see the frontend's value, and the scope is deliberately one host
+rather than a wildcard: Rust's client is not bound by CORS, so an unscoped
+permission would make it an open proxy for anything running in the WebView.
+
+### Building for both platforms
+
+Tauri links against the host's own WebView, so there is no cross-compiling:
+`pnpm app:build` produces installers for the machine it runs on and nothing
+else. `.github/workflows/desktop.yml` is what actually covers both, building
+Apple silicon, Intel and Windows on their own runners and uploading the `.dmg`
+and `.exe` as artifacts.
+
+Neither build is code-signed, so both will need to be allowed past Gatekeeper
+and SmartScreen by hand.
+
 ## How it fits together
 
 - `src/lib/kicker` — the geometry. Arc radius, footprint, surface length, the side
@@ -81,8 +189,15 @@ setup step.
   by `diagram.ts`, which is also why they cannot drift from what the editor
   draws. Only the call-to-action button crosses into the client.
 
+- `desktop/` — the shell for the [desktop app](#desktop-app), and nothing else:
+  everything it renders is imported from the directories above.
+- `src-tauri/` — the Rust side of the desktop app. The window, the plugins it is
+  allowed to use, and the one command that writes a PNG export.
+
 The editor is code-split behind `next/dynamic`: three.js and the XR runtime only
-download once the visitor asks for the editor.
+download once the visitor asks for the editor. The desktop build keeps that
+split rather than paying for a WebGL context at launch, by aliasing the module
+to a `React.lazy` wrapper — see `desktop/src/shims/next-dynamic.tsx`.
 
 ## Units
 
