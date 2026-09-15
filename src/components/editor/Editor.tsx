@@ -13,6 +13,7 @@ import { ExportContext } from "./export-context";
 import { Toolbar } from "./Toolbar";
 import { ContextPanel } from "./panels/ContextPanel";
 import { ExportPanel } from "./panels/ExportPanel";
+import { LibraryPanel } from "./panels/LibraryPanel";
 import { ParametersPanel } from "./panels/ParametersPanel";
 import { ResultsPanel } from "./panels/ResultsPanel";
 import { NotesPanel, SavePanel } from "./panels/SavePanel";
@@ -72,6 +73,15 @@ const STEP_DEFINITIONS: Record<Step, Omit<AccordionStep, "id">> = {
           <SharePanel />
         </Fieldset>
       </>
+    ),
+  },
+  library: {
+    caption: "Saved",
+    displayNumber: 4,
+    content: (
+      <Fieldset legend="On this device">
+        <LibraryPanel />
+      </Fieldset>
     ),
   },
 };

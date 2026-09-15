@@ -34,3 +34,62 @@
 .note {
   margin: 10px 0;
 }
+
+.library {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.libraryRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--color-text);
+}
+
+.libraryRow:last-child {
+  border-bottom: 0;
+}
+
+.libraryMain {
+  /* Takes the slack so long titles wrap instead of pushing the buttons out. */
+  min-width: 0;
+  flex: 1;
+}
+
+.libraryOpen {
+  /* A link in everything but markup: it changes what is on screen, not where. */
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.libraryOpen:hover {
+  background: transparent;
+}
+
+.libraryOpen:disabled {
+  /* The design already on screen. */
+  text-decoration: none;
+  cursor: default;
+  opacity: 0.7;
+}
+
+.librarySub {
+  display: block;
+  opacity: 0.8;
+}
+
+.libraryActions {
+  white-space: nowrap;
+}

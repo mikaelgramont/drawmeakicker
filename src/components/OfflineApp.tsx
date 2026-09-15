@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { App } from "@/components/App";
+import { useOfflineSharedLink } from "@/hooks/use-offline-shared-link";
 import { unitsForLanguage } from "@/lib/kicker";
 import type { EditorInit } from "@/store/editor-store";
 
@@ -13,9 +14,11 @@ import type { EditorInit } from "@/store/editor-store";
  * pieces that actually matter to someone using the app get derived from the
  * browser instead: `unitsForLanguage` reads `navigator.languages` rather than
  * the `Accept-Language` header it was written for, which carries the same
- * preference in the same order.
+ * preference in the same order, and `?id=` is looked up in the local library.
  */
 export function OfflineApp() {
+  useOfflineSharedLink();
+
   const init = useMemo<EditorInit>(() => {
     // This component is also rendered at build time to produce the HTML the
     // service worker precaches, where there is no navigator. The value that

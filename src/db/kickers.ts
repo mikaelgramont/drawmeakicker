@@ -35,13 +35,7 @@ export function loadKickerById(id: number, db: Db = getDb()): SavedKicker | null
   return row ? toSavedKicker(row) : null;
 }
 
-/**
- * Reads an id out of a `?id=` query string. Anything that is not a positive
- * integer is treated as absent rather than as an error: the legacy app fed
- * such values straight to a bound query, which simply found no row.
- */
-export function parseKickerId(value: string | string[] | undefined): number | null {
-  if (typeof value !== "string" || !/^\d+$/.test(value)) return null;
-  const id = Number(value);
-  return id > 0 && Number.isSafeInteger(id) ? id : null;
-}
+// Moved to @/lib/kicker-id so the browser can parse a shared link without
+// pulling the database driver in with it. Re-exported because reading `?id=`
+// still belongs to this module's job as far as its callers are concerned.
+export { parseKickerId } from "@/lib/kicker-id";

@@ -117,6 +117,7 @@ describe("visible steps", () => {
       "design",
       "visualize",
       "save",
+      "library",
     ]);
   });
 
@@ -127,7 +128,20 @@ describe("visible steps", () => {
         "design",
         "visualize",
         "share",
+        "library",
       ]);
+    }
+  });
+
+  /*
+   * The library reaches designs other than the one on screen, so hiding it in
+   * any mode would mean a design saved during an outage could become
+   * unreachable from the app that saved it.
+   */
+  it("always offers the library", () => {
+    for (const mode of MODES) {
+      useEditorStore.setState({ mode });
+      expect(selectVisibleSteps(useEditorStore.getState())).toContain("library");
     }
   });
 });
@@ -228,6 +242,115 @@ describe("a sync coming back", () => {
     expect(state.savedId).toBeNull();
     expect(state.share).toBeNull();
     expect(state.syncState).toBe("pending");
+  });
+});
+
+describe("opening a design from the library", () => {
+  const stored: LocalDesign = {
+    ...design,
+    localId: "local-2",
+    kicker: { ...defaultKicker, height: 2.4, title: "From the library" },
+    serverId: 9,
+    share,
+    syncState: "synced",
+  };
+
+  /*
+   * The transition table has no edge into `saved` from `new` or `readOnly`, so
+   * this has to be reachable from wherever the user happens to be rather than
+   * only from `ready`.
+   */
+  it("works from every mode", () => {
+    for (const mode of MODES) {
+      useEditorStore.setState({ mode, localId: null, syncState: null });
+      expect(() => useEditorStore.getState().openDesign(stored)).not.toThrow();
+      expect(useEditorStore.getState().mode).toBe("saved");
+    }
+  });
+
+  it("adopts the design's kicker and identity", () => {
+    useEditorStore.setState({ mode: "ready" });
+    useEditorStore.getState().openDesign(stored);
+    const state = useEditorStore.getState();
+
+    expect(state.kicker).toEqual(stored.kicker);
+    expect(state.localId).toBe("local-2");
+    expect(state.savedId).toBe(9);
+    expect(state.share).toEqual(share);
+    expect(state.syncState).toBe("synced");
+    expect(state.step).toBe("share");
+  });
+
+  it("carries over an unsynced design without inventing an id for it", () => {
+    useEditorStore.setState({ mode: "ready" });
+    useEditorStore.getState().openDesign({ ...stored, serverId: null, share: null, syncState: "pending" });
+    const state = useEditorStore.getState();
+
+    expect(state.savedId).toBeNull();
+    expect(state.share).toBeNull();
+    expect(state.syncState).toBe("pending");
+  });
+
+  /*
+   * Opening one design and then having the previous one's sync come back must
+   * not put the old share link onto the new design.
+   */
+  it("redirects later sync results at the newly opened design", () => {
+    useEditorStore.setState({ mode: "ready" });
+    useEditorStore.getState().openDesign({ ...stored, serverId: null, share: null, syncState: "pending" });
+
+    useEditorStore.getState().applySyncResult({ ...design, serverId: 1, share, syncState: "synced" });
+    expect(useEditorStore.getState().savedId).toBeNull();
+
+    useEditorStore.getState().applySyncResult({ ...stored, serverId: 4, share, syncState: "synced" });
+    expect(useEditorStore.getState().savedId).toBe(4);
+  });
+});
+
+describe("recognising a server-resolved link as one of ours", () => {
+  const stored: LocalDesign = {
+    ...design,
+    localId: "local-3",
+    kicker: { ...defaultKicker, height: 3.1, title: "Mine, from the server" },
+    serverId: 12,
+    share,
+    syncState: "synced",
+  };
+
+  /*
+   * The kicker on screen came from the server, which is authoritative for a
+   * shared link, and may be newer than whatever this device happens to hold.
+   * Only the handle is taken.
+   */
+  it("takes the local identity and leaves the kicker alone", () => {
+    useEditorStore.setState({
+      mode: "readOnly",
+      kicker: { ...defaultKicker, height: 9.9 },
+      savedId: 12,
+      share,
+      localId: null,
+      syncState: null,
+    });
+
+    useEditorStore.getState().adoptLocalIdentity(stored);
+    const state = useEditorStore.getState();
+
+    expect(state.localId).toBe("local-3");
+    expect(state.syncState).toBe("synced");
+    expect(state.kicker.height).toBe(9.9);
+    expect(state.mode).toBe("readOnly");
+  });
+
+  /*
+   * The point of adopting the handle at all: a sync finishing for this design
+   * would otherwise be discarded as belonging to something else.
+   */
+  it("lets a later sync result reach the design", () => {
+    useEditorStore.setState({ mode: "readOnly", localId: null, savedId: null, share: null });
+    useEditorStore.getState().adoptLocalIdentity({ ...stored, serverId: null, share: null, syncState: "pending" });
+
+    useEditorStore.getState().applySyncResult({ ...stored, serverId: 12, share, syncState: "synced" });
+    expect(useEditorStore.getState().savedId).toBe(12);
   });
 });
 

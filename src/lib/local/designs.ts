@@ -91,7 +91,8 @@ const shareLinksSchema: z.ZodType<ShareLinks> = z.object({
   facebookUrl: z.string(),
 });
 
-const localDesignSchema: z.ZodType<LocalDesign> = z.object({
+/** Exported so an import can validate entries from a file the same way. */
+export const localDesignSchema: z.ZodType<LocalDesign> = z.object({
   localId: z.string().min(1),
   kicker: storedKickerSchema,
   serverId: z.number().int().positive().nullable(),
@@ -223,6 +224,17 @@ export async function saveDesign(kicker: Kicker, db?: DesignsDb): Promise<LocalD
   const database = await handle(db);
   await write(() => database.put(STORE, design));
   return design;
+}
+
+/**
+ * Stores a design as-is, keeping its local handle and sync state.
+ *
+ * Only for an import restoring records that already exist somewhere. Saving
+ * from the editor goes through `saveDesign`, which mints the identity.
+ */
+export async function putDesign(design: LocalDesign, db?: DesignsDb): Promise<void> {
+  const database = await handle(db);
+  await write(() => database.put(STORE, design));
 }
 
 export interface DesignList {
@@ -412,6 +424,36 @@ export async function applySyncPatch(
     if (current) await tx.store.put({ ...current, ...patch });
     await tx.done;
   });
+}
+
+/**
+ * Puts a design back in the queue, clearing whatever stopped it.
+ *
+ * What the library's retry offers. Resetting `attempts` is the point: a design
+ * that ran out of attempts during a week-long outage is not broken, and the
+ * only way back from the cap is for someone to ask.
+ *
+ * Refuses to touch a design that already synced, so a stray retry cannot strip
+ * an id and share links that are perfectly good.
+ */
+export async function retryDesign(localId: string, db?: DesignsDb): Promise<void> {
+  const database = await handle(db);
+  const current = await getDesign(localId, database);
+  if (!current || current.syncState === "synced") return;
+
+  await applySyncPatch(
+    localId,
+    {
+      serverId: null,
+      share: null,
+      syncState: "pending",
+      error: null,
+      attempts: 0,
+      claimedAt: null,
+      nextAttemptAt: null,
+    },
+    database,
+  );
 }
 
 /** How many designs are still waiting on the server, for the status chip. */

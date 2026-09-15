@@ -37,8 +37,13 @@ export type VisualizationPatch = Partial<
   >
 >;
 
-/** The four accordion steps, in order. */
-export const STEPS = ["design", "visualize", "save", "share"] as const;
+/**
+ * The accordion steps, in order.
+ *
+ * `library` is not a step in the sequence so much as a drawer at the end of it,
+ * which is why it sits last and is always reachable.
+ */
+export const STEPS = ["design", "visualize", "save", "share", "library"] as const;
 export type Step = (typeof STEPS)[number];
 
 /**
@@ -119,6 +124,8 @@ export interface EditorState {
   markSavedLocally(design: LocalDesign): void;
   applySyncResult(design: LocalDesign): void;
   setPendingCount(count: number): void;
+  openDesign(design: LocalDesign): void;
+  adoptLocalIdentity(design: LocalDesign): void;
 }
 
 export const useEditorStore = create<EditorState>()((set, get) => ({
@@ -244,6 +251,42 @@ export const useEditorStore = create<EditorState>()((set, get) => ({
   },
 
   setPendingCount: (pendingCount) => set({ pendingCount }),
+
+  /**
+   * Loads a design out of the library and onto the screen.
+   *
+   * Goes through `ready` because the transition table has no edge into `saved`
+   * from `new` or `readOnly`, and this can be called from either. The
+   * intermediate hop is what the table permits rather than a trick around it:
+   * a design being opened really does pass through being editable.
+   */
+  openDesign: (design) => {
+    const { setMode } = get();
+    setMode("ready");
+    setMode("saved");
+    set({
+      kicker: design.kicker,
+      localId: design.localId,
+      savedId: design.serverId,
+      share: design.share,
+      syncState: design.syncState,
+      step: "share",
+      alert: "",
+      sidebarOpen: false,
+    });
+  },
+
+  /**
+   * Notes that the design the server just handed us is one we already have.
+   *
+   * A `?id=` link resolved by the server arrives with an id and share links but
+   * no idea which local record it corresponds to, so without this the library
+   * would not mark it as the design on screen and a sync finishing for it would
+   * be discarded as belonging to something else. Only the identity is taken:
+   * the kicker on screen came from the server and stays as it is.
+   */
+  adoptLocalIdentity: (design) =>
+    set({ localId: design.localId, syncState: design.syncState }),
 }));
 
 /**
@@ -276,11 +319,17 @@ export function selectResults(state: EditorState): KickerResults {
 /**
  * Which accordion steps are reachable. Loading someone else's kicker hides
  * Save and shows Share; a fresh design does the opposite, matching the
- * bihi-editor showSave/showShare logic.
+ * bihi-editor showSave/showShare logic. Library is always there, since its
+ * whole job is to reach designs that are not the one on screen.
  */
 export function selectVisibleSteps(state: EditorState): readonly Step[] {
   const shared = state.mode === "readOnly" || state.mode === "saved";
-  return STEPS.filter((step) => (step === "share" ? shared : step !== "save" || !shared));
+  return STEPS.filter((step) => {
+    if (step === "library") return true;
+    if (step === "share") return shared;
+    if (step === "save") return !shared;
+    return true;
+  });
 }
 
 /** Parameters are locked while viewing a saved kicker. */
