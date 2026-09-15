@@ -53,7 +53,7 @@ export function Kicker({
 
       <group ref={contentRef}>
         <Sides points={sidePoints} width={width} visibility={visibility} />
-        <Surface points={surfacePoints} width={width} visibility={visibility} />
+        <Surface points={surfacePoints} radius={radius} width={width} visibility={visibility} />
         <Struts
           placements={strutPlacements}
           radius={radius}

@@ -1,12 +1,13 @@
 "use client";
 
-import { useTexture } from "@react-three/drei";
 import { BoxGeometry } from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import type { StrutPlacement } from "@/lib/kicker";
-import { TEXTURES } from "../constants";
+import { TEXTURES, WOOD_TILE } from "../constants";
+import { applyBoxUv } from "../geometry";
 import { useGeometry } from "../use-geometry";
 import type { SceneVisibility } from "../visibility";
+import { useWood } from "../wood";
 import { Timber } from "./Timber";
 
 /**
@@ -27,7 +28,7 @@ export function Struts({
   width: number;
   visibility: SceneVisibility;
 }) {
-  const texture = useTexture(TEXTURES.strut);
+  const texture = useWood(TEXTURES.strut);
 
   const geometry = useGeometry(() => {
     const parts = placements.map((placement) => {
@@ -48,6 +49,9 @@ export function Struts({
 
     const merged = mergeGeometries(parts);
     for (const part of parts) part.dispose();
+    // After merging, so that every strut is projected in the assembly's frame
+    // and the grain runs on through from one to the next.
+    applyBoxUv(merged, WOOD_TILE);
     return merged;
   }, [placements, radius, width]);
 

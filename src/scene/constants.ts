@@ -5,6 +5,16 @@ export const TEXTURES = {
   strut: "/images/textures/wood3_256.jpg",
 } as const;
 
+/**
+ * Metres of timber covered by one tile of wood texture.
+ *
+ * A compromise: coarse enough that the grain stays believable and a ramp is not
+ * paved in obvious repeats, fine enough that the smallest kicker still gets a
+ * whole tile. A plywood sheet is 1.2m across, which is about the interval a
+ * built ramp's cheeks change sheet at anyway.
+ */
+export const WOOD_TILE = 1.2;
+
 export const BOARD_MODEL = "/models/board.glb";
 export const ANNOTATION_FONT = "/fonts/archer-medium.otf";
 

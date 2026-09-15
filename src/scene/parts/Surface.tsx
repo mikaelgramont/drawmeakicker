@@ -1,11 +1,11 @@
 "use client";
 
-import { useTexture } from "@react-three/drei";
 import { kickerConfig, type Point2 } from "@/lib/kicker";
-import { TEXTURES } from "../constants";
-import { applyPlanarUv, extrudeProfile } from "../geometry";
+import { TEXTURES, WOOD_TILE } from "../constants";
+import { applyArcUv, extrudeProfile } from "../geometry";
 import { useGeometry } from "../use-geometry";
 import type { SceneVisibility } from "../visibility";
+import { useWood } from "../wood";
 import { Timber } from "./Timber";
 
 /**
@@ -19,24 +19,27 @@ const OVERHANG = (2 * kickerConfig.sides.thickness) / 60 + kickerConfig.sides.th
 /** The riding surface: the arc swept across the full width of the ramp. */
 export function Surface({
   points,
+  radius,
   width,
   visibility,
 }: {
   points: readonly Point2[];
+  /** The arc the deck follows, which is what its grain is measured along. */
+  radius: number;
   width: number;
   visibility: SceneVisibility;
 }) {
-  const texture = useTexture(TEXTURES.side);
+  const texture = useWood(TEXTURES.side);
   const depth = width + OVERHANG;
 
   const geometry = useGeometry(() => {
     const geometry = extrudeProfile(points, depth);
-    // Across the ramp rather than along it: the grain should run with the
-    // slats, so u comes from z.
-    applyPlanarUv(geometry, "z", "y");
     geometry.translate(0, 0, -depth / 2);
+    // Mapped after centring, so that the tiles fall symmetrically either side
+    // of the ramp's middle and widening it does not slide the grain sideways.
+    applyArcUv(geometry, radius, WOOD_TILE);
     return geometry;
-  }, [points, depth]);
+  }, [points, radius, depth]);
 
   return <Timber geometry={geometry} texture={texture} visibility={visibility} />;
 }

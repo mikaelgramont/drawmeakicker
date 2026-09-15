@@ -1,11 +1,11 @@
 "use client";
 
-import { useTexture } from "@react-three/drei";
 import { kickerConfig, type Point2 } from "@/lib/kicker";
-import { TEXTURES } from "../constants";
-import { applyPlanarUv, extrudeProfile } from "../geometry";
+import { TEXTURES, WOOD_TILE } from "../constants";
+import { applyBoxUv, extrudeProfile } from "../geometry";
 import { useGeometry } from "../use-geometry";
 import type { SceneVisibility } from "../visibility";
+import { useWood } from "../wood";
 import { Timber } from "./Timber";
 
 /**
@@ -21,15 +21,15 @@ export function Sides({
   width: number;
   visibility: SceneVisibility;
 }) {
-  const texture = useTexture(TEXTURES.side);
+  const texture = useWood(TEXTURES.side);
   const { thickness } = kickerConfig.sides;
 
   const geometry = useGeometry(() => {
     const geometry = extrudeProfile(points, thickness);
-    applyPlanarUv(geometry, "x", "y");
     // Extrusion runs from z=0 to z=thickness, so pull it back by half to
     // straddle the requested plane.
     geometry.translate(0, 0, -thickness / 2);
+    applyBoxUv(geometry, WOOD_TILE);
     return geometry;
   }, [points, thickness]);
 
