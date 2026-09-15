@@ -6,7 +6,6 @@ import {
   listSyncCandidates,
   openDesignsDb,
   saveDesign,
-  updateDesignKicker,
   type DesignsDb,
   type LocalDesign,
 } from "./designs";
@@ -179,6 +178,21 @@ describe("a server that cannot be trusted to answer properly", () => {
 });
 
 describe("an edit made while a request is in flight", () => {
+  /**
+   * Revises a stored kicker behind the outbox's back.
+   *
+   * Nothing in the app does this yet: editing a saved design starts a
+   * derivative and saves a new record. It is written here rather than shipped
+   * as a helper nobody calls, because what is being tested is the write-back's
+   * indifference to concurrent writers, not any particular writer.
+   */
+  async function reviseKicker(localId: string, kicker: Kicker): Promise<void> {
+    const tx = db.transaction("designs", "readwrite");
+    const current = await tx.store.get(localId);
+    if (current) await tx.store.put({ ...current, kicker, savedAt: Date.now() });
+    await tx.done;
+  }
+
   /*
    * The regression test for the field-scoped write-back. The obvious
    * implementation puts back the record it was holding, which against a slow
@@ -191,7 +205,7 @@ describe("an edit made while a request is in flight", () => {
     vi.stubGlobal("fetch", async () => {
       // Happens after the outbox has read the design and before it stores the
       // result, which is exactly the window that matters.
-      await updateDesignKicker(design.localId, edited, db);
+      await reviseKicker(design.localId, edited);
       return saved(defaultKicker);
     });
 
@@ -205,7 +219,7 @@ describe("an edit made while a request is in flight", () => {
 
   it("is what gets sent on the next attempt", async () => {
     const design = await saveDesign(defaultKicker, db);
-    await updateDesignKicker(design.localId, { ...defaultKicker, height: 2.9 }, db);
+    await reviseKicker(design.localId, { ...defaultKicker, height: 2.9 });
 
     const calls = stubFetch(() => saved(defaultKicker));
     await drainOutbox(db);

@@ -24,14 +24,23 @@ pnpm dev
 
 Other scripts:
 
-| Script            | What it does                                          |
-| ----------------- | ----------------------------------------------------- |
-| `pnpm build`      | Production build                                      |
-| `pnpm start`      | Serve the build on port 3000                          |
-| `pnpm test`       | Geometry, unit, store, share and database tests        |
-| `pnpm typecheck`  | `tsc --noEmit`                                        |
-| `pnpm db:generate` | Write a migration into `drizzle/` after a schema edit |
-| `pnpm db:studio`  | Browse the database                                   |
+| Script              | What it does                                                   |
+| ------------------- | -------------------------------------------------------------- |
+| `pnpm build`        | Production build, then the service worker                      |
+| `pnpm start`        | Serve the build on port 3000                                   |
+| `pnpm test`         | Geometry, unit, store, share, local library and database tests  |
+| `pnpm typecheck`    | `tsc --noEmit`                                                 |
+| `pnpm db:generate`  | Write a migration into `drizzle/` after a schema edit           |
+| `pnpm db:studio`    | Browse the database                                            |
+| `pnpm assets:icons` | Redraw the PWA icons from the kicker geometry                  |
+
+`pnpm build` runs `serwist build` after `next build`, which is what produces
+`public/sw.js` (gitignored, since it is build output). Building the worker
+afterwards rather than from inside the bundler is what lets the precache
+manifest see the prerendered output, so the offline shell ends up in it.
+
+The service worker is disabled in `pnpm dev`. Offline behaviour has to be
+checked against `pnpm build && pnpm start`.
 
 ### Configuration
 
@@ -52,6 +61,8 @@ setup step.
   unit-testable and shared with the server.
 - `src/db` — the SQLite layer (Drizzle ORM). One `kickers` table, insert and
   read-by-id, with migrations in `drizzle/` applied when the file is opened.
+- `src/lib/local` — the on-device library and the outbox that pushes it to the
+  server. See [Offline](#offline).
 - `src/app/page.tsx` — resolves `?id=` before anything renders, so a shared link
   arrives with its kicker and its `og:` tags already in the HTML.
 - `src/app/api/kickers/route.ts` — the save endpoint.
@@ -67,6 +78,57 @@ setup step.
 
 The editor is code-split behind `next/dynamic`: three.js and the XR runtime only
 download once the visitor asks for the editor.
+
+## Offline
+
+The app is installable and works with no network. Designs are saved to the
+device first and pushed to the server afterwards, so the server being down,
+slow or broken costs you a share link and nothing else.
+
+Saving writes a record to IndexedDB and returns. The outbox then tries to POST
+it, and the design carries one of three states:
+
+| State     | Meaning                               | Shown as                             |
+| --------- | ------------------------------------- | ------------------------------------ |
+| `pending` | Saved here, not yet accepted          | "waiting for the server", with Retry |
+| `synced`  | Has a server id and share links       | "shareable"                          |
+| `failed`  | The server refused it and always will | the server's reason, with Retry      |
+
+Only a 400 is `failed`. A 5xx, a timeout, a network error, and a 2xx whose body
+cannot be parsed are all `pending`, because being wrongly transient costs a few
+retries where being wrongly permanent costs the design its share link for good.
+Retries back off exponentially, and the delay is stored in the record so it
+survives a reload.
+
+- `src/lib/local/designs.ts` — the IndexedDB store. Insert-only, like the
+  server. Records are validated on read one at a time, so an unreadable row is
+  reported as one missing design rather than an empty library.
+- `src/lib/local/outbox.ts` — the queue. Claims a design with an expiring lease
+  so two tabs cannot post it at once and a crashed tab cannot strand it.
+- `src/lib/local/transfer.ts` — JSON export and import of the whole library.
+- `src/app/sw.ts` — the service worker.
+- `src/app/~offline/page.tsx` — the shell the worker falls back to. It exists
+  because `/` reads `headers()` and `searchParams` to resolve `?id=`, so it is
+  dynamic and the build emits no HTML for it to precache.
+
+A shared link is resolved by the server when there is one and out of the local
+library when there is not, which is why a link to your own design still opens
+during an outage. An id this device has never seen says so, rather than showing
+a blank editor.
+
+Two things are deliberately conservative. The worker does not call
+`skipWaiting`, so a new version waits for every tab to close: a running page
+holds content-hashed chunk URLs that only its own generation's precache has.
+And documents are never runtime-cached, for the same reason — a cached `/` from
+one build would point at chunks no later build has.
+
+### Known limitation
+
+A save that commits on the server but whose response is lost inserts twice. The
+client cannot tell that from a request that never arrived, and retrying is the
+better of the two mistakes, so the design ends up correct locally and pointing
+at the second row while the first is orphaned. Fixing it needs an idempotency
+key on the insert, which the push-only contract does not currently carry.
 
 ## Assets
 

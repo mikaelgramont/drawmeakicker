@@ -306,31 +306,14 @@ export async function deleteDesign(localId: string, db?: DesignsDb): Promise<voi
 }
 
 /**
- * Revises the kicker on a design already in the library.
- *
- * Separate from `saveDesign` because it is the one path that changes a stored
- * kicker, which makes it the reason `applySyncPatch` has to re-read: a sync in
- * flight is holding a copy from before this ran.
- */
-export async function updateDesignKicker(
-  localId: string,
-  kicker: Kicker,
-  db?: DesignsDb,
-): Promise<void> {
-  const database = await handle(db);
-  await write(async () => {
-    const tx = database.transaction(STORE, "readwrite");
-    const current = await tx.store.get(localId);
-    if (current) await tx.store.put({ ...current, kicker, savedAt: Date.now() });
-    await tx.done;
-  });
-}
-
-/**
  * The bookkeeping a sync may write back.
  *
- * `kicker` and `savedAt` are deliberately absent. They belong to the user, and
- * a sync only ever learns about identity and delivery.
+ * `kicker` and `savedAt` are deliberately absent, which is what makes "a sync
+ * cannot damage a design" a property of the types rather than a promise about
+ * the code. Nothing in the app revises a stored kicker today — editing a saved
+ * design calls `startDerivative` and saves a new record — but the outbox reads
+ * a design, goes to the network, and writes back much later, so anything that
+ * did would be racing it.
  */
 export type SyncPatch = Pick<
   LocalDesign,
