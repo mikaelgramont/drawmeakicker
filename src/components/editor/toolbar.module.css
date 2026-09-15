@@ -14,6 +14,20 @@
   line-height: 31px;
 }
 
+.group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.syncStatus {
+  line-height: 31px;
+  white-space: nowrap;
+  /* Present but not competing with the controls either side of it. */
+  opacity: 0.8;
+}
+
 .choice {
   display: inline-block;
   vertical-align: middle;

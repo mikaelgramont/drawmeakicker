@@ -1,22 +1,25 @@
 "use client";
 
-import { GENERIC_SAVE_ERROR, saveKicker } from "@/lib/kicker-api";
+import { syncNow } from "@/hooks/use-outbox";
+import { requestPersistentStorage, saveDesign, SAVE_FAILED } from "@/lib/local/designs";
 import { useEditorStore } from "@/store/editor-store";
 import styles from "./panels.module.css";
 
 /**
  * Title and description for a kicker, ported from bihi-save.
  *
- * Pressing Save posts to /api/kickers and, on success, hands the new id and
- * share links to the store, which swaps this step for Share. Failures go to
- * the alert banner, as the legacy alert-set-message event did.
+ * Pressing Save writes to the local library and moves straight on to Share.
+ * It used to post to /api/kickers and wait, which meant a save could fail: an
+ * outage or a 500 left the user on this step holding an error message and
+ * nothing kept. Now the only way this fails is the device being out of room,
+ * and reaching the server is the outbox's problem.
  */
 export function SavePanel() {
   const { title, description } = useEditorStore((state) => state.kicker);
   const setSaveFields = useEditorStore((state) => state.setSaveFields);
   const saving = useEditorStore((state) => state.saving);
   const setSaving = useEditorStore((state) => state.setSaving);
-  const markSaved = useEditorStore((state) => state.markSaved);
+  const markSavedLocally = useEditorStore((state) => state.markSavedLocally);
   const setAlert = useEditorStore((state) => state.setAlert);
 
   async function onSave() {
@@ -24,10 +27,19 @@ export function SavePanel() {
     try {
       // Read the kicker here rather than subscribing to it: this panel would
       // otherwise re-render on every drag of a parameter slider.
-      markSaved(await saveKicker(useEditorStore.getState().kicker));
+      const design = await saveDesign(useEditorStore.getState().kicker);
+      markSavedLocally(design);
+
+      /*
+       * Asked for on the first save rather than at start-up, both because it is
+       * the first moment there is anything to lose and because the browsers
+       * that prompt will be asking about something the user just did.
+       */
+      void requestPersistentStorage();
+      void syncNow();
     } catch (error) {
       setSaving(false);
-      setAlert(error instanceof Error ? error.message : GENERIC_SAVE_ERROR);
+      setAlert(error instanceof Error ? error.message : SAVE_FAILED);
     }
   }
 

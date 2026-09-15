@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
+import { useOutbox } from "@/hooks/use-outbox";
 import { useShareableUrl } from "@/hooks/use-shareable-url";
 import { ABOUT_LINK, GITHUB_LINK, SITE_TITLE_HTML, TWITTER_LINK, VIDEO_ID } from "@/lib/site";
 import { useEditorStore, type EditorInit } from "@/store/editor-store";
@@ -149,6 +150,13 @@ export function App({ init }: { init: EditorInit }) {
   }, [init, initialize]);
 
   useShareableUrl(savedId);
+
+  /*
+   * Runs for the whole session rather than only while the editor is open, so
+   * that designs saved before an outage get sent on the next visit even if the
+   * user never opens the editor again.
+   */
+  useOutbox();
 
   useEffect(() => {
     if (editorOpen) editorRef.current?.scrollIntoView({ behavior: "smooth" });

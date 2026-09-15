@@ -8,6 +8,7 @@ import {
   type RepresentationType,
   type Unit,
 } from "@/lib/kicker";
+import type { LocalDesign, SyncState } from "@/lib/local/designs";
 import type { ShareLinks } from "@/lib/share";
 
 /**
@@ -52,6 +53,12 @@ export interface EditorInit {
   /** The id of the kicker being viewed, when the page was loaded from `?id=`. */
   savedId?: number;
   share?: ShareLinks;
+  /**
+   * Set when a `?id=` link was answered out of the local library rather than by
+   * the server, which is how a shared link still opens during an outage.
+   */
+  localId?: string;
+  syncState?: SyncState;
   alert?: string;
   /** Skip the pitch and reveal the editor, as the legacy autoStart flag did. */
   editorOpen?: boolean;
@@ -63,14 +70,27 @@ export interface EditorState {
   mode: EditorMode;
 
   /**
-   * The id this kicker is reachable at, or null while it is unsaved. Set
-   * either by loading `?id=` or by a successful save.
+   * The id this kicker is reachable at, or null while the server has not seen
+   * it. Set either by loading `?id=` or once a sync comes back.
    */
   savedId: number | null;
   /** Share links for `savedId`, built by the server. */
   share: ShareLinks | null;
   /** Whether a save is in flight, which disables the form as bihi-save did. */
   saving: boolean;
+
+  /**
+   * The open design's handle in the local library, set as soon as it is saved.
+   *
+   * This, not `savedId`, is what says the work is safe: it exists the moment
+   * the design is on disk, whereas `savedId` waits on a server that may be
+   * hours away.
+   */
+  localId: string | null;
+  /** How the open design's sync is going, or null when it was never saved. */
+  syncState: SyncState | null;
+  /** How many designs in the whole library are still waiting on the server. */
+  pendingCount: number;
 
   /** Whether the editor has been revealed (the legacy `expanded-editor` body class). */
   editorOpen: boolean;
@@ -96,7 +116,9 @@ export interface EditorState {
   setAlert(message: string): void;
 
   setSaving(saving: boolean): void;
-  markSaved(input: { id: number; kicker: Kicker; share: ShareLinks }): void;
+  markSavedLocally(design: LocalDesign): void;
+  applySyncResult(design: LocalDesign): void;
+  setPendingCount(count: number): void;
 }
 
 export const useEditorStore = create<EditorState>()((set, get) => ({
@@ -108,19 +130,25 @@ export const useEditorStore = create<EditorState>()((set, get) => ({
   share: null,
   saving: false,
 
+  localId: null,
+  syncState: null,
+  pendingCount: 0,
+
   editorOpen: false,
   sidebarOpen: false,
   step: "design",
   vrActive: false,
   alert: "",
 
-  initialize: ({ kicker, units, mode, savedId, share, alert, editorOpen }) =>
+  initialize: ({ kicker, units, mode, savedId, share, localId, syncState, alert, editorOpen }) =>
     set((state) => ({
       kicker: { ...state.kicker, ...kicker },
       units: units ?? state.units,
       mode: mode ?? state.mode,
       savedId: savedId ?? state.savedId,
       share: share ?? state.share,
+      localId: localId ?? state.localId,
+      syncState: syncState ?? state.syncState,
       alert: alert ?? state.alert,
       editorOpen: editorOpen ?? state.editorOpen,
     })),
@@ -162,6 +190,11 @@ export const useEditorStore = create<EditorState>()((set, get) => ({
       savedId: null,
       share: null,
       saving: false,
+      // Dropped along with the server identity: keeping it would point a fresh
+      // design at the previous one's record, and the next sync result would be
+      // applied to the wrong thing.
+      localId: null,
+      syncState: null,
     }),
 
   goToStep: (step) => set({ step, sidebarOpen: false }),
@@ -172,16 +205,45 @@ export const useEditorStore = create<EditorState>()((set, get) => ({
   setSaving: (saving) => set({ saving }),
 
   /**
-   * Accepts the save response: the kicker now has an id and share links, and
-   * the accordion lands on Share, as the SAVED branch of bihi-editor did.
+   * Accepts a design that is now on disk, and lands the accordion on Share as
+   * the SAVED branch of bihi-editor did.
    *
-   * The title and description come back from the server rather than being
-   * kept from the form, so what is displayed is what was actually stored.
+   * This is where the save ends as far as the user is concerned. It used to
+   * wait on the server's response, which meant a failed request left them on
+   * the Save step with an error and nothing kept; now the server is only ever
+   * responsible for `savedId` and `share`, which arrive later if at all.
+   *
+   * The kicker is not replaced. The old version took the title and description
+   * back from the save response so that what was displayed was what had been
+   * stored — with the local library that is already true, and the server's echo
+   * is no longer the thing that decides it.
    */
-  markSaved: ({ id, kicker, share }) => {
+  markSavedLocally: (design) => {
     get().setMode("saved");
-    set({ kicker, savedId: id, share, saving: false, step: "share", alert: "" });
+    set({
+      localId: design.localId,
+      savedId: design.serverId,
+      share: design.share,
+      syncState: design.syncState,
+      saving: false,
+      step: "share",
+      alert: "",
+    });
   },
+
+  /**
+   * Reflects what a sync learned about the open design.
+   *
+   * Ignores designs that are not on screen: a drain works through the whole
+   * library, and by the time it reports back the user may well have started
+   * something else.
+   */
+  applySyncResult: (design) => {
+    if (get().localId !== design.localId) return;
+    set({ syncState: design.syncState, savedId: design.serverId, share: design.share });
+  },
+
+  setPendingCount: (pendingCount) => set({ pendingCount }),
 }));
 
 /**
@@ -200,6 +262,8 @@ export function startDerivative(): void {
     kicker: { ...kicker, title: "", description: "" },
     savedId: null,
     share: null,
+    localId: null,
+    syncState: null,
     step: "design",
   });
 }

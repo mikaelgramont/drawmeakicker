@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultKicker } from "@/lib/kicker";
+import type { LocalDesign } from "@/lib/local/designs";
 import type { ShareLinks } from "@/lib/share";
 import {
   canTransition,
@@ -26,6 +27,9 @@ beforeEach(() => {
     savedId: null,
     share: null,
     saving: false,
+    localId: null,
+    syncState: null,
+    pendingCount: 0,
     editorOpen: false,
     sidebarOpen: false,
     step: "design",
@@ -128,38 +132,102 @@ describe("visible steps", () => {
   });
 });
 
-describe("saving", () => {
-  const saved = {
-    id: 7,
-    kicker: { ...defaultKicker, title: "Le gros", description: "Steep" },
-    share,
-  };
+const design: LocalDesign = {
+  localId: "local-1",
+  kicker: { ...defaultKicker, title: "Le gros", description: "Steep" },
+  serverId: null,
+  share: null,
+  syncState: "pending",
+  savedAt: 1,
+  error: null,
+  attempts: 0,
+  claimedAt: null,
+  nextAttemptAt: null,
+};
 
+describe("saving locally", () => {
   beforeEach(() => {
     useEditorStore.setState({ mode: "ready", step: "save" });
   });
 
-  it("adopts the stored kicker and lands on the share step", () => {
-    useEditorStore.getState().markSaved(saved);
+  /*
+   * The save completes without the server. It used to be the save response
+   * that moved the editor on, which meant an outage left the user on the Save
+   * step with an error and nothing kept.
+   */
+  it("lands on the share step with no server identity yet", () => {
+    useEditorStore.getState().markSavedLocally(design);
     const state = useEditorStore.getState();
 
     expect(state.mode).toBe("saved");
-    expect(state.savedId).toBe(7);
-    expect(state.share).toEqual(share);
-    expect(state.kicker.title).toBe("Le gros");
+    expect(state.localId).toBe("local-1");
+    expect(state.syncState).toBe("pending");
+    expect(state.savedId).toBeNull();
+    expect(state.share).toBeNull();
     expect(state.step).toBe("share");
     expect(state.saving).toBe(false);
     expect(selectVisibleSteps(state)).toContain("share");
   });
 
-  it("clears the in-flight flag so a failed save can be retried", () => {
-    useEditorStore.getState().setSaving(true);
-    expect(useEditorStore.getState().saving).toBe(true);
+  it("leaves the kicker alone", () => {
+    useEditorStore.setState({ kicker: { ...defaultKicker, height: 2.4 } });
+    useEditorStore.getState().markSavedLocally(design);
 
-    useEditorStore.getState().setSaving(false);
-    useEditorStore.getState().setAlert("Network error");
-    expect(useEditorStore.getState().saving).toBe(false);
-    expect(useEditorStore.getState().savedId).toBeNull();
+    expect(useEditorStore.getState().kicker.height).toBe(2.4);
+  });
+});
+
+describe("a sync coming back", () => {
+  beforeEach(() => {
+    useEditorStore.setState({ mode: "ready", step: "save" });
+    useEditorStore.getState().markSavedLocally(design);
+  });
+
+  it("fills in the id and share links", () => {
+    useEditorStore.getState().applySyncResult({
+      ...design,
+      serverId: 7,
+      share,
+      syncState: "synced",
+    });
+    const state = useEditorStore.getState();
+
+    expect(state.savedId).toBe(7);
+    expect(state.share).toEqual(share);
+    expect(state.syncState).toBe("synced");
+  });
+
+  it("records a rejection without touching the kicker", () => {
+    useEditorStore.getState().applySyncResult({
+      ...design,
+      syncState: "failed",
+      error: "height: too big",
+    });
+    const state = useEditorStore.getState();
+
+    expect(state.syncState).toBe("failed");
+    expect(state.savedId).toBeNull();
+    expect(state.kicker).toEqual(useEditorStore.getState().kicker);
+  });
+
+  /*
+   * A drain works through the whole library, so a result can arrive for a
+   * design the user has since navigated away from. Applying it would put
+   * somebody else's share link on whatever is now on screen.
+   */
+  it("is ignored when it is for a design that is no longer open", () => {
+    useEditorStore.getState().applySyncResult({
+      ...design,
+      localId: "some-other-design",
+      serverId: 99,
+      share,
+      syncState: "synced",
+    });
+    const state = useEditorStore.getState();
+
+    expect(state.savedId).toBeNull();
+    expect(state.share).toBeNull();
+    expect(state.syncState).toBe("pending");
   });
 });
 
@@ -169,6 +237,8 @@ describe("modifying a loaded kicker", () => {
       mode: "readOnly",
       savedId: 7,
       share,
+      localId: "local-1",
+      syncState: "synced",
       kicker: { ...defaultKicker, height: 2.4, title: "Le gros", description: "Steep" },
     });
   });
@@ -182,6 +252,19 @@ describe("modifying a loaded kicker", () => {
     expect(state.kicker.description).toBe("");
     expect(state.savedId).toBeNull();
     expect(state.share).toBeNull();
+  });
+
+  /*
+   * The local handle has to go too. Keeping it would aim the next sync result
+   * at the record the derivative came from, so saving would appear to hand the
+   * new design the old one's share link.
+   */
+  it("drops the local handle as well as the server one", () => {
+    startDerivative();
+    const state = useEditorStore.getState();
+
+    expect(state.localId).toBeNull();
+    expect(state.syncState).toBeNull();
   });
 
   it("unlocks the parameters and offers Save again", () => {

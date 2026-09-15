@@ -1,5 +1,6 @@
 "use client";
 
+import { useOnline } from "@/hooks/use-online";
 import { UNITS, type Unit } from "@/lib/kicker";
 import { useEditorStore } from "@/store/editor-store";
 import { useVrSupported, xrStore } from "@/scene/xr";
@@ -89,6 +90,32 @@ function RepresentationPicker() {
   );
 }
 
+/**
+ * How many designs are still on their way to the server.
+ *
+ * Absent when there is nothing outstanding, which is the normal case: a save
+ * that syncs immediately should not leave a permanent badge behind. Says
+ * "waiting" rather than anything more alarming because nothing is wrong — the
+ * designs are saved, and this is only about the share links.
+ */
+function SyncStatus() {
+  const pendingCount = useEditorStore((state) => state.pendingCount);
+  const online = useOnline();
+
+  if (pendingCount === 0) return null;
+
+  const designs = pendingCount === 1 ? "1 design" : `${pendingCount} designs`;
+
+  return (
+    <span className={styles.syncStatus} role="status">
+      <span className="not-mobile">
+        {designs} saved here, {online ? "waiting for the server" : "waiting to sync"}
+      </span>
+      <span className="mobile-only">{pendingCount} to sync</span>
+    </span>
+  );
+}
+
 /** The strip above the drawing: sidebar toggle, units, and view mode. */
 export function Toolbar() {
   const setSidebarOpen = useEditorStore((state) => state.setSidebarOpen);
@@ -105,7 +132,12 @@ export function Toolbar() {
           <path d="M4,10h24c1.104,0,2-0.896,2-2s-0.896-2-2-2H4C2.896,6,2,6.896,2,8S2.896,10,4,10z M28,14H4c-1.104,0-2,0.896-2,2  s0.896,2,2,2h24c1.104,0,2-0.896,2-2S29.104,14,28,14z M28,22H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h24c1.104,0,2-0.896,2-2  S29.104,22,28,22z" />
         </svg>
       </button>
-      <UnitPicker />
+      {/* Grouped so that the toolbar's space-between still sees two children
+          and the pickers do not move when the status appears. */}
+      <div className={styles.group}>
+        <UnitPicker />
+        <SyncStatus />
+      </div>
       <RepresentationPicker />
     </div>
   );

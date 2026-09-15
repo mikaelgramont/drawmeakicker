@@ -292,3 +292,132 @@ export async function deleteDesign(localId: string, db?: DesignsDb): Promise<voi
   const database = await handle(db);
   await write(() => database.delete(STORE, localId));
 }
+
+/**
+ * Revises the kicker on a design already in the library.
+ *
+ * Separate from `saveDesign` because it is the one path that changes a stored
+ * kicker, which makes it the reason `applySyncPatch` has to re-read: a sync in
+ * flight is holding a copy from before this ran.
+ */
+export async function updateDesignKicker(
+  localId: string,
+  kicker: Kicker,
+  db?: DesignsDb,
+): Promise<void> {
+  const database = await handle(db);
+  await write(async () => {
+    const tx = database.transaction(STORE, "readwrite");
+    const current = await tx.store.get(localId);
+    if (current) await tx.store.put({ ...current, kicker, savedAt: Date.now() });
+    await tx.done;
+  });
+}
+
+/**
+ * The bookkeeping a sync may write back.
+ *
+ * `kicker` and `savedAt` are deliberately absent. They belong to the user, and
+ * a sync only ever learns about identity and delivery.
+ */
+export type SyncPatch = Pick<
+  LocalDesign,
+  "serverId" | "share" | "syncState" | "error" | "attempts" | "claimedAt" | "nextAttemptAt"
+>;
+
+/** Whether a record is free to be picked up, given a claim lease. */
+function isClaimable(record: LocalDesign, now: number, leaseMs: number): boolean {
+  if (record.syncState === "pending") {
+    return record.nextAttemptAt === null || record.nextAttemptAt <= now;
+  }
+  // A claim older than the lease belonged to a tab that went away mid-request.
+  // Without this, a design stranded in `syncing` would never be looked at again.
+  if (record.syncState === "syncing") {
+    return record.claimedAt === null || record.claimedAt + leaseMs <= now;
+  }
+  return false;
+}
+
+/**
+ * Designs worth attempting, newest last so the queue drains in save order.
+ *
+ * Unreadable records are left out rather than skipped silently later: there is
+ * no sense posting something we cannot validate.
+ */
+export async function listSyncCandidates(
+  now: number,
+  leaseMs: number,
+  db?: DesignsDb,
+): Promise<LocalDesign[]> {
+  const database = await handle(db);
+  const stored = [
+    ...(await database.getAllFromIndex(STORE, "syncState", "pending")),
+    ...(await database.getAllFromIndex(STORE, "syncState", "syncing")),
+  ];
+
+  return stored
+    .map((record) => localDesignSchema.safeParse(record))
+    .filter((parsed) => parsed.success)
+    .map((parsed) => parsed.data)
+    .filter((record) => isClaimable(record, now, leaseMs))
+    .sort((a, b) => a.savedAt - b.savedAt);
+}
+
+/**
+ * Takes ownership of a design for the duration of one attempt.
+ *
+ * Transactional, so that of two drains racing for the same record exactly one
+ * wins and the other sees it already `syncing`. Answers null when the record is
+ * gone or somebody else got there first.
+ */
+export async function claimForSync(
+  localId: string,
+  now: number,
+  leaseMs: number,
+  db?: DesignsDb,
+): Promise<LocalDesign | null> {
+  const database = await handle(db);
+  const tx = database.transaction(STORE, "readwrite");
+  const current = await tx.store.get(localId);
+
+  if (!current || !isClaimable(current, now, leaseMs)) {
+    await tx.done;
+    return null;
+  }
+
+  const claimed: LocalDesign = { ...current, syncState: "syncing", claimedAt: now };
+  await tx.store.put(claimed);
+  await tx.done;
+  return claimed;
+}
+
+/**
+ * Records what a sync attempt learned, and nothing else.
+ *
+ * The re-read inside the transaction is the whole point. Writing the record the
+ * caller was holding would revert any edit made while the request was in
+ * flight, and against a slow server that window is arbitrarily long. Spreading
+ * a narrow patch over a freshly read record keeps the user's kicker whatever
+ * they last made it.
+ */
+export async function applySyncPatch(
+  localId: string,
+  patch: SyncPatch,
+  db?: DesignsDb,
+): Promise<void> {
+  const database = await handle(db);
+  await write(async () => {
+    const tx = database.transaction(STORE, "readwrite");
+    const current = await tx.store.get(localId);
+    if (current) await tx.store.put({ ...current, ...patch });
+    await tx.done;
+  });
+}
+
+/** How many designs are still waiting on the server, for the status chip. */
+export async function countUnsynced(db?: DesignsDb): Promise<number> {
+  const database = await handle(db);
+  const pending = await database.countFromIndex(STORE, "syncState", "pending");
+  const syncing = await database.countFromIndex(STORE, "syncState", "syncing");
+  return pending + syncing;
+}
