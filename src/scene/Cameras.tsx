@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, type RefObject } from "react";
+import { useLayoutEffect } from "react";
 import { OrbitControls, OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { Box3, OrthographicCamera as OrthographicCameraImpl, type Object3D } from "three";
@@ -33,7 +33,7 @@ function Fit2dView({
   content,
   pad,
 }: {
-  content: RefObject<Object3D | null>;
+  content: Object3D | null;
   /** Allowance for content the bounding box cannot measure, in metres. */
   pad: number;
 }) {
@@ -42,9 +42,9 @@ function Fit2dView({
   const invalidate = useThree((state) => state.invalidate);
 
   useLayoutEffect(() => {
-    if (!(camera instanceof OrthographicCameraImpl) || !content.current) return;
+    if (!(camera instanceof OrthographicCameraImpl) || !content) return;
 
-    visibleBoundingBox(content.current, box);
+    visibleBoundingBox(content, box);
     if (box.isEmpty()) return;
     box.expandByScalar(pad);
 
@@ -84,7 +84,7 @@ export function Cameras({
   orbitEnabled: boolean;
   /** What the perspective camera orbits around: the middle of the ramp. */
   target: [number, number, number];
-  content: RefObject<Object3D | null>;
+  content: Object3D | null;
   /** Whether annotation labels are showing, so the 2D fit can allow for them. */
   labelled: boolean;
 }) {

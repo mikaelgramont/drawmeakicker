@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type RefObject } from "react";
+import { useMemo, type Ref } from "react";
 import type { Object3D } from "three";
 import {
   calculateResults,
@@ -30,7 +30,7 @@ export function Kicker({
   kicker: KickerData;
   units: Unit;
   /** Measured by the 2D camera to frame the drawing. */
-  contentRef: RefObject<Object3D | null>;
+  contentRef: Ref<Object3D>;
 }) {
   const { height, width, angle } = kicker;
 

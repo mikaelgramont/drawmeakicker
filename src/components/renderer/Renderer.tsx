@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useMemo, useRef, type RefObject } from "react";
+import { Suspense, useCallback, useMemo, useState, type RefObject } from "react";
 import { Canvas } from "@react-three/fiber";
 import { XR } from "@react-three/xr";
 import type { Object3D } from "three";
@@ -34,7 +34,12 @@ export function Renderer({ canvases }: { canvases: RendererCanvases }) {
   const units = useEditorStore((state) => state.units);
   const vrActive = useEditorStore((state) => state.vrActive);
 
-  const contentRef = useRef<Object3D | null>(null);
+  /*
+   * State rather than a ref: the kicker suspends on its textures, so the group
+   * only mounts on a later commit. The 2D camera has nothing to frame until it
+   * does, and needs a re-render to hear about it.
+   */
+  const [content, setContent] = useState<Object3D | null>(null);
 
   const is3d = kicker.repType === "3d";
   const { length } = useMemo(
@@ -68,14 +73,14 @@ export function Renderer({ canvases }: { canvases: RendererCanvases }) {
             <directionalLight position={[-100, 200, -120]} />
 
             <Suspense fallback={null}>
-              <Kicker kicker={kicker} units={units} contentRef={contentRef} />
+              <Kicker kicker={kicker} units={units} contentRef={setContent} />
             </Suspense>
 
             <Cameras
               is3d={is3d}
               orbitEnabled={!vrActive}
               target={[length / 2, 0, 0]}
-              content={contentRef}
+              content={content}
               labelled={kicker.annotations}
             />
 
