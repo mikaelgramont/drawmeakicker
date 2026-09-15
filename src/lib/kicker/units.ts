@@ -34,12 +34,20 @@ export function formatAngle(degrees: number): string {
 /**
  * Which unit to start a visitor off in, from their Accept-Language header.
  *
- * Ported from the en-US / en-CA check in legacy/public/index.php, which only
- * looked at the head of the header: someone whose first preference is French
- * gets meters even if en-US appears further down the list. Needs a server, so
- * this went unused for the duration of the static-export phase.
+ * Only the head of the list counts, as in the legacy check in
+ * legacy/public/index.php: someone whose first preference is French gets
+ * meters even if en-US appears further down.
+ *
+ * Feet go to exactly `en-US` and nothing else. The legacy version also gave
+ * them to `en-CA`, which is wrong — Canada is metric for this sort of thing —
+ * and the tag has to match in full, so `en-US-POSIX` gets meters too. Anyone
+ * this guesses wrong for is one click from fixing it for good, which is what
+ * the toggle in the masthead is for.
  */
 export function unitsForLanguage(acceptLanguage: string | null | undefined): Unit {
   if (!acceptLanguage) return "m";
-  return /^en-(?:US|CA)\b/i.test(acceptLanguage.trim()) ? "ft" : "m";
+
+  // "en-US,en;q=0.9" and "en-US;q=0.9" both have "en-US" as their first tag.
+  const first = acceptLanguage.split(",")[0].split(";")[0].trim();
+  return first.toLowerCase() === "en-us" ? "ft" : "m";
 }

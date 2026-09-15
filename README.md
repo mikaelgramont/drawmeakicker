@@ -84,6 +84,34 @@ setup step.
 The editor is code-split behind `next/dynamic`: three.js and the XR runtime only
 download once the visitor asks for the editor.
 
+## Units
+
+Metres or feet and inches, chosen from the masthead or from the editor's
+toolbar. Both are the same control: they read and write `units` in the editor
+store, so neither can get out of step with the other or with anything measured
+on the page.
+
+Where the starting value comes from, in order:
+
+1. The choice stored under `drawmeakicker.units`, if there is one.
+   `src/lib/units-preference.ts` owns that key and tolerates storage that
+   throws, which Safari's private browsing does.
+2. Otherwise `Accept-Language`, via `unitsForLanguage`. Exactly `en-US` gets
+   feet and everything else gets metres. The offline shell has no request to
+   read, so it asks `navigator.languages` for the same answer.
+
+Only a deliberate change is written to storage. `initialize` sets the same
+field from the language guess, and remembering that would turn a guess into a
+decision the visitor never made.
+
+The landing page is server-rendered, so it cannot re-render when the toggle
+moves. It carries every measurement in both units and hides one with CSS —
+see `BothUnits` — which keeps the switch instant and its illustrations out of
+the client bundle. The consequence is that a returning visitor whose stored
+choice differs from their language sees the page correct itself once it starts
+running; a cookie would let the server render it right the first time, at the
+cost of sending the preference on every request.
+
 ## Offline
 
 The app is installable and works with no network. Designs are saved to the
@@ -160,9 +188,9 @@ anything — it is there so the port can be checked against it.
 Saving and loading follow the legacy app closely, including its quirks worth
 keeping: a save always inserts, never updates, so a loaded kicker is read-only
 until Modify drops its id; the `utm` parameter still distinguishes the two share
-buttons; and `Accept-Language` still starts US and Canadian visitors in feet.
+buttons; and `Accept-Language` still decides which unit a first visit starts in.
 
-Four things were changed on purpose:
+Six things were changed on purpose:
 
 - `angle` is stored as REAL. The slider reaches 89.9, which the legacy
   `int(11)` column would have truncated to 89 and its `IntValidator` rejected
@@ -179,3 +207,7 @@ Four things were changed on purpose:
   over a photograph of a sketch, which explained the idea but never showed what
   the app gives you. It now walks through that in drawings, and the photograph
   is still there as the thing being improved on.
+- Feet go to exactly `en-US`. The legacy check gave them to `en-CA` as well,
+  and Canada is metric for this sort of thing.
+- The unit is a remembered preference rather than a per-request guess. The
+  language only decides where a first visit starts; see [Units](#units).

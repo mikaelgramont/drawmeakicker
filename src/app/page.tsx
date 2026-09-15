@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { cache } from "react";
 import { App } from "@/components/App";
 import { Landing } from "@/components/landing/Landing";
+import { UnitsScope } from "@/components/landing/UnitsScope";
 import { loadKickerById, parseKickerId, type SavedKicker } from "@/db/kickers";
 import { unitsForLanguage } from "@/lib/kicker";
 import { kickerShareLinks, openGraphData } from "@/lib/share";
@@ -90,5 +91,19 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       }
     : { units, alert };
 
-  return <App init={init} landing={<Landing units={units} />} />;
+  /*
+   * `units` reaches the landing page as the starting value of the attribute
+   * its measurements are shown by, not as the unit they are rendered in: the
+   * page carries both, and the toggle in the masthead picks. See BothUnits.
+   */
+  return (
+    <App
+      init={init}
+      landing={
+        <UnitsScope initial={units}>
+          <Landing />
+        </UnitsScope>
+      }
+    />
+  );
 }

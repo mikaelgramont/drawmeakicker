@@ -32,6 +32,21 @@
 }
 
 /*
+ * THE UNIT SWITCH
+ *
+ * Anything carrying a measurement is rendered twice by BothUnits, once per
+ * unit, and the copy that does not match the `data-units` attribute set by
+ * UnitsScope is taken out of the page. `display: none` rather than visibility
+ * or clipping, so the hidden copy is out of the accessibility tree and stops
+ * being a grid item — which is what lets the hero and the steps keep their
+ * column counts with two copies of every figure in them.
+ */
+[data-units="m"] .unitVariant[data-unit="ft"],
+[data-units="ft"] .unitVariant[data-unit="m"] {
+  display: none;
+}
+
+/*
  * SECTIONS
  */
 .section {

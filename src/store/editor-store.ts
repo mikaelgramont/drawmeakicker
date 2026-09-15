@@ -10,6 +10,7 @@ import {
 } from "@/lib/kicker";
 import type { LocalDesign, SyncState } from "@/lib/local/designs";
 import type { ShareLinks } from "@/lib/share";
+import { storeUnits } from "@/lib/units-preference";
 
 /**
  * Replaces EditorState in legacy/public/scripts/editorstate.js. Same four
@@ -170,7 +171,19 @@ export const useEditorStore = create<EditorState>()((set, get) => ({
 
   setSaveFields: (patch) => set((state) => ({ kicker: { ...state.kicker, ...patch } })),
 
-  setUnits: (units) => set({ units }),
+  /*
+   * The single signal both unit toggles read and write, so the one in the
+   * masthead and the one in the editor's toolbar cannot disagree.
+   *
+   * Writing through to storage here rather than from a subscription is what
+   * makes only deliberate changes stick: `initialize` sets the same field from
+   * the language guess, and remembering that would freeze a guess the visitor
+   * never made and never revisit it if they changed their browser's language.
+   */
+  setUnits: (units) => {
+    storeUnits(units);
+    set({ units });
+  },
 
   openEditor: () => {
     set({ editorOpen: true });

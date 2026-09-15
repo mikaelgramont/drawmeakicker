@@ -30,7 +30,14 @@ import styles from "./landing.module.css";
  */
 const TIP = 5;
 
-/** A 1m blueprint grid, matching the editor's ground grid. */
+/**
+ * A 1m blueprint grid, matching the editor's ground grid.
+ *
+ * `id` has to be unique across the document, which is why every caller
+ * suffixes it with the unit: BothUnits puts two copies of each drawing on the
+ * page, and two patterns under one id would leave the second referencing the
+ * first.
+ */
 function Grid({ id, projection, canvas }: { id: string; projection: Projection; canvas: Canvas }) {
   const step = projection.scale;
 
@@ -251,7 +258,7 @@ export function HeroDiagram({
         angle,
       )} exit angle, ${formatLength(length, units)} from front to back.`}
     >
-      <Grid id="hero-grid" projection={projection} canvas={HERO_CANVAS} />
+      <Grid id={`hero-grid-${units}`} projection={projection} canvas={HERO_CANVAS} />
       <line
         x1={0}
         y1={groundY}
@@ -325,7 +332,7 @@ export function RangeDiagram({ units }: { units: Unit }) {
         units,
       )} tall to ${formatLength(sizes[2].height, units)} tall.`}
     >
-      <Grid id="range-grid" projection={projection} canvas={STEP_CANVAS} />
+      <Grid id={`range-grid-${units}`} projection={projection} canvas={STEP_CANVAS} />
       <line
         x1={0}
         y1={projection.groundY}
@@ -419,7 +426,7 @@ export function MeasurementsDiagram({ units }: { units: Unit }) {
         units,
       )} and its surface length of ${formatLength(arc, units)} called out.`}
     >
-      <Grid id="measure-grid" projection={projection} canvas={STEP_CANVAS} />
+      <Grid id={`measure-grid-${units}`} projection={projection} canvas={STEP_CANVAS} />
       <line
         x1={0}
         y1={projection.groundY}
@@ -488,7 +495,7 @@ export function StrutsDiagram({ units }: { units: Unit }) {
         units,
       )} long.`}
     >
-      <Grid id="struts-grid" projection={projection} canvas={STEP_CANVAS} />
+      <Grid id={`struts-grid-${units}`} projection={projection} canvas={STEP_CANVAS} />
       <line
         x1={0}
         y1={projection.groundY}

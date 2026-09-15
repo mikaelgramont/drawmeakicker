@@ -5,7 +5,7 @@ import { App } from "@/components/App";
 import styles from "@/components/landing/landing.module.css";
 import { StartButton } from "@/components/landing/StartButton";
 import { useOfflineSharedLink } from "@/hooks/use-offline-shared-link";
-import { unitsForLanguage } from "@/lib/kicker";
+import { preferredUnits } from "@/lib/units-preference";
 import type { EditorInit } from "@/store/editor-store";
 
 /**
@@ -21,14 +21,11 @@ import type { EditorInit } from "@/store/editor-store";
 export function OfflineApp() {
   useOfflineSharedLink();
 
-  const init = useMemo<EditorInit>(() => {
-    // This component is also rendered at build time to produce the HTML the
-    // service worker precaches, where there is no navigator. The value that
-    // reaches the store is always the one computed during hydration, because
-    // App only calls initialize from an effect.
-    const languages = typeof navigator === "undefined" ? "" : navigator.languages.join(",");
-    return { units: unitsForLanguage(languages) };
-  }, []);
+  // This component is also rendered at build time to produce the HTML the
+  // service worker precaches, where preferredUnits has nothing to go on and
+  // says meters. The value that reaches the store is always the one computed
+  // during hydration, because App only calls initialize from an effect.
+  const init = useMemo<EditorInit>(() => ({ units: preferredUnits() }), []);
 
   /*
    * The shell gets a short intro instead of the landing page. The full one is

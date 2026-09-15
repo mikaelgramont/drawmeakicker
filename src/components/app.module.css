@@ -21,8 +21,87 @@
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--margin-default);
   padding: 15px;
   background: var(--color-dark-brown);
+}
+
+/*
+ * THE MASTHEAD UNIT SWITCH
+ *
+ * A segmented pair rather than the toolbar's labelled radios: it sits next to
+ * the title on every screen, including before the editor exists, so it has to
+ * stay small.
+ */
+.unitsToggle {
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(248, 250, 255, 0.4);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Present for the accessible name, not for reading. */
+.unitsLegend,
+.unitsLong {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.unitsChoice {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* The input stays focusable and hit-testable, with the span drawn over it. */
+.unitsChoice input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.unitsShort {
+  padding: 6px 14px;
+  font-size: 15px;
+  line-height: 1.2;
+  opacity: 0.7;
+}
+
+.unitsChoice:first-child .unitsShort {
+  border-right: 1px solid rgba(248, 250, 255, 0.4);
+}
+
+.unitsChoice input:checked + .unitsShort {
+  background: var(--color-text);
+  color: var(--color-dark-brown);
+  opacity: 1;
+}
+
+.unitsChoice input:hover:not(:checked) + .unitsShort {
+  background: rgba(248, 250, 255, 0.15);
+  opacity: 1;
+}
+
+.unitsChoice input:focus-visible + .unitsShort {
+  outline: 2px solid var(--color-light-brown);
+  outline-offset: -2px;
 }
 
 .main {
@@ -211,8 +290,7 @@
   }
 
   .logo {
-    padding: 5px;
+    padding: 5px 10px;
     font-size: 36px;
-    text-align: center;
   }
 }

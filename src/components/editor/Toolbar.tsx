@@ -11,7 +11,14 @@ const UNIT_LABELS: Record<Unit, { long: string; short: string }> = {
   ft: { long: "feet", short: "ft" },
 };
 
-/** Ported from bihi-units. */
+/**
+ * Ported from bihi-units.
+ *
+ * The same store field as the masthead's toggle, so changing either moves
+ * both. The group is named apart from that one because radios sharing a name
+ * in one document are a single group, and all four in one group would break
+ * arrow-key navigation through either pair.
+ */
 function UnitPicker() {
   const units = useEditorStore((state) => state.units);
   const setUnits = useEditorStore((state) => state.setUnits);
@@ -23,7 +30,7 @@ function UnitPicker() {
         <label key={unit} className={styles.choice}>
           <input
             type="radio"
-            name="units"
+            name="toolbar-units"
             checked={units === unit}
             onChange={() => setUnits(unit)}
           />

@@ -56,15 +56,27 @@ describe("formatAngle", () => {
 });
 
 describe("unitsForLanguage", () => {
-  it("starts US and Canadian visitors in feet", () => {
+  it("starts US visitors in feet", () => {
     expect(unitsForLanguage("en-US,en;q=0.9")).toBe("ft");
-    expect(unitsForLanguage("en-CA")).toBe("ft");
+    expect(unitsForLanguage("en-US")).toBe("ft");
+    expect(unitsForLanguage("en-US;q=0.9")).toBe("ft");
+    expect(unitsForLanguage("en-us")).toBe("ft");
   });
 
   it("starts everyone else in meters", () => {
     expect(unitsForLanguage("fr-FR,fr;q=0.9")).toBe("m");
     expect(unitsForLanguage("en-GB")).toBe("m");
     expect(unitsForLanguage("en-CH")).toBe("m");
+  });
+
+  /*
+   * The legacy check gave feet to Canada as well. It is metric, and the tag
+   * has to match in full, so neither it nor a US variant tag qualifies.
+   */
+  it("wants the tag to be en-US and nothing else", () => {
+    expect(unitsForLanguage("en-CA")).toBe("m");
+    expect(unitsForLanguage("en-US-POSIX")).toBe("m");
+    expect(unitsForLanguage("en")).toBe("m");
   });
 
   it("only looks at the visitor's first preference", () => {
@@ -75,5 +87,6 @@ describe("unitsForLanguage", () => {
   it("defaults to meters without a header", () => {
     expect(unitsForLanguage(null)).toBe("m");
     expect(unitsForLanguage("")).toBe("m");
+    expect(unitsForLanguage("  ")).toBe("m");
   });
 });

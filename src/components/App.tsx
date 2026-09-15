@@ -6,8 +6,10 @@ import { useLocalIdentity } from "@/hooks/use-offline-shared-link";
 import { useOutbox } from "@/hooks/use-outbox";
 import { useShareableUrl } from "@/hooks/use-shareable-url";
 import { ABOUT_LINK, GITHUB_LINK, SITE_TITLE_HTML, TWITTER_LINK } from "@/lib/site";
+import { readStoredUnits } from "@/lib/units-preference";
 import { useEditorStore, type EditorInit } from "@/store/editor-store";
 import styles from "./app.module.css";
+import { UnitsToggle } from "./UnitsToggle";
 
 /** Ported from the .loading-placeholder block in legacy/public/index.php. */
 function LoadingPlaceholder() {
@@ -108,7 +110,13 @@ export function App({ init, landing }: { init: EditorInit; landing: React.ReactN
   useEffect(() => {
     if (initialized.current) return;
     initialized.current = true;
-    initialize(init);
+    /*
+     * A remembered choice beats the language guess the server made, and it is
+     * resolved here rather than inside the store so that this stays the one
+     * moment the starting state is decided. Doing it from a second effect
+     * would make the outcome depend on which of them React ran first.
+     */
+    initialize({ ...init, units: readStoredUnits() ?? init.units });
   }, [init, initialize]);
 
   useShareableUrl(savedId);
@@ -135,8 +143,9 @@ export function App({ init, landing }: { init: EditorInit; landing: React.ReactN
       <Alert />
 
       <header className={`${styles.header} ${styles.hideInVr}`}>
-        <div role="banner" className={`${styles.logo} size-4`}>
-          {SITE_TITLE_HTML}
+        <div role="banner" className={styles.logo}>
+          <span className="size-4">{SITE_TITLE_HTML}</span>
+          <UnitsToggle />
         </div>
       </header>
 

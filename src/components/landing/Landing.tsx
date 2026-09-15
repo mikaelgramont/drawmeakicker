@@ -7,10 +7,13 @@
  * script, and are in the HTML a crawler sees.
  *
  * Every figure in the copy is read from the app rather than typed in, so the
- * page cannot end up promising a range the sliders do not have.
+ * page cannot end up promising a range the sliders do not have. Anything with
+ * a unit on it goes through BothUnits, which is what keeps the page in step
+ * with the masthead toggle without giving up any of the above.
  */
-import { defaultKicker, formatAngle, formatLength, parameterRanges, type Unit } from "@/lib/kicker";
+import { defaultKicker, formatAngle, formatLength, parameterRanges } from "@/lib/kicker";
 import { VIDEO_ID } from "@/lib/site";
+import { BothUnits } from "./BothUnits";
 import {
   defaultStrutCount,
   HeroDiagram,
@@ -21,9 +24,7 @@ import {
 import styles from "./landing.module.css";
 import { StartButton } from "./StartButton";
 
-export function Landing({ units }: { units: Unit }) {
-  const shortest = formatLength(parameterRanges.height.min, units);
-  const tallest = formatLength(parameterRanges.height.max, units);
+export function Landing() {
   const struts = defaultStrutCount();
 
   return (
@@ -46,15 +47,20 @@ export function Landing({ units }: { units: Unit }) {
         </div>
 
         <figure className={styles.heroFigure}>
-          <HeroDiagram
-            height={defaultKicker.height}
-            angle={defaultKicker.angle}
-            units={units}
-          />
+          <BothUnits as="div">
+            {(units) => (
+              <HeroDiagram
+                height={defaultKicker.height}
+                angle={defaultKicker.angle}
+                units={units}
+              />
+            )}
+          </BothUnits>
           <figcaption className={styles.figureCaption}>
-            A {formatLength(defaultKicker.height, units)} kicker with a{" "}
-            {formatAngle(defaultKicker.angle)} lip. Drawn, like every illustration here, by the
-            same code that draws it in the editor.
+            A{" "}
+            <BothUnits>{(units) => formatLength(defaultKicker.height, units)}</BothUnits> kicker
+            with a {formatAngle(defaultKicker.angle)} lip. Drawn, like every illustration here,
+            by the same code that draws it in the editor.
           </figcaption>
         </figure>
       </section>
@@ -83,20 +89,27 @@ export function Landing({ units }: { units: Unit }) {
         <ol className={styles.steps}>
           <li className={styles.step}>
             <figure className={styles.stepFigure}>
-              <RangeDiagram units={units} />
+              <BothUnits as="div">{(units) => <RangeDiagram units={units} />}</BothUnits>
             </figure>
             <p className={styles.stepNumber}>Step one</p>
             <h4 className={styles.stepTitle}>Pick the size</h4>
             <p className={styles.stepBody}>
-              Drag the height, the width and the exit angle. Anything from {shortest} to{" "}
-              {tallest} tall, and from {formatAngle(parameterRanges.angle.min)} up to nearly
-              vertical.
+              Drag the height, the width and the exit angle. Anything from{" "}
+              <BothUnits>
+                {(units) => (
+                  <>
+                    {formatLength(parameterRanges.height.min, units)} to{" "}
+                    {formatLength(parameterRanges.height.max, units)}
+                  </>
+                )}
+              </BothUnits>{" "}
+              tall, and from {formatAngle(parameterRanges.angle.min)} up to nearly vertical.
             </p>
           </li>
 
           <li className={styles.step}>
             <figure className={styles.stepFigure}>
-              <MeasurementsDiagram units={units} />
+              <BothUnits as="div">{(units) => <MeasurementsDiagram units={units} />}</BothUnits>
             </figure>
             <p className={styles.stepNumber}>Step two</p>
             <h4 className={styles.stepTitle}>Read the numbers</h4>
@@ -108,7 +121,7 @@ export function Landing({ units }: { units: Unit }) {
 
           <li className={styles.step}>
             <figure className={styles.stepFigure}>
-              <StrutsDiagram units={units} />
+              <BothUnits as="div">{(units) => <StrutsDiagram units={units} />}</BothUnits>
             </figure>
             <p className={styles.stepNumber}>Step three</p>
             <h4 className={styles.stepTitle}>See the frame</h4>
