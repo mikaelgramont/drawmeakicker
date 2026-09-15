@@ -117,7 +117,12 @@ async function drainClaimed(db: DesignsDb | undefined): Promise<DrainSummary> {
     // Lost the race, or it was deleted between listing and claiming.
     if (!claimed) continue;
 
-    const outcome = await postKicker(claimed.kicker);
+    /*
+     * The local id doubles as the idempotency key. It is stable across every
+     * attempt at this design and unique to it, which is exactly what the
+     * server needs to recognise a retry of a save it already stored.
+     */
+    const outcome = await postKicker(claimed.kicker, { idempotencyKey: claimed.localId });
     const attempts = claimed.attempts + 1;
     await applySyncPatch(claimed.localId, patchFor(outcome, attempts, Date.now()), db);
 

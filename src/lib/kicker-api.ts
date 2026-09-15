@@ -84,7 +84,10 @@ export type SaveOutcome =
  */
 export async function postKicker(
   kicker: Kicker,
-  { timeoutMs = REQUEST_TIMEOUT_MS }: { timeoutMs?: number } = {},
+  {
+    timeoutMs = REQUEST_TIMEOUT_MS,
+    idempotencyKey,
+  }: { timeoutMs?: number; idempotencyKey?: string } = {},
 ): Promise<SaveOutcome> {
   // Checked here too, so an invalid kicker is a rejection without a round trip.
   // This is also what catches a design saved under slider ranges that have
@@ -101,7 +104,16 @@ export async function postKicker(
   try {
     response = await fetch(SAVE_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        /*
+         * Makes the retry safe. A save whose response is lost looks exactly
+         * like one that never arrived, so the outbox sends it again; without
+         * this the server would have no way to know it already has the row,
+         * and would store a second copy.
+         */
+        ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
+      },
       body: JSON.stringify(parsed.data),
       // A server that accepts the connection and then says nothing must not
       // hold a claimed record open indefinitely.

@@ -5,6 +5,7 @@ import {
   getDesign,
   listSyncCandidates,
   openDesignsDb,
+  retryDesign,
   saveDesign,
   type DesignsDb,
   type LocalDesign,
@@ -30,12 +31,22 @@ afterEach(() => {
 
 /** Stubs fetch with one canned reply, and records what it was asked. */
 function stubFetch(reply: () => Promise<Response> | Response) {
-  const calls: unknown[] = [];
+  const calls: RequestInit[] = [];
   vi.stubGlobal("fetch", (_url: string, init?: RequestInit) => {
-    calls.push(init?.body);
+    calls.push(init ?? {});
     return Promise.resolve(reply());
   });
   return calls;
+}
+
+/** The kicker a recorded request carried. */
+function sentKicker(call: RequestInit): Kicker {
+  return JSON.parse(String(call.body)) as Kicker;
+}
+
+/** The idempotency key a recorded request carried, if any. */
+function sentKey(call: RequestInit): string | undefined {
+  return (call.headers as Record<string, string> | undefined)?.["Idempotency-Key"];
 }
 
 function json(body: unknown, status: number): Response {
@@ -177,6 +188,66 @@ describe("a server that cannot be trusted to answer properly", () => {
   });
 });
 
+/*
+ * A save whose response is lost is indistinguishable from one that never
+ * arrived, so the outbox retries it. The key is what stops that retry from
+ * leaving a second copy of the design on the server.
+ */
+describe("the idempotency key", () => {
+  it("is the design's local id", async () => {
+    const design = await saveDesign(defaultKicker, db);
+    const calls = stubFetch(() => saved(defaultKicker));
+
+    await drainOutbox(db);
+
+    expect(sentKey(calls[0])).toBe(design.localId);
+  });
+
+  it("is the same on every attempt, which is the whole point", async () => {
+    const design = await saveDesign(defaultKicker, db);
+    const calls = stubFetch(() => json({ errors: ["down"] }, 500));
+
+    await drainOutbox(db);
+    // Clears the backoff the failure just set, so the next drain tries again.
+    await retryDesign(design.localId, db);
+    await drainOutbox(db);
+
+    expect(calls).toHaveLength(2);
+    expect(sentKey(calls[0])).toBe(design.localId);
+    expect(sentKey(calls[1])).toBe(design.localId);
+  });
+
+  it("differs between designs", async () => {
+    await saveDesign({ ...defaultKicker, title: "one" }, db);
+    await saveDesign({ ...defaultKicker, title: "two" }, db);
+    const calls = stubFetch(() => saved(defaultKicker));
+
+    await drainOutbox(db);
+    await drainOutbox(db);
+
+    expect(sentKey(calls[0])).not.toBe(sentKey(calls[1]));
+  });
+
+  /*
+   * What the server answers a recognised replay with. A 200 rather than a 201
+   * says the row was already there, which is a success for the client: it
+   * finally has the id it could not hear the first time.
+   */
+  it("makes a replayed save land as synced on a 200", async () => {
+    const design = await saveDesign(defaultKicker, db);
+    stubFetch(() => json({ id: 5, kicker: defaultKicker, share }, 200));
+
+    const summary = await drainOutbox(db);
+
+    expect(summary).toMatchObject({ synced: 1, deferred: 0 });
+    expect(await stateOf(design.localId)).toMatchObject({
+      syncState: "synced",
+      serverId: 5,
+      error: null,
+    });
+  });
+});
+
 describe("an edit made while a request is in flight", () => {
   /**
    * Revises a stored kicker behind the outbox's back.
@@ -224,7 +295,7 @@ describe("an edit made while a request is in flight", () => {
     const calls = stubFetch(() => saved(defaultKicker));
     await drainOutbox(db);
 
-    expect(JSON.parse(String(calls[0]))).toMatchObject({ height: 2.9 });
+    expect(sentKicker(calls[0])).toMatchObject({ height: 2.9 });
   });
 });
 
@@ -343,8 +414,8 @@ describe("a queue of several designs", () => {
     const calls = stubFetch(() => saved(defaultKicker));
     await drainOutbox(db);
 
-    expect(JSON.parse(String(calls[0])).title).toBe("one");
-    expect(JSON.parse(String(calls[1])).title).toBe("two");
+    expect(sentKicker(calls[0]).title).toBe("one");
+    expect(sentKicker(calls[1]).title).toBe("two");
   });
 });
 

@@ -61,6 +61,7 @@ setup step.
   unit-testable and shared with the server.
 - `src/db` — the SQLite layer (Drizzle ORM). One `kickers` table, insert and
   read-by-id, with migrations in `drizzle/` applied when the file is opened.
+  The insert is idempotent per client key; see [Offline](#offline).
 - `src/lib/local` — the on-device library and the outbox that pushes it to the
   server. See [Offline](#offline).
 - `src/app/page.tsx` — resolves `?id=` before anything renders, so a shared link
@@ -97,8 +98,8 @@ it, and the design carries one of three states:
 Only a 400 is `failed`. A 5xx, a timeout, a network error, and a 2xx whose body
 cannot be parsed are all `pending`, because being wrongly transient costs a few
 retries where being wrongly permanent costs the design its share link for good.
-Retries back off exponentially, and the delay is stored in the record so it
-survives a reload.
+Retries back off exponentially, the delay is stored in the record so it survives
+a reload, and they cannot duplicate anything — see below.
 
 - `src/lib/local/designs.ts` — the IndexedDB store. Insert-only, like the
   server. Records are validated on read one at a time, so an unreadable row is
@@ -122,13 +123,21 @@ holds content-hashed chunk URLs that only its own generation's precache has.
 And documents are never runtime-cached, for the same reason — a cached `/` from
 one build would point at chunks no later build has.
 
-### Known limitation
+### Retries cannot duplicate a row
 
-A save that commits on the server but whose response is lost inserts twice. The
-client cannot tell that from a request that never arrived, and retrying is the
-better of the two mistakes, so the design ends up correct locally and pointing
-at the second row while the first is orphaned. Fixing it needs an idempotency
-key on the insert, which the push-only contract does not currently carry.
+A save whose response is lost looks exactly like one that never arrived, so the
+outbox retries it. To keep that from storing the design twice, each save
+carries the design's local id as an `Idempotency-Key` header, which the server
+stores in a unique `clientKey` column. A retry of a save that already committed
+conflicts on that key, and the server answers `200` with the row it already has
+instead of inserting another.
+
+Still insert-only: the key makes the insert happen at most once, and nothing
+updates a row. A request without the header inserts every time, as before,
+which is what rows written before the column existed rely on.
+
+Ids therefore have gaps. SQLite allocates a rowid before it notices the
+conflict, so a recognised replay costs an id without leaving a row.
 
 ## Assets
 
@@ -149,7 +158,7 @@ keeping: a save always inserts, never updates, so a loaded kicker is read-only
 until Modify drops its id; the `utm` parameter still distinguishes the two share
 buttons; and `Accept-Language` still starts US and Canadian visitors in feet.
 
-Three things were changed on purpose:
+Four things were changed on purpose:
 
 - `angle` is stored as REAL. The slider reaches 89.9, which the legacy
   `int(11)` column would have truncated to 89 and its `IntValidator` rejected
@@ -158,3 +167,7 @@ Three things were changed on purpose:
   original let the exception escape as a 500.
 - Saving twice no longer produces `?id=1?id=2`. The legacy editor appended to
   `window.location.href` without clearing the previous query string.
+- The table has a `clientKey` column the legacy one had no need for. It saved
+  synchronously from a form, where a retry was the user pressing the button
+  again; this one retries in the background and has to be able to say "this is
+  that same save" (see [Offline](#offline)).
