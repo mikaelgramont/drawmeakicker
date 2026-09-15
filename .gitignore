@@ -5,6 +5,10 @@
 next-env.d.ts
 *.tsbuildinfo
 
+# Built by `serwist build`, not by hand
+/public/sw.js
+/public/sw.js.map
+
 # Node
 node_modules/
 .env*.local
