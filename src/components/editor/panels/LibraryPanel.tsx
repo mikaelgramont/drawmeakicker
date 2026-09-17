@@ -11,6 +11,7 @@ import {
   type SyncState,
 } from "@/lib/local/designs";
 import { exportLibrary, importLibrary, NOT_A_LIBRARY } from "@/lib/local/transfer";
+import { hasServer } from "@/lib/runtime";
 import { useEditorStore } from "@/store/editor-store";
 import styles from "./panels.module.css";
 
@@ -38,8 +39,14 @@ function downloadText(text: string, filename: string) {
  * would otherwise be invisible and unreachable, which would make "saved" a lie.
  * Reads straight from the library, so it works during an outage exactly as it
  * does the rest of the time.
+ *
+ * On desktop there is no server, so per-row sync state and the Retry button
+ * are hidden — the row is title, dimensions and delete. The `syncState` on the
+ * record itself is left intact: exporting the library and importing it into
+ * the PWA hands back designs the web outbox can still finish pushing.
  */
 export function LibraryPanel() {
+  const serverBacked = hasServer();
   const [designs, setDesigns] = useState<LocalDesign[]>([]);
   const [unreadable, setUnreadable] = useState(0);
   const [message, setMessage] = useState("");
@@ -88,7 +95,8 @@ export function LibraryPanel() {
           ".",
       );
       await refresh();
-      void syncNow();
+      // Only the web can push; on desktop the import is the whole event.
+      if (serverBacked) void syncNow();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : NOT_A_LIBRARY);
     }
@@ -115,11 +123,12 @@ export function LibraryPanel() {
                   <span className={styles.librarySub}>
                     {formatLength(design.kicker.height, units)} at{" "}
                     {design.kicker.angle.toFixed(0)}
-                    {"\u00b0"} &middot; {SYNC_LABELS[design.syncState]}
+                    {"\u00b0"}
+                    {serverBacked && <> &middot; {SYNC_LABELS[design.syncState]}</>}
                   </span>
                 </div>
                 <div className={styles.libraryActions}>
-                  {design.syncState !== "synced" && (
+                  {serverBacked && design.syncState !== "synced" && (
                     <button
                       type="button"
                       className="small"

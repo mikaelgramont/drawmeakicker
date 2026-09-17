@@ -2,6 +2,7 @@
 
 import { useOnline } from "@/hooks/use-online";
 import { UNITS, type Unit } from "@/lib/kicker";
+import { hasServer } from "@/lib/runtime";
 import { useEditorStore } from "@/store/editor-store";
 import { useVrSupported, xrStore } from "@/scene/xr";
 import styles from "./toolbar.module.css";
@@ -104,11 +105,16 @@ function RepresentationPicker() {
  * that syncs immediately should not leave a permanent badge behind. Says
  * "waiting" rather than anything more alarming because nothing is wrong — the
  * designs are saved, and this is only about the share links.
+ *
+ * Absent entirely when the shell has no server behind it (the desktop app):
+ * `pendingCount` is written by the outbox, which never runs there, so it
+ * would always be zero anyway; the explicit gate spares the reader.
  */
 function SyncStatus() {
   const pendingCount = useEditorStore((state) => state.pendingCount);
   const online = useOnline();
 
+  if (!hasServer()) return null;
   if (pendingCount === 0) return null;
 
   const designs = pendingCount === 1 ? "1 design" : `${pendingCount} designs`;

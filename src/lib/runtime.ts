@@ -1,22 +1,18 @@
 /**
  * The handful of things the editor needs from whatever is hosting it.
  *
- * In a browser tab every answer is implied, and this module is a description of
- * what already happens: the API is a path on the origin the page came from,
- * `fetch` is the one the page has, and saving a file means handing the user a
- * download. None of the three survives the move to the desktop build, where the
- * document is served from `tauri://localhost`:
+ * In a browser tab every answer is implied, and this module is a description
+ * of what already happens on the web: there is a server behind the app's own
+ * origin, `fetch` reaches it, and saving a file means handing the user a
+ * download. None of the three carries over to the desktop build. The document
+ * is served from `tauri://localhost`, which is cross-origin to the website's
+ * server; `<a download>` is ignored outright by WKWebView, so an export needs
+ * a real save dialog; and the desktop app has no server at all — everything
+ * that saves lives on this device and never leaves it.
  *
- *  - a relative API path resolves into the app bundle, and an absolute one is a
- *    cross-origin request that the endpoint sends no CORS headers for,
- *  - so the request has to be made from Rust instead, by a `fetch` that is not
- *    the WebView's and is not bound by its origin,
- *  - and `<a download>` is ignored outright by WKWebView, so an export needs a
- *    real save dialog.
- *
- * All three are the shell's business rather than the editor's, which is why
- * they are answered once at start-up and read back from here. Anything that
- * never calls `configureRuntime` cannot tell this module exists.
+ * All four answers are the shell's business rather than the editor's, which
+ * is why they are answered once at start-up and read back from here. Anything
+ * that never calls `configureRuntime` cannot tell this module exists.
  */
 
 /**
@@ -28,6 +24,16 @@ export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 export type SaveDataUrl = (dataUrl: string, filename: string) => void;
 
 interface Runtime {
+  /**
+   * Whether this shell has a server to talk to at all.
+   *
+   * The web build has one — it is the same origin the page came from — and
+   * every server-dependent feature (the outbox, the share links, the `?id=`
+   * rewriter, the sync status chip) is gated on this. The desktop build sets
+   * it to `false`, and those features never mount. The value is read
+   * synchronously, so it must be set before anything renders.
+   */
+  hasServer: boolean;
   /** Prefixed onto API paths. Empty means same-origin, as on the web. */
   apiOrigin: string;
   fetch: FetchLike;
@@ -45,6 +51,7 @@ const anchorDownload: SaveDataUrl = (dataUrl, filename) => {
 };
 
 const current: Runtime = {
+  hasServer: true,
   apiOrigin: "",
   /*
    * Delegates rather than aliasing `globalThis.fetch`, so the call is resolved
@@ -59,6 +66,16 @@ const current: Runtime = {
 /** Called once by a shell that is not a browser tab, before anything renders. */
 export function configureRuntime(overrides: Partial<Runtime>): void {
   Object.assign(current, overrides);
+}
+
+/**
+ * Whether the editor should mount the features that only make sense with a
+ * server behind it: the outbox, the share links, and everything that follows
+ * from them. Set once at start-up, so the answer does not change during a
+ * session.
+ */
+export function hasServer(): boolean {
+  return current.hasServer;
 }
 
 /** Resolves an API path against the configured origin. */

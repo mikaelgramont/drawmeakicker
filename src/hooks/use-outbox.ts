@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { countUnsynced, getDesign } from "@/lib/local/designs";
 import { drainOutbox, startOutbox } from "@/lib/local/outbox";
+import { hasServer } from "@/lib/runtime";
 import { useEditorStore } from "@/store/editor-store";
 
 /**
@@ -40,9 +41,17 @@ export async function syncNow(): Promise<void> {
   await reflect().catch(() => {});
 }
 
-/** Runs the outbox for as long as the app is mounted. */
+/**
+ * Runs the outbox for as long as the app is mounted.
+ *
+ * A no-op when the shell has no server behind it (the desktop app): the whole
+ * outbox exists to push saves at a server, and without one there is nowhere
+ * for the drain to push to. `syncNow` and `drainOutbox` stay exported for the
+ * web, and for the tests that exercise them.
+ */
 export function useOutbox(): void {
   useEffect(() => {
+    if (!hasServer()) return;
     const stop = startOutbox(() => void reflect());
     return stop;
   }, []);

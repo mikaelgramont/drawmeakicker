@@ -1,6 +1,7 @@
 "use client";
 
 import { syncNow } from "@/hooks/use-outbox";
+import { hasServer } from "@/lib/runtime";
 import { useEditorStore } from "@/store/editor-store";
 import styles from "./panels.module.css";
 
@@ -17,11 +18,18 @@ import styles from "./panels.module.css";
  * saved as soon as it is on disk, and only the server can mint the id a link
  * points at, so the wait is shown here instead of being the reason the save
  * appeared to fail.
+ *
+ * Renders nothing when the shell has no server behind it (the desktop app),
+ * where there is nothing to mint a link either. The parent step already drops
+ * the enclosing fieldset in that case; this second gate is what makes it safe
+ * to render `SharePanel` from anywhere.
  */
 export function SharePanel() {
   const share = useEditorStore((state) => state.share);
   const syncState = useEditorStore((state) => state.syncState);
   const error = useEditorStore((state) => state.alert);
+
+  if (!hasServer()) return null;
 
   if (share) {
     return (

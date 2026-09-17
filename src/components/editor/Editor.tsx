@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { composeExport, type ExportOptions } from "@/lib/export-image";
 import { buildPdf } from "@/lib/pdf/document";
 import { captureThreeDee } from "@/lib/pdf/three-dee";
-import { saveDataUrl } from "@/lib/runtime";
+import { hasServer, saveDataUrl } from "@/lib/runtime";
 import { useWakeLock } from "@/hooks/use-wake-lock";
 import { Renderer, type RendererCanvases } from "@/components/renderer/Renderer";
 import type { RenderNow } from "@/scene/ExportBridge";
@@ -24,74 +24,86 @@ import { NotesPanel, SavePanel } from "./panels/SavePanel";
 import { SharePanel } from "./panels/SharePanel";
 import styles from "./editor.module.css";
 
-const STEP_DEFINITIONS: Record<Step, Omit<AccordionStep, "id">> = {
-  design: {
-    caption: "Design",
-    displayNumber: 1,
-    content: (
-      <>
-        <ControlButtons />
-        <Fieldset legend="Parameters">
-          <ParametersPanel />
+/*
+ * Built as a function rather than a constant because two entries change
+ * shape when `hasServer()` is false: the third step drops its "Share with
+ * friends" fieldset and calls itself "Info" rather than "Share". The runtime
+ * flag is set before anything renders, so reading it here is safe.
+ */
+function buildStepDefinitions(): Record<Step, Omit<AccordionStep, "id">> {
+  const serverBacked = hasServer();
+  return {
+    design: {
+      caption: "Design",
+      displayNumber: 1,
+      content: (
+        <>
+          <ControlButtons />
+          <Fieldset legend="Parameters">
+            <ParametersPanel />
+          </Fieldset>
+          <Fieldset legend="Results">
+            <ResultsPanel />
+          </Fieldset>
+        </>
+      ),
+    },
+    visualize: {
+      caption: "Visualize",
+      displayNumber: 2,
+      content: (
+        <>
+          <Fieldset legend="Context">
+            <ContextPanel />
+          </Fieldset>
+          <Fieldset legend="Image export">
+            <ExportPanel />
+          </Fieldset>
+          <Fieldset legend="Build plan">
+            <PdfPanel />
+          </Fieldset>
+        </>
+      ),
+    },
+    save: {
+      caption: "Save",
+      displayNumber: 3,
+      content: (
+        <Fieldset legend="Information">
+          <SavePanel />
         </Fieldset>
-        <Fieldset legend="Results">
-          <ResultsPanel />
+      ),
+    },
+    // Only reachable once a kicker has been saved or loaded. On the web that
+    // means it has an id worth sharing; on the desktop it just means there
+    // are notes to attach, which is why the caption changes.
+    share: {
+      caption: serverBacked ? "Share" : "Info",
+      displayNumber: 3,
+      content: (
+        <>
+          <Fieldset legend="Notes">
+            <NotesPanel />
+          </Fieldset>
+          {serverBacked && (
+            <Fieldset legend="Share with friends">
+              <SharePanel />
+            </Fieldset>
+          )}
+        </>
+      ),
+    },
+    library: {
+      caption: "Saved",
+      displayNumber: 4,
+      content: (
+        <Fieldset legend="On this device">
+          <LibraryPanel />
         </Fieldset>
-      </>
-    ),
-  },
-  visualize: {
-    caption: "Visualize",
-    displayNumber: 2,
-    content: (
-      <>
-        <Fieldset legend="Context">
-          <ContextPanel />
-        </Fieldset>
-        <Fieldset legend="Image export">
-          <ExportPanel />
-        </Fieldset>
-        <Fieldset legend="Build plan">
-          <PdfPanel />
-        </Fieldset>
-      </>
-    ),
-  },
-  save: {
-    caption: "Save",
-    displayNumber: 3,
-    content: (
-      <Fieldset legend="Information">
-        <SavePanel />
-      </Fieldset>
-    ),
-  },
-  // Only reachable once a kicker has been saved or loaded, which is to say
-  // only once it has an id worth sharing.
-  share: {
-    caption: "Share",
-    displayNumber: 3,
-    content: (
-      <>
-        <Fieldset legend="Notes">
-          <NotesPanel />
-        </Fieldset>
-        <Fieldset legend="Share with friends">
-          <SharePanel />
-        </Fieldset>
-      </>
-    ),
-  },
-  library: {
-    caption: "Saved",
-    displayNumber: 4,
-    content: (
-      <Fieldset legend="On this device">
-        <LibraryPanel />
-      </Fieldset>
-    ),
-  },
-};
+      ),
+    },
+  };
+}
 
 /**
  * The editor: stepped sidebar on the left, drawing on the right.
@@ -199,7 +211,8 @@ export function Editor() {
     [exportImage, exportPlan],
   );
 
-  const steps = visibleSteps.map((id) => ({ id, ...STEP_DEFINITIONS[id] }));
+  const stepDefinitions = useMemo(buildStepDefinitions, []);
+  const steps = visibleSteps.map((id) => ({ id, ...stepDefinitions[id] }));
 
   return (
     <ExportContext.Provider value={exports}>

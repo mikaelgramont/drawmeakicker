@@ -80,24 +80,23 @@ the thing that makes shared links work, to produce a build that still would not
 have a server in it. Vite compiles the same `src/` tree as a plain SPA instead,
 and Tauri serves the result.
 
-That leaves the desktop app in the shape the offline shell already had: no
-server involved in start-up, designs in IndexedDB, and the outbox pushing them
-afterwards. It is close enough to `src/components/OfflineApp.tsx` that
-`desktop/src/DesktopApp.tsx` is a near-copy of it — the one thing that file
-hard-codes is an apology for an unreachable server, which is not why anyone is
-looking at this window.
+That leaves the desktop app with no server involved anywhere. Designs live in
+IndexedDB, the library reads back from it, and JSON export / import moves them
+between devices; there is no outbox because there is nothing to push at, and
+no share step because a link points at a server this app does not have. What
+the PWA calls its offline fallback is what the desktop always looks like, on
+purpose.
 
 ### What the shell has to answer
 
-Three things the editor does are browser assumptions rather than editor logic,
+Two things the editor does are browser assumptions rather than editor logic,
 so they became a seam in `src/lib/runtime.ts` whose defaults are the existing
 web behaviour spelled out. Nothing that does not call `configureRuntime` can
 tell it is there.
 
 | Assumption                       | Why it breaks                                                        | What the desktop does              |
 | -------------------------------- | -------------------------------------------------------------------- | ---------------------------------- |
-| The API is a path on our origin  | The document comes from `tauri://localhost`, so a path resolves into the bundle | Prefixes a configured origin |
-| `fetch` can reach it             | An absolute URL is cross-origin and the endpoint sends no CORS headers | Uses Rust's HTTP client, which has no origin to check |
+| There is a server behind the app | The document comes from `tauri://localhost`, and this build ships with no server at all | `hasServer: false`, and the outbox, share step and sync chip never mount |
 | `<a download>` saves a file      | WKWebView ignores the attribute, so Export appears to do nothing     | A native save dialog and a write in Rust |
 
 The export is written by a Rust command rather than the filesystem plugin. Both
@@ -141,23 +140,6 @@ Worth remembering before trusting a dev run to say the app works.
 
 VR needs no special handling: `useVrSupported` asks `navigator.xr`, which
 neither WebView provides, so the toolbar button never appears.
-
-### Configuration
-
-| Variable          | Default                      | What it does                          |
-| ----------------- | ---------------------------- | ------------------------------------- |
-| `VITE_API_ORIGIN` | `https://drawmeakicker.com`  | The site designs are synced to        |
-
-Saving is local and immediate regardless, so this only decides where a design
-goes to be given the server id a share link is built from. Set it empty to keep
-the app entirely to itself, in which case saves stay `pending` and the share
-step says so.
-
-Changing it means changing the matching `http:default` scope in
-`src-tauri/capabilities/default.json` too. The allowance is enforced in Rust,
-which cannot see the frontend's value, and the scope is deliberately one host
-rather than a wildcard: Rust's client is not bound by CORS, so an unscoped
-permission would make it an open proxy for anything running in the WebView.
 
 ### Building for both platforms
 

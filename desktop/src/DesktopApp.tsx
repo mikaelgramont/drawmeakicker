@@ -21,10 +21,9 @@ import type { EditorInit } from "@/store/editor-store";
 
 export function DesktopApp() {
   /*
-   * `/` resolves the starting unit from the Accept-Language header, which is
-   * what gives a shared link its og: tags and is the reason that page is a
-   * server component. There is no request here, so the same preference is read
-   * from `navigator.languages`, which carries it in the same order.
+   * The website resolves the starting unit from the Accept-Language header at
+   * render time; the equivalent inside the WebView is `navigator.languages`,
+   * which carries the same preference in the same order.
    */
   const init = useMemo<EditorInit>(() => ({ units: preferredUnits() }), []);
 

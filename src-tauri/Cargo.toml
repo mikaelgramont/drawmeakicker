@@ -24,9 +24,7 @@ tauri-plugin-log = "2"
 # Opens share and footer links in the user's real browser rather than in the
 # window the editor is running in. See desktop/src/external-links.ts.
 tauri-plugin-opener = "2"
-# Makes the save request from here instead of the WebView, which is the only
-# way to reach the API without it being a blocked cross-origin request.
-tauri-plugin-http = "2"
-# The native save dialog for a PNG export, driven from Rust: see src/lib.rs.
+# The native save dialog for a PNG or PDF export, driven from Rust: see
+# src/lib.rs.
 tauri-plugin-dialog = "2"
 base64 = "0.22"

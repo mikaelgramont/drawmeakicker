@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { parseKickerId } from "@/lib/kicker-id";
 import { getDesignByServerId } from "@/lib/local/designs";
+import { hasServer } from "@/lib/runtime";
 import { useEditorStore } from "@/store/editor-store";
 
 /**
@@ -31,9 +32,13 @@ function requestedId(): number | null {
  * Deliberately separate from the offline lookup below, which must not run here:
  * a server that answers "no such kicker" is not the same as a server that could
  * not be asked, and only the second is worth telling the user to try later.
+ *
+ * A no-op when the shell has no server behind it (the desktop app): there is
+ * no shared link for it to have resolved, and `savedId` never leaves `null`.
  */
 export function useLocalIdentity(): void {
   useEffect(() => {
+    if (!hasServer()) return;
     const id = requestedId();
     if (id === null) return;
 

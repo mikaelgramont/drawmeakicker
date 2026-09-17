@@ -2,6 +2,7 @@
 
 import { syncNow } from "@/hooks/use-outbox";
 import { requestPersistentStorage, saveDesign, SAVE_FAILED } from "@/lib/local/designs";
+import { hasServer } from "@/lib/runtime";
 import { useEditorStore } from "@/store/editor-store";
 import styles from "./panels.module.css";
 
@@ -36,7 +37,9 @@ export function SavePanel() {
        * that prompt will be asking about something the user just did.
        */
       void requestPersistentStorage();
-      void syncNow();
+      // Nothing to push to if the shell has no server behind it; the design
+      // is already where it belongs, which is this device.
+      if (hasServer()) void syncNow();
     } catch (error) {
       setSaving(false);
       setAlert(error instanceof Error ? error.message : SAVE_FAILED);

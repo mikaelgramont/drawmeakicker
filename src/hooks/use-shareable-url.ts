@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { hasServer } from "@/lib/runtime";
 
 /**
  * Keeps `?id=` in the address bar pointing at the kicker on screen: it appears
@@ -11,6 +12,10 @@ import { useEffect, useRef } from "react";
  * `?id=1?id=2` when saving twice. Using replaceState rather than the router
  * matters: navigating would re-run the server component and remount the
  * canvas, throwing away the WebGL context and the scene with it.
+ *
+ * A no-op when the shell has no server behind it (the desktop app): there is
+ * no `?id=` to write into a URL bar the app has anyway, and `savedId` never
+ * leaves `null` in that case.
  */
 export function useShareableUrl(savedId: number | null): void {
   // The server already rendered the correct URL, so the first run has nothing
@@ -19,6 +24,7 @@ export function useShareableUrl(savedId: number | null): void {
   const mounted = useRef(false);
 
   useEffect(() => {
+    if (!hasServer()) return;
     if (!mounted.current) {
       mounted.current = true;
       return;
