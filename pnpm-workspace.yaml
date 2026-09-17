@@ -2,4 +2,7 @@ allowBuilds:
   # better-sqlite3 is a native addon: it has to compile (or fetch) its binding
   # on install or the Phase 2 database layer cannot open a file.
   better-sqlite3: true
+  # core-js is pulled in transitively by jspdf; its install script is a
+  # promotional notice and has no build step to run.
+  core-js: false
   esbuild: false

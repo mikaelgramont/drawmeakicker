@@ -101,10 +101,12 @@ tell it is there.
 | `<a download>` saves a file      | WKWebView ignores the attribute, so Export appears to do nothing     | A native save dialog and a write in Rust |
 
 The export is written by a Rust command rather than the filesystem plugin. Both
-ends already belong to the app — the bytes come from the editor's own canvas and
-the path from a dialog it opened — and going through the plugin would mean
-granting the WebView a write scope wide enough to cover anywhere the user might
-pick, which is all of it, to save one PNG.
+ends already belong to the app — the bytes come from the editor's own canvas or
+its PDF builder, and the path from a dialog it opened — and going through the
+plugin would mean granting the WebView a write scope wide enough to cover
+anywhere the user might pick, which is all of it, to save one file. The
+command picks its filter from the filename extension, so the PNG and PDF
+exports go through the same seam.
 
 Outbound links are handed to the real browser
 (`desktop/src/external-links.ts`). A window with no address bar and no back
@@ -171,8 +173,15 @@ and SmartScreen by hand.
 ## How it fits together
 
 - `src/lib/kicker` — the geometry. Arc radius, footprint, surface length, the side
-  and surface outlines, strut placement, and unit formatting. No three.js, so it is
-  unit-testable and shared with the server.
+  and surface outlines, strut placement, unit formatting and the cut list. No
+  three.js, so it is unit-testable and shared with the server.
+- `src/lib/drawing` — the projection from ramp metres to 2D output units, plus
+  the blueprint frame's notch geometry. Used by both the landing page's SVG
+  illustrations and the PDF export's side view, so the two cannot draw the
+  same kicker in two different ways.
+- `src/lib/pdf` — the [build plan](#build-plan) export. jsPDF is imported
+  lazily from `document.ts` so it stays out of the editor bundle until the
+  user asks for it.
 - `src/db` — the SQLite layer (Drizzle ORM). One `kickers` table, insert and
   read-by-id, with migrations in `drizzle/` applied when the file is opened.
   The insert is idempotent per client key; see [Offline](#offline).
@@ -192,18 +201,56 @@ and SmartScreen by hand.
   PNG exports).
 - `src/components/landing` — the pitch above the editor. A server component, so
   its illustrations cost no script: they are SVG generated from `src/lib/kicker`
-  by `diagram.ts`, which is also why they cannot drift from what the editor
-  draws. Only the call-to-action button crosses into the client.
+  by `src/lib/drawing/project.ts`, which is also why they cannot drift from
+  what the editor draws. Only the call-to-action button crosses into the
+  client.
 
 - `desktop/` — the shell for the [desktop app](#desktop-app), and nothing else:
   everything it renders is imported from the directories above.
 - `src-tauri/` — the Rust side of the desktop app. The window, the plugins it is
-  allowed to use, and the one command that writes a PNG export.
+  allowed to use, and the one command that writes a PNG or PDF export.
 
 The editor is code-split behind `next/dynamic`: three.js and the XR runtime only
 download once the visitor asks for the editor. The desktop build keeps that
 split rather than paying for a WebGL context at launch, by aliasing the module
 to a `React.lazy` wrapper — see `desktop/src/shims/next-dynamic.tsx`.
+
+## Build plan
+
+The Visualize step offers a two-page PDF beside the PNG export. Page one lists
+the name, id, the six measurements and a cut list, next to a black-and-white
+3D view. Page two is the annotated 2D side view redrawn as vector paths inside
+the notched blueprint frame — the same paths the on-screen scene draws, so
+what is on page two is what the editor drew and nothing else.
+
+The pieces:
+
+- `src/lib/kicker/cut-list.ts` — every piece of timber the ramp is built from,
+  derived from `calculateSidePoints` and `calculateStrutPlacements`. Struts
+  are grouped by their section, so the default kicker's list reads "13 struts,
+  80mm timber, 1.00m long" rather than as a wall of identical rows.
+- `src/lib/drawing/project.ts` — the projection from ramp metres to 2D output
+  units, also used by the landing page's SVG illustrations. Sharing one
+  projection is what stops the paper drawing and the on-screen one from
+  parting ways.
+- `src/lib/drawing/frame.ts` — the notched frame's geometry, consumed by both
+  the on-screen `BlueprintBorder` and the PDF.
+- `src/lib/pdf/side-view.ts` — the side view as a flat list of drawing
+  primitives (polyline, filled polygon, text). Free of jsPDF, so it is
+  testable against a plain fake and could be pointed at SVG or Canvas without
+  change.
+- `src/lib/pdf/three-dee.ts` — reads the editor's WebGL canvas after briefly
+  flipping the visualization to outline-only 3D, and inverts the white lines
+  onto white with `globalCompositeOperation = "difference"`. The visualization
+  is restored before the export resolves, so the visible state the user
+  returned to is the one they left.
+- `src/lib/pdf/document.ts` — the assembler. jsPDF is imported dynamically
+  here, which is why the ~400kB library only downloads when someone actually
+  presses Export PDF.
+
+The Rust side takes the extension from the filename to decide which filter to
+offer in the save dialog. Anything unrecognised falls back to PNG — see
+`save_export` in `src-tauri/src/lib.rs`.
 
 ## Units
 

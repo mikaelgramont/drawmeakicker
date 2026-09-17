@@ -1,11 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useImperativeHandle, useRef, type RefObject } from "react";
+import { frameNotches } from "@/lib/drawing/frame";
 import { OUTLINE_COLOR } from "@/scene/constants";
-
-const ROWS = 4;
-const COLUMNS = 4;
-const NOTCH_LENGTH = 10;
 
 /**
  * Draws the technical-drawing frame: a border with tick marks dividing each
@@ -13,6 +10,8 @@ const NOTCH_LENGTH = 10;
  *
  * Unlike the original this renders at device resolution rather than CSS
  * resolution, so the frame is crisp on hi-dpi screens and in the PNG export.
+ * The notch geometry lives in `@/lib/drawing/frame` so the PDF export traces
+ * exactly the same frame.
  */
 function paint(canvas: HTMLCanvasElement): void {
   const parent = canvas.parentElement;
@@ -36,25 +35,17 @@ function paint(canvas: HTMLCanvasElement): void {
   // Half-pixel offsets so a 1px stroke lands on a pixel instead of straddling two.
   context.strokeRect(0.5, 0.5, width - 1, height - 1);
 
-  const columnSpacing = (width - (COLUMNS - 1) - 2) / COLUMNS;
-  for (let i = 1; i < COLUMNS; i++) {
-    const x = Math.trunc(columnSpacing * i) + 0.5;
+  for (const notch of frameNotches(width, height)) {
+    // Same half-pixel trick as the outer rectangle: truncate on whichever axis
+    // the notch runs perpendicular to, so the stroke lands on a pixel.
+    const vertical = notch.x1 === notch.x2;
+    const x1 = vertical ? Math.trunc(notch.x1) + 0.5 : notch.x1;
+    const x2 = vertical ? Math.trunc(notch.x2) + 0.5 : notch.x2;
+    const y1 = vertical ? notch.y1 : Math.trunc(notch.y1) + 0.5;
+    const y2 = vertical ? notch.y2 : Math.trunc(notch.y2) + 0.5;
     context.beginPath();
-    context.moveTo(x, 0);
-    context.lineTo(x, NOTCH_LENGTH);
-    context.moveTo(x, height);
-    context.lineTo(x, height - NOTCH_LENGTH);
-    context.stroke();
-  }
-
-  const rowSpacing = (height - (ROWS - 1) - 2) / ROWS;
-  for (let i = 1; i < ROWS; i++) {
-    const y = Math.trunc(rowSpacing * i) + 0.5;
-    context.beginPath();
-    context.moveTo(0, y);
-    context.lineTo(NOTCH_LENGTH, y);
-    context.moveTo(width, y);
-    context.lineTo(width - NOTCH_LENGTH, y);
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
     context.stroke();
   }
 }

@@ -26,6 +26,37 @@ export function formatLength(meters: number, unit: Unit): string {
   return unit === "ft" ? metersToFeetAndInches(meters) : `${meters.toFixed(2)}m`;
 }
 
+/**
+ * Formats a small thickness or cross-section for a cut list.
+ *
+ * `formatLength` reports metres to two decimals ("0.03m") and imperial to
+ * whole inches ("1in"), which is too coarse for the sizes plywood and timber
+ * come in — a 15mm sheet and a 30mm sheet would both round to the same "1in".
+ * This falls back to millimetres in metric and to the nearest sixteenth of an
+ * inch in imperial, both of which are how the material is actually sold.
+ */
+export function formatThickness(meters: number, unit: Unit): string {
+  if (unit === "m") return `${Math.round(meters * 1000)}mm`;
+
+  // Nearest sixteenth of an inch, which is the finest gradation a tape measure
+  // meaningfully carries and matches the fractions plywood sheets are sold in.
+  const sixteenths = Math.round((meters / ONE_FOOT) * INCHES_PER_FOOT * 16);
+  const whole = Math.floor(sixteenths / 16);
+  const remainder = sixteenths % 16;
+
+  if (remainder === 0) return `${whole}in`;
+
+  // Reduce the sixteenth down to its lowest denominator, so 8/16 shows as 1/2.
+  let numerator = remainder;
+  let denominator = 16;
+  while (numerator % 2 === 0) {
+    numerator /= 2;
+    denominator /= 2;
+  }
+  const fraction = `${numerator}/${denominator}`;
+  return whole === 0 ? `${fraction}in` : `${whole}-${fraction}in`;
+}
+
 /** Formats an angle. Always degrees; the unit toggle does not apply. */
 export function formatAngle(degrees: number): string {
   return `${degrees.toFixed(0)}${DEGREES}`;

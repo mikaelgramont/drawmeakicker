@@ -1,15 +1,15 @@
 /**
- * Puts the app's own kicker geometry into SVG coordinates.
+ * Puts the app's own kicker geometry into 2D drawing coordinates.
  *
- * The landing page illustrations are drawn from `@/lib/kicker` rather than
+ * Drawings assembled through this module come from `@/lib/kicker` rather than
  * being pictures someone made once, for the same reason the PWA icons are
  * (scripts/make-icons.ts): a drawing of what the app produces, made by
  * anything other than the code that produces it, is a drawing that will
  * eventually be wrong. Change the default kicker or the strut spacing and
  * these follow.
  *
- * Nothing here touches three.js or React, so the illustrations render on the
- * server and ship as markup rather than as script.
+ * Nothing here touches three.js or React, so the same projection serves the
+ * landing page (as server-rendered SVG) and the PDF export's side view.
  */
 import {
   calculateRadius,

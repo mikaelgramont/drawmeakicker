@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { calculateRadius, defaultKicker, kickerConfig, type Point2 } from "@/lib/kicker";
-import { boundsOf, geometryFor, project, ridingLine, strutBoxes } from "./diagram";
+import { boundsOf, geometryFor, project, ridingLine, strutBoxes } from "./project";
 
 const { height, angle } = defaultKicker;
 const angleRad = (angle * Math.PI) / 180;

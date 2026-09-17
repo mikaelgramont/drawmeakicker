@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { formatAngle, formatLength, metersToFeetAndInches, unitsForLanguage } from "./units";
+import {
+  formatAngle,
+  formatLength,
+  formatThickness,
+  metersToFeetAndInches,
+  unitsForLanguage,
+} from "./units";
 
 describe("metersToFeetAndInches", () => {
   it("converts exact feet without an inches part", () => {
@@ -45,6 +51,38 @@ describe("formatLength", () => {
 
   it("switches to feet and inches", () => {
     expect(formatLength(1.2, "ft")).toBe("3ft 11in");
+  });
+});
+
+describe("formatThickness", () => {
+  it("shows metric to the nearest millimetre", () => {
+    expect(formatThickness(0.03, "m")).toBe("30mm");
+    expect(formatThickness(0.015, "m")).toBe("15mm");
+    expect(formatThickness(0.08, "m")).toBe("80mm");
+    expect(formatThickness(0.04, "m")).toBe("40mm");
+  });
+
+  /*
+   * Plywood and framing timber are sold in fractional inches, so rounding to
+   * whole inches (as formatLength does) would report 15mm and 30mm sheets as
+   * the same thickness. Sixteenths are the finest gradation a tape measure
+   * meaningfully carries and match how the material is priced.
+   */
+  it("rounds imperial to the nearest sixteenth of an inch", () => {
+    expect(formatThickness(0.03, "ft")).toBe("1-3/16in");
+    expect(formatThickness(0.015, "ft")).toBe("9/16in");
+    expect(formatThickness(0.08, "ft")).toBe("3-1/8in");
+    expect(formatThickness(0.04, "ft")).toBe("1-9/16in");
+  });
+
+  it("reduces even fractions to their lowest terms", () => {
+    // A hair over 1.5in is 1-8/16 which must not print as such.
+    expect(formatThickness(0.0381, "ft")).toBe("1-1/2in");
+  });
+
+  it("drops the fraction on whole-inch thicknesses", () => {
+    expect(formatThickness(0.0254, "ft")).toBe("1in");
+    expect(formatThickness(0.0508, "ft")).toBe("2in");
   });
 });
 

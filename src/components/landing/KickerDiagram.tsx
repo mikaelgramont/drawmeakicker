@@ -1,7 +1,7 @@
 /**
  * The landing page illustrations.
  *
- * Every line in these is computed from `@/lib/kicker` by ./diagram, so they
+ * Every line in these is computed from `@/lib/kicker` by `@/lib/drawing/project`, so they
  * are drawings of what the app actually produces rather than pictures of what
  * it produced once. They are also plain server-rendered markup: no hooks, no
  * three.js, nothing shipped to the browser.
@@ -21,7 +21,7 @@ import {
   type DiagramGeometry,
   type Insets,
   type Projection,
-} from "./diagram";
+} from "@/lib/drawing/project";
 import styles from "./landing.module.css";
 
 /**

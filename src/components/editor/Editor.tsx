@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { composeExport, type ExportOptions } from "@/lib/export-image";
+import { buildPdf } from "@/lib/pdf/document";
+import { captureThreeDee } from "@/lib/pdf/three-dee";
 import { saveDataUrl } from "@/lib/runtime";
 import { useWakeLock } from "@/hooks/use-wake-lock";
 import { Renderer, type RendererCanvases } from "@/components/renderer/Renderer";
@@ -10,12 +12,13 @@ import { xrStore } from "@/scene/xr";
 import { useEditorStore, useVisibleSteps, type Step } from "@/store/editor-store";
 import { Accordion, Fieldset, type AccordionStep } from "./Accordion";
 import { ControlButtons } from "./ControlButtons";
-import { ExportContext } from "./export-context";
+import { ExportContext, type ExportActions } from "./export-context";
 import { Toolbar } from "./Toolbar";
 import { ContextPanel } from "./panels/ContextPanel";
 import { ExportPanel } from "./panels/ExportPanel";
 import { LibraryPanel } from "./panels/LibraryPanel";
 import { ParametersPanel } from "./panels/ParametersPanel";
+import { PdfPanel } from "./panels/PdfPanel";
 import { ResultsPanel } from "./panels/ResultsPanel";
 import { NotesPanel, SavePanel } from "./panels/SavePanel";
 import { SharePanel } from "./panels/SharePanel";
@@ -47,6 +50,9 @@ const STEP_DEFINITIONS: Record<Step, Omit<AccordionStep, "id">> = {
         </Fieldset>
         <Fieldset legend="Image export">
           <ExportPanel />
+        </Fieldset>
+        <Fieldset legend="Build plan">
+          <PdfPanel />
         </Fieldset>
       </>
     ),
@@ -141,10 +147,62 @@ export function Editor() {
     [],
   );
 
+  /*
+   * PDF build plan. Temporarily flips the visualization to a plain outline-only
+   * 3D view long enough to capture a snapshot for page one, then restores it —
+   * so what the user was looking at is what they get back once the file has
+   * been offered. Any throw is left to the caller (`PdfPanel`) to surface, but
+   * the restore in `finally` runs regardless.
+   */
+  const exportPlan = useCallback(async () => {
+    if (!content.current) {
+      throw new Error("The scene is not ready yet.");
+    }
+    const renderer = renderNow.current;
+    if (!renderer) {
+      throw new Error("The scene is not ready yet.");
+    }
+
+    const { kicker, savedId, units } = useEditorStore.getState();
+    const previous = {
+      repType: kicker.repType,
+      textured: kicker.textured,
+      annotations: kicker.annotations,
+      grid: kicker.grid,
+      mountainboard: kicker.mountainboard,
+      rider: kicker.rider,
+    };
+    const setVisualization = useEditorStore.getState().setVisualization;
+
+    try {
+      const snapshot = await captureThreeDee({
+        applyPatch: (patch) => setVisualization(patch),
+        renderNow: renderer,
+        canvas: content.current,
+      });
+
+      const { dataUrl, filename } = await buildPdf({
+        kicker: useEditorStore.getState().kicker,
+        savedId,
+        units,
+        snapshot,
+      });
+
+      saveDataUrl(dataUrl, filename);
+    } finally {
+      setVisualization(previous);
+    }
+  }, []);
+
+  const exports: ExportActions = useMemo(
+    () => ({ exportImage, exportPlan }),
+    [exportImage, exportPlan],
+  );
+
   const steps = visibleSteps.map((id) => ({ id, ...STEP_DEFINITIONS[id] }));
 
   return (
-    <ExportContext.Provider value={exportImage}>
+    <ExportContext.Provider value={exports}>
       <div className={styles.editor}>
         {sidebarOpen && (
           <div
